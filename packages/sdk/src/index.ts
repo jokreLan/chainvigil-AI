@@ -1,5 +1,6 @@
 import type {
   AdminAuditLog,
+  AdminRiskReviewItem,
   PointEvent,
   PointLedgerSummary,
   PointEventType,
@@ -89,6 +90,11 @@ export interface AdminAuditLogsResponse {
   mode: "mock";
 }
 
+export interface AdminRiskReviewQueueResponse {
+  items: AdminRiskReviewItem[];
+  mode: "mock";
+}
+
 export interface PointLedgerResponse {
   ledger: PointLedgerSummary;
   mode: "mock";
@@ -173,6 +179,10 @@ export class ChainVigilClient {
 
   async getAdminAuditLogs(): Promise<AdminAuditLogsResponse> {
     return this.get<AdminAuditLogsResponse>("/api/v1/admin/audit/logs");
+  }
+
+  async getAdminRiskReviewQueue(): Promise<AdminRiskReviewQueueResponse> {
+    return this.get<AdminRiskReviewQueueResponse>("/api/v1/admin/risk-review/queue");
   }
 
   async getTelegramGroups(): Promise<TelegramGroupsResponse> {

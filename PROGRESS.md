@@ -246,6 +246,12 @@
 - 第 51 轮目标门禁已通过：`pnpm --filter @chainvigil/admin typecheck/build`，Admin 构建路由表包含 `/telegram`。
 - 第 51 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
 - 第 51 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin `/telegram` 的群组设置和命令清单。
+- 开始开发 loop 第 52 轮：将 Admin 高危 CA 审核页从静态说明推进到只读 mock 风险复核队列 contract。
+- 完成开发 loop 第 52 轮：新增 `AdminRiskReviewItem` 类型、`listMockRiskReviewQueue()`、API `GET /api/v1/admin/risk-review/queue`、SDK `getAdminRiskReviewQueue()`；Admin `/risk-review` 展示队列；Web `/api`、OpenAPI、README 和 smoke 同步。
+- 第 52 轮目标门禁首次发现 `listMockRiskReviewQueue()` 数组字面量被 TypeScript 推宽为 string，导致 `chain/status` 不满足共享类型；已用 `satisfies AdminRiskReviewItem[]` 固定 contract。
+- 第 52 轮目标门禁第 2 次通过：`@chainvigil/types` typecheck/build、`@chainvigil/risk-core` typecheck/test/build、API/SDK/Admin/Web 目标 typecheck/test/build；Risk Core 测试 3 个用例、API 测试 22 个用例、SDK 测试 13 个用例通过。
+- 第 52 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 52 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin `/risk-review` 和 API `/api/v1/admin/risk-review/queue`。
 
 ## 下一步
 

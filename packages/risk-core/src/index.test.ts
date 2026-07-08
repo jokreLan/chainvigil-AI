@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildMockTokenRiskReport, buildMockWalletHealthReport } from "./index";
+import { buildMockTokenRiskReport, buildMockWalletHealthReport, listMockRiskReviewQueue } from "./index";
 
 describe("buildMockTokenRiskReport", () => {
   it("returns a human-readable mock report", () => {
@@ -22,5 +22,19 @@ describe("buildMockWalletHealthReport", () => {
     expect(report.summary.highRiskApprovals).toBeGreaterThan(0);
     expect(report.approvals.length).toBeGreaterThan(0);
     expect(report.disclaimer).toContain("只读风险提示");
+  });
+});
+
+describe("listMockRiskReviewQueue", () => {
+  it("returns defensive copies of admin risk review items", () => {
+    const queue = listMockRiskReviewQueue("https://chainvigil.example");
+    queue[0]!.signals.push("mutated");
+
+    expect(queue[0]).toMatchObject({
+      riskLevel: "BLOCK",
+      status: "pending",
+      reportUrl: "https://chainvigil.example/token/base/0x1111111111111111111111111111111111111110",
+    });
+    expect(listMockRiskReviewQueue()[0]?.signals).not.toContain("mutated");
   });
 });

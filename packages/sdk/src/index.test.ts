@@ -127,6 +127,37 @@ describe("ChainVigilClient", () => {
     expect(response.logs[0]?.metadata?.goplusApiKey).toBe("[redacted]");
   });
 
+  it("reads mock admin risk review queue", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        items: [
+          {
+            id: "risk-review-base-1110",
+            chain: "base",
+            tokenAddress: "0x1111111111111111111111111111111111111110",
+            tokenSymbol: "MVP",
+            riskLevel: "BLOCK",
+            label: "禁买",
+            score: 12,
+            submittedBy: "system",
+            status: "pending",
+            reason: "卖出仿真失败。",
+            signals: ["honeypotDetected"],
+            reportUrl: "http://localhost:3000/token/base/0x1111111111111111111111111111111111111110",
+            createdAt: "2026-07-08T00:20:00.000Z",
+          },
+        ],
+      }),
+    });
+
+    const response = await client.getAdminRiskReviewQueue();
+
+    expect(response.mode).toBe("mock");
+    expect(response.items[0]?.riskLevel).toBe("BLOCK");
+    expect(response.items[0]?.signals).toContain("honeypotDetected");
+  });
+
   it("reads mock VP ledger summaries", async () => {
     const calls: string[] = [];
     const client = new ChainVigilClient({

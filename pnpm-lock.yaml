@@ -41,6 +41,9 @@ importers:
       '@chainvigil/points':
         specifier: workspace:*
         version: link:../../packages/points
+      '@chainvigil/risk-core':
+        specifier: workspace:*
+        version: link:../../packages/risk-core
       '@chainvigil/telegram':
         specifier: workspace:*
         version: link:../../packages/telegram

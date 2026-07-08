@@ -119,6 +119,24 @@ export interface WalletHealthResponse {
   report: WalletHealthReport;
 }
 
+export type AdminRiskReviewStatus = "pending" | "needs_data" | "escalated";
+
+export interface AdminRiskReviewItem {
+  id: string;
+  chain: ChainId;
+  tokenAddress: string;
+  tokenSymbol: string;
+  riskLevel: RiskLevel;
+  label: string;
+  score: number | null;
+  submittedBy: "system" | "user_report" | "telegram_group";
+  status: AdminRiskReviewStatus;
+  reason: string;
+  signals: string[];
+  reportUrl: string;
+  createdAt: string;
+}
+
 export type PointEventType =
   | "FIRST_CA_CHECK"
   | "DAILY_FIRST_CA_CHECK"

@@ -139,6 +139,17 @@ async function main() {
   );
 
   checks.push(
+    request("admin.risk-review", `${adminBaseUrl}/risk-review`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("高危 CA 审核") || !html.includes("待复核") || !html.includes("honeypotDetected")) {
+        throw new Error(`${name} expected mock risk review queue`);
+      }
+    }),
+  );
+
+  checks.push(
     request("admin.points", `${adminBaseUrl}/points`).then(async ({ name, response }) => {
       await assertStatus(name, response, 200);
       const html = await response.text();
@@ -257,6 +268,23 @@ async function main() {
 
         if (!body.logs?.[0]?.target?.startsWith("token:base:") || !JSON.stringify(body).includes("[redacted]")) {
           throw new Error(`${name} expected redacted mock admin audit logs`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.admin-risk-review", `${apiBaseUrl}/api/v1/admin/risk-review/queue`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (
+          body.mode !== "mock" ||
+          body.items?.[0]?.status !== "pending" ||
+          !body.items?.[0]?.signals?.includes("honeypotDetected")
+        ) {
+          throw new Error(`${name} expected mock admin risk review queue`);
         }
       },
     ),

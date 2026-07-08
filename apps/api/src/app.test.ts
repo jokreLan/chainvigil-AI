@@ -107,6 +107,23 @@ describe("api app", () => {
     await app.close();
   });
 
+  it("returns mock admin risk review queue", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/admin/risk-review/queue" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.items[0]).toMatchObject({
+      riskLevel: "BLOCK",
+      status: "pending",
+      tokenAddress: "0x1111111111111111111111111111111111111110",
+    });
+    expect(body.items[0].signals).toContain("honeypotDetected");
+
+    await app.close();
+  });
+
   it("returns mock Telegram group settings", async () => {
     const app = await buildApiApp();
     const response = await app.inject({ method: "GET", url: "/api/v1/telegram/groups" });

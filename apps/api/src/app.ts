@@ -11,7 +11,11 @@ import {
   getPointProgram,
   listPointRules,
 } from "@chainvigil/points";
-import { buildMockTokenRiskReport, buildMockWalletHealthReport } from "@chainvigil/risk-core";
+import {
+  buildMockTokenRiskReport,
+  buildMockWalletHealthReport,
+  listMockRiskReviewQueue,
+} from "@chainvigil/risk-core";
 import { listMockTelegramGroups, listTelegramCommands } from "@chainvigil/telegram";
 import type {
   ChainId,
@@ -261,6 +265,11 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
   app.get("/api/v1/admin/audit/logs", async () => ({
     logs: listMockAdminAuditLogs(),
+    mode: "mock",
+  }));
+
+  app.get("/api/v1/admin/risk-review/queue", async () => ({
+    items: listMockRiskReviewQueue(readEnv("APP_BASE_URL", "http://localhost:3000")),
     mode: "mock",
   }));
 

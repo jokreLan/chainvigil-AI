@@ -46,3 +46,4 @@
 - Telegram 群组设置 V0 由 `@chainvigil/telegram` 统一提供 mock contract，Bot/Admin/API/SDK 复用；真实 Telegram token 接入前不提供写设置接口。
 - Telegram 命令清单同样由 `@chainvigil/telegram` 统一导出，Web Bot 页面、API 和 SDK 不再各自复制命令文案。
 - Admin `/telegram` 页面只读展示 Telegram 群组设置和 Bot 命令清单，仍不提供 V0 写设置入口，避免没有真实权限模型时修改群配置。
+- 高危 CA 人工复核队列 V0 由 `@chainvigil/risk-core` 提供只读 mock contract，Admin/API/SDK 复用；在权限、审计写入和真实数据源接入前不提供审核动作接口。

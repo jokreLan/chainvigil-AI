@@ -17,6 +17,7 @@
     "@chainvigil/config": "workspace:*",
     "@chainvigil/data-adapters": "workspace:*",
     "@chainvigil/points": "workspace:*",
+    "@chainvigil/risk-core": "workspace:*",
     "@chainvigil/telegram": "workspace:*",
     "next": "^16.2.10",
     "react": "^19.1.0",

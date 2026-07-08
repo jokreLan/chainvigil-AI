@@ -1,6 +1,7 @@
 import { parseTokenInput } from "@chainvigil/chain";
 import { isAddress } from "viem";
 import type {
+  AdminRiskReviewItem,
   ApprovalRiskItem,
   ChainId,
   RiskReason,
@@ -12,6 +13,61 @@ export interface MockRiskInput {
   input: string;
   chain?: ChainId | undefined;
   appBaseUrl?: string;
+}
+
+export function listMockRiskReviewQueue(appBaseUrl = "http://localhost:3000"): AdminRiskReviewItem[] {
+  const items = [
+    {
+      id: "risk-review-base-1110",
+      chain: "base",
+      tokenAddress: "0x1111111111111111111111111111111111111110",
+      tokenSymbol: "MVP",
+      riskLevel: "BLOCK",
+      label: "禁买",
+      score: 12,
+      submittedBy: "system",
+      status: "pending",
+      reason: "卖出仿真失败且 LP 锁定状态未确认，需要人工复核是否加入高危 CA 列表。",
+      signals: ["honeypotDetected", "canSell=false", "lpLocked=false"],
+      reportUrl: `${appBaseUrl}/token/base/0x1111111111111111111111111111111111111110`,
+      createdAt: "2026-07-08T00:20:00.000Z",
+    },
+    {
+      id: "risk-review-base-1113",
+      chain: "base",
+      tokenAddress: "0x1111111111111111111111111111111111111113",
+      tokenSymbol: "MVP",
+      riskLevel: "HIGH",
+      label: "高危",
+      score: 34,
+      submittedBy: "telegram_group",
+      status: "needs_data",
+      reason: "群内多次查询后触发高税率和黑名单函数信号，等待真实数据源补证。",
+      signals: ["sellTaxPercent=28", "blacklistFunction=true", "top10HolderPercent=72"],
+      reportUrl: `${appBaseUrl}/token/base/0x1111111111111111111111111111111111111113`,
+      createdAt: "2026-07-08T00:35:00.000Z",
+    },
+    {
+      id: "risk-review-base-1115",
+      chain: "base",
+      tokenAddress: "0x1111111111111111111111111111111111111115",
+      tokenSymbol: "MVP",
+      riskLevel: "BLOCK",
+      label: "禁买",
+      score: 12,
+      submittedBy: "user_report",
+      status: "escalated",
+      reason: "用户举报疑似仿盘，mock 报告命中一票否决项，需后续接入审计写入后再支持处理动作。",
+      signals: ["userReport", "honeypotDetected", "sourceVerified=false"],
+      reportUrl: `${appBaseUrl}/token/base/0x1111111111111111111111111111111111111115`,
+      createdAt: "2026-07-08T00:50:00.000Z",
+    },
+  ] satisfies AdminRiskReviewItem[];
+
+  return items.map((item) => ({
+    ...item,
+    signals: [...item.signals],
+  }));
 }
 
 export function buildMockTokenRiskReport({

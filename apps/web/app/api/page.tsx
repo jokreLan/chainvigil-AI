@@ -61,6 +61,11 @@ const endpoints = [
     path: "/api/v1/admin/audit/logs",
     description: "读取只读 Admin 审计日志 mock contract，metadata 已脱敏。",
   },
+  {
+    method: "GET",
+    path: "/api/v1/admin/risk-review/queue",
+    description: "读取高危 CA 人工复核 mock 队列，供 Admin skeleton 展示。",
+  },
 ];
 
 export default function ApiPage() {
