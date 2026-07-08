@@ -14,6 +14,7 @@ import type {
   TokenCheckResponse,
   WalletHealthRequest,
   WalletHealthResponse,
+  WalletWatchlistItem,
   WorkerHealth,
 } from "@chainvigil/types";
 
@@ -146,6 +147,11 @@ export interface TelegramCommandsResponse {
   mode: "mock";
 }
 
+export interface WalletWatchlistResponse {
+  wallets: WalletWatchlistItem[];
+  mode: "mock";
+}
+
 export class ChainVigilApiError extends Error {
   constructor(
     message: string,
@@ -193,6 +199,10 @@ export class ChainVigilClient {
 
   async getWalletReport(address: string): Promise<WalletHealthResponse> {
     return this.get<WalletHealthResponse>(`/api/v1/wallet/${address}/health`);
+  }
+
+  async getWalletWatchlist(): Promise<WalletWatchlistResponse> {
+    return this.get<WalletWatchlistResponse>("/api/v1/wallet/watchlist");
   }
 
   async getPointsRules(): Promise<PointsRulesResponse> {

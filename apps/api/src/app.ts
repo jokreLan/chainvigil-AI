@@ -19,6 +19,7 @@ import {
   listMockRiskLabels,
   listMockRiskReviewQueue,
   listMockTokenReportIndex,
+  listMockWalletWatchlist,
 } from "@chainvigil/risk-core";
 import { listMockTelegramGroups, listTelegramCommands } from "@chainvigil/telegram";
 import type {
@@ -386,6 +387,11 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
     return { report };
   });
+
+  app.get("/api/v1/wallet/watchlist", async () => ({
+    wallets: listMockWalletWatchlist(readEnv("APP_BASE_URL", "http://localhost:3000")),
+    mode: "mock",
+  }));
 
   app.get("/api/v1/points/rules", async () => getPointProgram());
 

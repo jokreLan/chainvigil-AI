@@ -391,6 +391,26 @@ describe("ChainVigilClient", () => {
     expect(response.report.summary.highRiskApprovals).toBe(1);
   });
 
+  it("reads wallet watchlist", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        wallets: [
+          {
+            label: "主钱包",
+            status: "checked",
+            summaryLabel: "高风险",
+          },
+        ],
+      }),
+    });
+
+    const response = await client.getWalletWatchlist();
+
+    expect(response.mode).toBe("mock");
+    expect(response.wallets[0]?.label).toBe("主钱包");
+  });
+
   it("preserves rate-limit errors", async () => {
     const client = new ChainVigilClient({
       fetcher: (async () =>

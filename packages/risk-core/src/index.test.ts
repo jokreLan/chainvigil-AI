@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildMockTokenRiskReport,
   buildMockWalletHealthReport,
+  listMockWalletWatchlist,
   listMockRiskLabels,
   listMockRiskReviewQueue,
   listMockTokenReportIndex,
@@ -28,6 +29,19 @@ describe("buildMockWalletHealthReport", () => {
     expect(report.summary.highRiskApprovals).toBeGreaterThan(0);
     expect(report.approvals.length).toBeGreaterThan(0);
     expect(report.disclaimer).toContain("只读风险提示");
+  });
+});
+
+describe("listMockWalletWatchlist", () => {
+  it("returns defensive copies of wallet watchlist items", () => {
+    const wallets = listMockWalletWatchlist("https://chainvigil.example");
+    wallets[0]!.label = "mutated";
+
+    expect(wallets[0]).toMatchObject({
+      status: "checked",
+      reportUrl: "https://chainvigil.example/wallet/0x1111111111111111111111111111111111111110/health",
+    });
+    expect(listMockWalletWatchlist()[0]?.label).toBe("主钱包");
   });
 });
 

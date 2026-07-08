@@ -9,6 +9,7 @@ import type {
   RiskReason,
   TokenRiskReport,
   WalletHealthReport,
+  WalletWatchlistItem,
 } from "@chainvigil/types";
 
 export interface MockRiskInput {
@@ -64,6 +65,49 @@ export function listMockTokenReportIndex(appBaseUrl = "http://localhost:3000"): 
   ] satisfies AdminTokenReportIndexItem[];
 
   return reports.map((report) => ({ ...report }));
+}
+
+export function listMockWalletWatchlist(appBaseUrl = "http://localhost:3000"): WalletWatchlistItem[] {
+  const items = [
+    {
+      id: "wallet-watch-main",
+      address: "0x1111111111111111111111111111111111111110",
+      chain: "base",
+      label: "主钱包",
+      status: "checked",
+      lastCheckedAt: "2026-07-08T00:55:00.000Z",
+      reportUrl: `${appBaseUrl}/wallet/0x1111111111111111111111111111111111111110/health`,
+      summaryLabel: "高风险",
+      highRiskApprovals: 3,
+      note: "只读体检已完成，存在无限授权和可疑资产，需要优先复查。",
+    },
+    {
+      id: "wallet-watch-trading",
+      address: "0x2222222222222222222222222222222222222222",
+      chain: "base",
+      label: "交易钱包",
+      status: "pending_check",
+      lastCheckedAt: null,
+      reportUrl: `${appBaseUrl}/wallet/0x2222222222222222222222222222222222222222/health`,
+      summaryLabel: "待体检",
+      highRiskApprovals: null,
+      note: "V0 不要求连接钱包，可先保存地址，手动触发只读体检。",
+    },
+    {
+      id: "wallet-watch-vault",
+      address: "0x3333333333333333333333333333333333333333",
+      chain: "ethereum",
+      label: "冷钱包观察",
+      status: "watching",
+      lastCheckedAt: "2026-07-07T23:30:00.000Z",
+      reportUrl: `${appBaseUrl}/wallet/0x3333333333333333333333333333333333333333/health`,
+      summaryLabel: "需要关注",
+      highRiskApprovals: 1,
+      note: "仅做只读观察，不发起签名、不自动撤销授权。",
+    },
+  ] satisfies WalletWatchlistItem[];
+
+  return items.map((item) => ({ ...item }));
 }
 
 export function listMockRiskReviewQueue(appBaseUrl = "http://localhost:3000"): AdminRiskReviewItem[] {

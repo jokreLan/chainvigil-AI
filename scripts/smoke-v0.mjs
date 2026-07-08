@@ -60,6 +60,7 @@ async function main() {
         !html.includes("/api/v1/system/readiness") ||
         !html.includes("/api/v1/data-sources/adapters") ||
         !html.includes("/api/v1/worker/jobs") ||
+        !html.includes("/api/v1/wallet/watchlist") ||
         !html.includes("/api/v1/telegram/groups") ||
         !html.includes("/api/v1/telegram/commands")
       ) {
@@ -112,6 +113,17 @@ async function main() {
 
       if (!html.includes("报告历史") || !html.includes("Mock Vigil Token") || !html.includes("疑似貔貅盘")) {
         throw new Error(`${name} expected user token report index`);
+      }
+    }),
+  );
+
+  checks.push(
+    request("web.wallets", `${webBaseUrl}/app/wallets`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("我的钱包") || !html.includes("主钱包") || !html.includes("只读钱包 watchlist")) {
+        throw new Error(`${name} expected wallet watchlist`);
       }
     }),
   );
@@ -328,6 +340,23 @@ async function main() {
           body.ledger?.totalConfirmed !== 20
         ) {
           throw new Error(`${name} expected mock VP ledger summary`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.wallet-watchlist", `${apiBaseUrl}/api/v1/wallet/watchlist`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (body.mode !== "mock" || body.wallets?.[0]?.label !== "主钱包" || body.wallets?.[0]?.status !== "checked") {
+          throw new Error(`${name} expected mock wallet watchlist`);
+        }
+
+        if (JSON.stringify(body).includes("privateKey")) {
+          throw new Error(`${name} leaked private key field`);
         }
       },
     ),

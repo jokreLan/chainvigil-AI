@@ -282,6 +282,11 @@
 - 第 58 轮目标门禁已通过：`pnpm --filter @chainvigil/web typecheck/test/build`，Web 测试 4 个用例通过。
 - 第 58 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
 - 第 58 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web `/app/reports` 用户报告历史。
+- 开始开发 loop 第 59 轮：将 Web App `/app/wallets` 从本地静态数组推进到共享只读 mock 钱包 watchlist contract，并暴露给 API/SDK/smoke。
+- 完成开发 loop 第 59 轮：新增 `WalletWatchlistItem` 类型和 `listMockWalletWatchlist()`；API 新增 `GET /api/v1/wallet/watchlist`；SDK 新增 `getWalletWatchlist()`；Web `/app/wallets` 复用共享 watchlist；OpenAPI、Web `/api`、README 和 smoke 同步。
+- 第 59 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/risk-core` typecheck/test/build、API/SDK/Web 目标 typecheck/test/build；Risk Core 测试 6 个用例、API 测试 28 个用例、SDK 测试 19 个用例、Web 测试 4 个用例通过。
+- 第 59 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 59 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web `/app/wallets` 和 API `/api/v1/wallet/watchlist`。
 
 ## 下一步
 

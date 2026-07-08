@@ -58,6 +58,11 @@ const endpoints = [
   },
   {
     method: "GET",
+    path: "/api/v1/wallet/watchlist",
+    description: "读取只读钱包 watchlist mock，不请求签名或私钥。",
+  },
+  {
+    method: "GET",
     path: "/api/v1/points/rules",
     description: "读取哨点 VP 事件规则和积分边界说明。",
   },

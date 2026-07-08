@@ -134,6 +134,19 @@ export interface WalletHealthResponse {
   report: WalletHealthReport;
 }
 
+export interface WalletWatchlistItem {
+  id: string;
+  address: string;
+  chain: ChainId;
+  label: string;
+  status: "checked" | "pending_check" | "watching";
+  lastCheckedAt: string | null;
+  reportUrl: string;
+  summaryLabel: string;
+  highRiskApprovals: number | null;
+  note: string;
+}
+
 export type AdminRiskReviewStatus = "pending" | "needs_data" | "escalated";
 
 export interface AdminRiskReviewItem {

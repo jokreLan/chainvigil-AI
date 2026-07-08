@@ -195,6 +195,16 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/wallet/watchlist": {
+      get: {
+        summary: "Read mock wallet watchlist",
+        responses: {
+          "200": {
+            description: "Read-only wallet watchlist without signatures or private keys",
+          },
+        },
+      },
+    },
     "/api/v1/points/rules": {
       get: {
         summary: "Read Vigil Points rules",
