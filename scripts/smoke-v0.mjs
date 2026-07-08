@@ -154,8 +154,8 @@ async function main() {
       await assertStatus(name, response, 200);
       const html = await response.text();
 
-      if (!html.includes("Base Alpha Group") || !html.includes("自动检测")) {
-        throw new Error(`${name} expected Telegram group settings`);
+      if (!html.includes("Base Alpha Group") || !html.includes("自动检测") || !html.includes("/check 0x...")) {
+        throw new Error(`${name} expected Telegram group settings and command list`);
       }
     }),
   );

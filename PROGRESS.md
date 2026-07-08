@@ -241,6 +241,11 @@
 - 第 50 轮目标门禁第 2 次通过：`@chainvigil/types` typecheck/build、`@chainvigil/telegram` typecheck/test/build、API/SDK/Web 目标 typecheck/test/build；Telegram 测试 4 个用例、API 测试 21 个用例、SDK 测试 12 个用例通过。
 - 第 50 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
 - 第 50 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web `/bot` 命令清单、Web `/api` 端点清单和 API Telegram commands。
+- 开始开发 loop 第 51 轮：Admin `/telegram` 同步展示共享 Telegram 命令清单，让后台 Telegram 页面覆盖群组设置和 Bot 命令只读 contract。
+- 完成开发 loop 第 51 轮：Admin `/telegram` 复用 `listTelegramCommands()` 展示命令与说明；`pnpm smoke:v0` 的 Admin Telegram 检查新增 `/check 0x...` 命令断言。
+- 第 51 轮目标门禁已通过：`pnpm --filter @chainvigil/admin typecheck/build`，Admin 构建路由表包含 `/telegram`。
+- 第 51 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 51 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin `/telegram` 的群组设置和命令清单。
 
 ## 下一步
 

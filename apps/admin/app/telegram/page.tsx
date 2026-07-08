@@ -1,7 +1,8 @@
-import { listMockTelegramGroups } from "@chainvigil/telegram";
+import { listMockTelegramGroups, listTelegramCommands } from "@chainvigil/telegram";
 
 export default function AdminTelegramPage() {
   const groups = listMockTelegramGroups();
+  const commands = listTelegramCommands();
 
   return (
     <main className="min-h-screen px-6 py-10">
@@ -20,6 +21,18 @@ export default function AdminTelegramPage() {
           </article>
         ))}
       </div>
+      <section className="mt-10">
+        <h2 className="text-2xl font-semibold">Bot 命令清单</h2>
+        <p className="mt-2 text-sm text-slate-400">只读展示当前 Bot skeleton 支持的命令，文案来自共享 contract。</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          {commands.map((item) => (
+            <article key={item.command} className="border border-slate-700 bg-slate-950 p-4">
+              <p className="font-mono text-sm text-emerald-200">{item.command}</p>
+              <p className="mt-2 text-sm text-slate-400">{item.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
     </main>
   );
 }

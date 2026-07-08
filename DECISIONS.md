@@ -45,3 +45,4 @@
 - VP ledger V0 只提供只读 mock 摘要，明确区分 pending、confirmed、rejected；不把待确认 VP 展示为可用余额。
 - Telegram 群组设置 V0 由 `@chainvigil/telegram` 统一提供 mock contract，Bot/Admin/API/SDK 复用；真实 Telegram token 接入前不提供写设置接口。
 - Telegram 命令清单同样由 `@chainvigil/telegram` 统一导出，Web Bot 页面、API 和 SDK 不再各自复制命令文案。
+- Admin `/telegram` 页面只读展示 Telegram 群组设置和 Bot 命令清单，仍不提供 V0 写设置入口，避免没有真实权限模型时修改群配置。
