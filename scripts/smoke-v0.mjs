@@ -141,6 +141,17 @@ async function main() {
   );
 
   checks.push(
+    request("web.growth", `${webBaseUrl}/app/growth`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("推广中心") || !html.includes("KOL001") || !html.includes("有效 CA")) {
+        throw new Error(`${name} expected growth channel summary`);
+      }
+    }),
+  );
+
+  checks.push(
     request("admin.health", `${adminBaseUrl}/health`).then(async ({ name, response }) => {
       await assertStatus(name, response, 200);
       await assertHeader(name, response, "x-frame-options", "DENY");

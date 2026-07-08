@@ -292,6 +292,11 @@
 - 第 60 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/risk-core` typecheck/test/build、API/SDK/Web 目标 typecheck/test/build；Risk Core 测试 7 个用例、API 测试 29 个用例、SDK 测试 20 个用例、Web 测试 4 个用例通过。
 - 第 60 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
 - 第 60 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web `/risk-database` 和 API `/api/v1/risk/database`。
+- 开始开发 loop 第 61 轮：将 Web `/app/growth` 从本地静态步骤改为复用共享增长渠道归因 contract，并纳入 smoke。
+- 完成开发 loop 第 61 轮：Web `/app/growth` 复用 `listMockGrowthChannels()` 展示渠道、有效访问、有效 CA、待确认/已确认 VP；`pnpm smoke:v0` 新增 Web 推广中心断言。
+- 第 61 轮目标门禁已通过：`@chainvigil/points` typecheck/test/build、`@chainvigil/web` typecheck/test/build；Points 测试 4 个用例、Web 测试 4 个用例通过。
+- 第 61 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 61 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web `/app/growth` 推广中心。
 
 ## 下一步
 

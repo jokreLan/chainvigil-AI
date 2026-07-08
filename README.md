@@ -79,7 +79,7 @@ pnpm db:validate
 pnpm smoke:v0
 ```
 
-当前 smoke 覆盖 Web `/health`、Web `/check`、Web 风险数据库、Web VP ledger、Web Bot commands、Web API 清单、Web 用户报告历史、Web 钱包 watchlist、Token 报告页 JSON-LD、Admin `/health`、Admin readiness/worker jobs、Admin data sources、Admin `/audit`、Admin reports、Admin channels、Admin risk review、Admin risk labels、Admin VP ledger、Admin Telegram groups/commands、API token check、API meta、API data sources、API worker jobs、API 风险数据库、API 钱包 watchlist、API VP ledger、API growth channels、API Telegram groups/commands、API 只读审计日志、API 只读风险复核队列、API 只读风险标签目录、API 只读 Token 报告索引、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
+当前 smoke 覆盖 Web `/health`、Web `/check`、Web 风险数据库、Web VP ledger、Web Bot commands、Web API 清单、Web 用户报告历史、Web 钱包 watchlist、Web 推广中心、Token 报告页 JSON-LD、Admin `/health`、Admin readiness/worker jobs、Admin data sources、Admin `/audit`、Admin reports、Admin channels、Admin risk review、Admin risk labels、Admin VP ledger、Admin Telegram groups/commands、API token check、API meta、API data sources、API worker jobs、API 风险数据库、API 钱包 watchlist、API VP ledger、API growth channels、API Telegram groups/commands、API 只读审计日志、API 只读风险复核队列、API 只读风险标签目录、API 只读 Token 报告索引、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
 
 上线前安全边界和生产预检见 `SECURITY.md`。
 
