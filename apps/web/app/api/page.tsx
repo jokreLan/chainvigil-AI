@@ -42,6 +42,11 @@ const endpoints = [
     description: "读取系统就绪状态、缺失变量名和生产安全预检警告。",
   },
   {
+    method: "GET",
+    path: "/api/v1/data-sources/adapters",
+    description: "读取数据源 adapter mock/live 状态和缺失配置变量名，不返回密钥值。",
+  },
+  {
     method: "POST",
     path: "/api/v1/wallet/health",
     description: "提交钱包地址，返回只读钱包健康报告。",

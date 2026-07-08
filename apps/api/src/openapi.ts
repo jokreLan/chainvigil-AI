@@ -34,6 +34,16 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/data-sources/adapters": {
+      get: {
+        summary: "Read non-secret data source adapter readiness",
+        responses: {
+          "200": {
+            description: "Provider names, mock/live mode, readiness and required env names without secret values",
+          },
+        },
+      },
+    },
     "/api/v1/meta": {
       get: {
         summary: "Read non-secret service metadata",

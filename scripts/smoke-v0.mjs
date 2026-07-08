@@ -58,6 +58,7 @@ async function main() {
       if (
         !html.includes("/api/v1/points/ledger") ||
         !html.includes("/api/v1/system/readiness") ||
+        !html.includes("/api/v1/data-sources/adapters") ||
         !html.includes("/api/v1/telegram/groups") ||
         !html.includes("/api/v1/telegram/commands")
       ) {
@@ -123,6 +124,17 @@ async function main() {
 
       if (!html.includes("系统就绪状态") || !html.includes("生产安全预检")) {
         throw new Error(`${name} expected readiness page with production security check`);
+      }
+    }),
+  );
+
+  checks.push(
+    request("admin.data-sources", `${adminBaseUrl}/data-sources`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("数据源状态") || !html.includes("GoPlus") || !html.includes("InternalRiskDB")) {
+        throw new Error(`${name} expected data source adapter readiness`);
       }
     }),
   );
@@ -244,6 +256,27 @@ async function main() {
 
         if (JSON.stringify(body).includes("replace-me")) {
           throw new Error(`${name} leaked placeholder secret value`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.data-source-adapters", `${apiBaseUrl}/api/v1/data-sources/adapters`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (
+          body.mode !== "mock" ||
+          !body.adapters?.some((adapter) => adapter.name === "GoPlus" && adapter.requiredEnv === "GOPLUS_API_KEY") ||
+          !body.adapters?.some((adapter) => adapter.name === "InternalRiskDB" && adapter.ready === true)
+        ) {
+          throw new Error(`${name} expected data source adapter readiness`);
+        }
+
+        if (JSON.stringify(body).includes("postgresql://")) {
+          throw new Error(`${name} leaked connection string`);
         }
       },
     ),

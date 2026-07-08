@@ -264,6 +264,11 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
     cache: getCacheHealth(),
   }));
 
+  app.get("/api/v1/data-sources/adapters", async () => ({
+    adapters: getAdapterHealth(),
+    mode: "mock",
+  }));
+
   app.get("/api/v1/meta", async () => buildServiceMeta());
 
   app.get("/api/v1/admin/audit/logs", async () => ({

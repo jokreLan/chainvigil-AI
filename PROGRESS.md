@@ -267,6 +267,11 @@
 - 第 55 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/points` typecheck/test/build、API/SDK/Admin/Web 目标 typecheck/test/build；Points 测试 4 个用例、API 测试 25 个用例、SDK 测试 16 个用例通过。
 - 第 55 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
 - 第 55 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin `/channels` 和 API `/api/v1/growth/channels`。
+- 开始开发 loop 第 56 轮：将数据源 adapter readiness 暴露为 API/SDK 只读 contract，并纳入 smoke。
+- 完成开发 loop 第 56 轮：API 新增 `GET /api/v1/data-sources/adapters`，SDK 新增 `getDataSourceAdapters()`；Web `/api`、OpenAPI、README 和 smoke 同步；smoke 新增 Admin `/data-sources` 和 API data sources 检查。
+- 第 56 轮目标门禁已通过：API typecheck/test/build、SDK typecheck/test/build、Web/Admin typecheck/build；API 测试 26 个用例、SDK 测试 17 个用例通过。
+- 第 56 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 56 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin `/data-sources` 和 API `/api/v1/data-sources/adapters`。
 
 ## 下一步
 

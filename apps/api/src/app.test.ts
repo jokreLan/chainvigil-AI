@@ -70,6 +70,24 @@ describe("api app", () => {
     await app.close();
   });
 
+  it("returns data source adapter readiness", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/data-sources/adapters" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.adapters).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: "GoPlus", mode: "mock", ready: false }),
+        expect.objectContaining({ name: "InternalRiskDB", mode: "mock", ready: true }),
+      ]),
+    );
+    expect(JSON.stringify(body)).not.toContain("postgresql://");
+
+    await app.close();
+  });
+
   it("returns non-secret service metadata", async () => {
     const app = await buildApiApp();
     const response = await app.inject({ method: "GET", url: "/api/v1/meta" });

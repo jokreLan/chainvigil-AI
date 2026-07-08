@@ -50,3 +50,4 @@
 - 风险标签目录 V0 同样由 `@chainvigil/risk-core` 提供只读 mock contract，Admin/API/SDK 复用；标签新增、修正、停用动作等到权限和审计写入稳定后再开放。
 - Admin Token 报告索引 V0 由 `@chainvigil/risk-core` 提供只读 mock contract，Admin/API/SDK 复用；真实检索、分页和数据库查询等到 PostgreSQL 报告落库后再开放。
 - 增长渠道归因 V0 由 `@chainvigil/points` 提供只读 mock contract，Admin/API/SDK 复用；只展示有效访问、有效 CA 和 VP 结算摘要，不提供真实结算或平台币 claim。
+- 数据源 adapter readiness 通过 API/SDK 暴露时只返回 provider 名称、mock/live 状态和 required env 名称，不返回任何 API key、RPC URL 或连接串。

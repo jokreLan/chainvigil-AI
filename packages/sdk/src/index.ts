@@ -48,6 +48,18 @@ export interface TokenRiskDataResponse {
   };
 }
 
+export interface DataSourceAdapter {
+  name: string;
+  mode: "mock" | "live";
+  ready: boolean;
+  requiredEnv?: string;
+}
+
+export interface DataSourceAdaptersResponse {
+  adapters: DataSourceAdapter[];
+  mode: "mock";
+}
+
 export interface SystemReadinessResponse {
   service: string;
   readiness: {
@@ -193,6 +205,10 @@ export class ChainVigilClient {
 
   async getSystemReadiness(): Promise<SystemReadinessResponse> {
     return this.get<SystemReadinessResponse>("/api/v1/system/readiness");
+  }
+
+  async getDataSourceAdapters(): Promise<DataSourceAdaptersResponse> {
+    return this.get<DataSourceAdaptersResponse>("/api/v1/data-sources/adapters");
   }
 
   async getServiceMeta(): Promise<ServiceMeta> {

@@ -83,6 +83,24 @@ describe("ChainVigilClient", () => {
     expect(JSON.stringify(response)).not.toContain("postgresql://");
   });
 
+  it("reads data source adapter readiness", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        adapters: [
+          { name: "GoPlus", mode: "mock", ready: false, requiredEnv: "GOPLUS_API_KEY" },
+          { name: "InternalRiskDB", mode: "mock", ready: true },
+        ],
+      }),
+    });
+
+    const response = await client.getDataSourceAdapters();
+
+    expect(response.mode).toBe("mock");
+    expect(response.adapters[0]?.requiredEnv).toBe("GOPLUS_API_KEY");
+    expect(response.adapters[1]?.ready).toBe(true);
+  });
+
   it("reads service metadata", async () => {
     const client = new ChainVigilClient({
       fetcher: mockFetch({
