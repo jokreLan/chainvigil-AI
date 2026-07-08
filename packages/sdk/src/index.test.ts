@@ -188,6 +188,36 @@ describe("ChainVigilClient", () => {
     expect(response.labels[0]?.evidenceTags).toContain("honeypotDetected");
   });
 
+  it("reads mock admin token report index", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        reports: [
+          {
+            id: "report-base-1110",
+            chain: "base",
+            tokenAddress: "0x1111111111111111111111111111111111111110",
+            tokenSymbol: "MVP",
+            tokenName: "Mock Vigil Token",
+            riskLevel: "BLOCK",
+            label: "禁买",
+            score: 12,
+            summary: "疑似貔貅盘。",
+            checkedAt: "2026-07-08T00:20:00.000Z",
+            reportUrl: "http://localhost:3000/token/base/0x1111111111111111111111111111111111111110",
+            source: "web",
+          },
+        ],
+      }),
+    });
+
+    const response = await client.getAdminTokenReports();
+
+    expect(response.mode).toBe("mock");
+    expect(response.reports[0]?.label).toBe("禁买");
+    expect(response.reports[0]?.source).toBe("web");
+  });
+
   it("reads mock VP ledger summaries", async () => {
     const calls: string[] = [];
     const client = new ChainVigilClient({

@@ -4,6 +4,7 @@ import {
   buildMockWalletHealthReport,
   listMockRiskLabels,
   listMockRiskReviewQueue,
+  listMockTokenReportIndex,
 } from "./index";
 
 describe("buildMockTokenRiskReport", () => {
@@ -27,6 +28,19 @@ describe("buildMockWalletHealthReport", () => {
     expect(report.summary.highRiskApprovals).toBeGreaterThan(0);
     expect(report.approvals.length).toBeGreaterThan(0);
     expect(report.disclaimer).toContain("只读风险提示");
+  });
+});
+
+describe("listMockTokenReportIndex", () => {
+  it("returns defensive copies of token report index rows", () => {
+    const reports = listMockTokenReportIndex("https://chainvigil.example");
+    reports[0]!.label = "mutated";
+
+    expect(reports[0]).toMatchObject({
+      riskLevel: "BLOCK",
+      reportUrl: "https://chainvigil.example/token/base/0x1111111111111111111111111111111111111110",
+    });
+    expect(listMockTokenReportIndex()[0]?.label).toBe("禁买");
   });
 });
 

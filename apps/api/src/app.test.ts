@@ -141,6 +141,23 @@ describe("api app", () => {
     await app.close();
   });
 
+  it("returns mock admin token report index", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/admin/token-reports" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.reports[0]).toMatchObject({
+      tokenSymbol: "MVP",
+      riskLevel: "BLOCK",
+      label: "禁买",
+    });
+    expect(body.reports[0].reportUrl).toContain("/token/base/0x1111111111111111111111111111111111111110");
+
+    await app.close();
+  });
+
   it("returns mock Telegram group settings", async () => {
     const app = await buildApiApp();
     const response = await app.inject({ method: "GET", url: "/api/v1/telegram/groups" });

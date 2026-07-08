@@ -74,6 +74,16 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/admin/token-reports": {
+      get: {
+        summary: "Read mock admin token report index",
+        responses: {
+          "200": {
+            description: "Mock token report index for Admin skeleton",
+          },
+        },
+      },
+    },
     "/api/v1/telegram/groups": {
       get: {
         summary: "Read mock Telegram group settings",

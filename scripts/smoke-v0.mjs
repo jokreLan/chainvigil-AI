@@ -161,6 +161,17 @@ async function main() {
   );
 
   checks.push(
+    request("admin.reports", `${adminBaseUrl}/reports`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("Token 报告查询") || !html.includes("Mock Vigil Token") || !html.includes("疑似貔貅盘")) {
+        throw new Error(`${name} expected mock token report index`);
+      }
+    }),
+  );
+
+  checks.push(
     request("admin.points", `${adminBaseUrl}/points`).then(async ({ name, response }) => {
       await assertStatus(name, response, 200);
       const html = await response.text();
@@ -313,6 +324,19 @@ async function main() {
           !body.labels?.[0]?.evidenceTags?.includes("honeypotDetected")
         ) {
           throw new Error(`${name} expected mock admin risk label catalog`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.admin-token-reports", `${apiBaseUrl}/api/v1/admin/token-reports`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (body.mode !== "mock" || body.reports?.[0]?.label !== "禁买" || body.reports?.[0]?.tokenSymbol !== "MVP") {
+          throw new Error(`${name} expected mock admin token report index`);
         }
       },
     ),

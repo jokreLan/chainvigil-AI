@@ -257,6 +257,11 @@
 - 第 53 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/risk-core` typecheck/test/build、API/SDK/Admin/Web 目标 typecheck/test/build；Risk Core 测试 4 个用例、API 测试 23 个用例、SDK 测试 14 个用例通过。
 - 第 53 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
 - 第 53 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin `/risk-labels` 和 API `/api/v1/admin/risk-labels`。
+- 开始开发 loop 第 54 轮：将 Admin Token 报告查询页从本地静态样例推进到共享只读 mock 报告索引 contract。
+- 完成开发 loop 第 54 轮：新增 `AdminTokenReportIndexItem` 类型、`listMockTokenReportIndex()`、API `GET /api/v1/admin/token-reports`、SDK `getAdminTokenReports()`；Admin `/reports` 复用共享报告索引；Web `/api`、OpenAPI、README 和 smoke 同步。
+- 第 54 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/risk-core` typecheck/test/build、API/SDK/Admin/Web 目标 typecheck/test/build；Risk Core 测试 5 个用例、API 测试 24 个用例、SDK 测试 15 个用例通过。
+- 第 54 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 54 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin `/reports` 和 API `/api/v1/admin/token-reports`。
 
 ## 下一步
 

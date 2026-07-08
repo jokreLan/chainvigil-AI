@@ -1,21 +1,9 @@
 import Link from "next/link";
-
-const sampleReports = [
-  {
-    chain: "base",
-    address: "0x1111111111111111111111111111111111111110",
-    label: "禁买",
-    reason: "mock 卖出仿真失败",
-  },
-  {
-    chain: "base",
-    address: "0x2222222222222222222222222222222222222223",
-    label: "高危",
-    reason: "mock owner 权限偏高",
-  },
-];
+import { listMockTokenReportIndex } from "@chainvigil/risk-core";
 
 export default function AdminReportsPage() {
+  const reports = listMockTokenReportIndex();
+
   return (
     <main className="min-h-screen px-6 py-10">
       <nav className="flex items-center justify-between text-sm text-slate-400">
@@ -53,6 +41,7 @@ export default function AdminReportsPage() {
           <thead className="bg-slate-900 text-slate-300">
             <tr>
               <th className="p-3">Chain</th>
+              <th className="p-3">Token</th>
               <th className="p-3">Address</th>
               <th className="p-3">风险</th>
               <th className="p-3">原因</th>
@@ -60,16 +49,19 @@ export default function AdminReportsPage() {
             </tr>
           </thead>
           <tbody>
-            {sampleReports.map((report) => (
-              <tr key={report.address} className="border-t border-slate-800">
+            {reports.map((report) => (
+              <tr key={report.id} className="border-t border-slate-800">
                 <td className="p-3 text-slate-300">{report.chain}</td>
-                <td className="p-3 font-mono text-slate-300">{report.address}</td>
+                <td className="p-3 text-slate-300">
+                  {report.tokenSymbol} / {report.tokenName}
+                </td>
+                <td className="p-3 font-mono text-slate-300">{report.tokenAddress}</td>
                 <td className="p-3 text-emerald-200">{report.label}</td>
-                <td className="p-3 text-slate-400">{report.reason}</td>
+                <td className="p-3 text-slate-400">{report.summary}</td>
                 <td className="p-3">
                   <a
                     className="text-emerald-200"
-                    href={`http://localhost:3000/token/${report.chain}/${report.address}`}
+                    href={report.reportUrl}
                     target="_blank"
                     rel="noreferrer"
                   >

@@ -71,6 +71,11 @@ const endpoints = [
     path: "/api/v1/admin/risk-labels",
     description: "读取 Token、部署者、授权对象的风险标签 mock 目录。",
   },
+  {
+    method: "GET",
+    path: "/api/v1/admin/token-reports",
+    description: "读取后台 Token 报告 mock 索引，供 Admin skeleton 查询展示。",
+  },
 ];
 
 export default function ApiPage() {

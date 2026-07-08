@@ -3,6 +3,7 @@ import { isAddress } from "viem";
 import type {
   AdminRiskLabelItem,
   AdminRiskReviewItem,
+  AdminTokenReportIndexItem,
   ApprovalRiskItem,
   ChainId,
   RiskReason,
@@ -14,6 +15,55 @@ export interface MockRiskInput {
   input: string;
   chain?: ChainId | undefined;
   appBaseUrl?: string;
+}
+
+export function listMockTokenReportIndex(appBaseUrl = "http://localhost:3000"): AdminTokenReportIndexItem[] {
+  const reports = [
+    {
+      id: "report-base-1110",
+      chain: "base",
+      tokenAddress: "0x1111111111111111111111111111111111111110",
+      tokenSymbol: "MVP",
+      tokenName: "Mock Vigil Token",
+      riskLevel: "BLOCK",
+      label: "禁买",
+      score: 12,
+      summary: "疑似貔貅盘：卖出仿真失败，并伴随 LP 未锁等风险。",
+      checkedAt: "2026-07-08T00:20:00.000Z",
+      reportUrl: `${appBaseUrl}/token/base/0x1111111111111111111111111111111111111110`,
+      source: "web",
+    },
+    {
+      id: "report-base-1113",
+      chain: "base",
+      tokenAddress: "0x1111111111111111111111111111111111111113",
+      tokenSymbol: "MVP",
+      tokenName: "Mock Vigil Token",
+      riskLevel: "HIGH",
+      label: "高危",
+      score: 34,
+      summary: "高危：未发现一票否决项，但合约权限和持仓结构风险较高。",
+      checkedAt: "2026-07-08T00:35:00.000Z",
+      reportUrl: `${appBaseUrl}/token/base/0x1111111111111111111111111111111111111113`,
+      source: "telegram",
+    },
+    {
+      id: "report-base-1111",
+      chain: "base",
+      tokenAddress: "0x1111111111111111111111111111111111111111",
+      tokenSymbol: "MVP",
+      tokenName: "Mock Vigil Token",
+      riskLevel: "MEDIUM",
+      label: "谨慎",
+      score: 58,
+      summary: "谨慎：当前未发现明确致命风险，但仍需小额验证并关注权限与流动性。",
+      checkedAt: "2026-07-08T00:45:00.000Z",
+      reportUrl: `${appBaseUrl}/token/base/0x1111111111111111111111111111111111111111`,
+      source: "api",
+    },
+  ] satisfies AdminTokenReportIndexItem[];
+
+  return reports.map((report) => ({ ...report }));
 }
 
 export function listMockRiskReviewQueue(appBaseUrl = "http://localhost:3000"): AdminRiskReviewItem[] {

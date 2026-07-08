@@ -75,6 +75,21 @@ export interface TokenCheckResponse {
   report: TokenRiskReport;
 }
 
+export interface AdminTokenReportIndexItem {
+  id: string;
+  chain: ChainId;
+  tokenAddress: string;
+  tokenSymbol: string;
+  tokenName: string;
+  riskLevel: RiskLevel;
+  label: string;
+  score: number | null;
+  summary: string;
+  checkedAt: string;
+  reportUrl: string;
+  source: "web" | "telegram" | "api" | "admin";
+}
+
 export interface WalletHealthSummary {
   score: number;
   label: string;

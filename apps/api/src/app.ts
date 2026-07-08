@@ -16,6 +16,7 @@ import {
   buildMockWalletHealthReport,
   listMockRiskLabels,
   listMockRiskReviewQueue,
+  listMockTokenReportIndex,
 } from "@chainvigil/risk-core";
 import { listMockTelegramGroups, listTelegramCommands } from "@chainvigil/telegram";
 import type {
@@ -276,6 +277,11 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
   app.get("/api/v1/admin/risk-labels", async () => ({
     labels: listMockRiskLabels(),
+    mode: "mock",
+  }));
+
+  app.get("/api/v1/admin/token-reports", async () => ({
+    reports: listMockTokenReportIndex(readEnv("APP_BASE_URL", "http://localhost:3000")),
     mode: "mock",
   }));
 
