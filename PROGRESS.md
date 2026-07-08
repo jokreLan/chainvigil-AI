@@ -252,6 +252,11 @@
 - 第 52 轮目标门禁第 2 次通过：`@chainvigil/types` typecheck/build、`@chainvigil/risk-core` typecheck/test/build、API/SDK/Admin/Web 目标 typecheck/test/build；Risk Core 测试 3 个用例、API 测试 22 个用例、SDK 测试 13 个用例通过。
 - 第 52 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
 - 第 52 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin `/risk-review` 和 API `/api/v1/admin/risk-review/queue`。
+- 开始开发 loop 第 53 轮：将 Admin 风险标签管理页从静态说明推进到只读 mock 风险标签目录 contract。
+- 完成开发 loop 第 53 轮：新增 `AdminRiskLabelItem` 类型、`listMockRiskLabels()`、API `GET /api/v1/admin/risk-labels`、SDK `getAdminRiskLabels()`；Admin `/risk-labels` 展示 token/deployer/spender 标签；Web `/api`、OpenAPI、README 和 smoke 同步。
+- 第 53 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/risk-core` typecheck/test/build、API/SDK/Admin/Web 目标 typecheck/test/build；Risk Core 测试 4 个用例、API 测试 23 个用例、SDK 测试 14 个用例通过。
+- 第 53 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 53 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin `/risk-labels` 和 API `/api/v1/admin/risk-labels`。
 
 ## 下一步
 

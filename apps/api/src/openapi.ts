@@ -64,6 +64,16 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/admin/risk-labels": {
+      get: {
+        summary: "Read mock admin risk label catalog",
+        responses: {
+          "200": {
+            description: "Mock token, deployer and spender risk labels for Admin skeleton",
+          },
+        },
+      },
+    },
     "/api/v1/telegram/groups": {
       get: {
         summary: "Read mock Telegram group settings",

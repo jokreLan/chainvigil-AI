@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { buildMockTokenRiskReport, buildMockWalletHealthReport, listMockRiskReviewQueue } from "./index";
+import {
+  buildMockTokenRiskReport,
+  buildMockWalletHealthReport,
+  listMockRiskLabels,
+  listMockRiskReviewQueue,
+} from "./index";
 
 describe("buildMockTokenRiskReport", () => {
   it("returns a human-readable mock report", () => {
@@ -36,5 +41,19 @@ describe("listMockRiskReviewQueue", () => {
       reportUrl: "https://chainvigil.example/token/base/0x1111111111111111111111111111111111111110",
     });
     expect(listMockRiskReviewQueue()[0]?.signals).not.toContain("mutated");
+  });
+});
+
+describe("listMockRiskLabels", () => {
+  it("returns defensive copies of risk label catalog items", () => {
+    const labels = listMockRiskLabels();
+    labels[0]!.evidenceTags.push("mutated");
+
+    expect(labels[0]).toMatchObject({
+      targetType: "token",
+      riskLevel: "BLOCK",
+      status: "active",
+    });
+    expect(listMockRiskLabels()[0]?.evidenceTags).not.toContain("mutated");
   });
 });

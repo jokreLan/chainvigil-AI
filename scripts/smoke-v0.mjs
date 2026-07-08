@@ -150,6 +150,17 @@ async function main() {
   );
 
   checks.push(
+    request("admin.risk-labels", `${adminBaseUrl}/risk-labels`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("风险标签管理") || !html.includes("疑似貔貅盘") || !html.includes("honeypotDetected")) {
+        throw new Error(`${name} expected mock risk label catalog`);
+      }
+    }),
+  );
+
+  checks.push(
     request("admin.points", `${adminBaseUrl}/points`).then(async ({ name, response }) => {
       await assertStatus(name, response, 200);
       const html = await response.text();
@@ -285,6 +296,23 @@ async function main() {
           !body.items?.[0]?.signals?.includes("honeypotDetected")
         ) {
           throw new Error(`${name} expected mock admin risk review queue`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.admin-risk-labels", `${apiBaseUrl}/api/v1/admin/risk-labels`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (
+          body.mode !== "mock" ||
+          body.labels?.[0]?.targetType !== "token" ||
+          !body.labels?.[0]?.evidenceTags?.includes("honeypotDetected")
+        ) {
+          throw new Error(`${name} expected mock admin risk label catalog`);
         }
       },
     ),

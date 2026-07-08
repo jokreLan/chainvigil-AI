@@ -158,6 +158,36 @@ describe("ChainVigilClient", () => {
     expect(response.items[0]?.signals).toContain("honeypotDetected");
   });
 
+  it("reads mock admin risk labels", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        labels: [
+          {
+            id: "risk-label-token-1110",
+            targetType: "token",
+            chain: "base",
+            target: "0x1111111111111111111111111111111111111110",
+            label: "疑似貔貅盘",
+            riskLevel: "BLOCK",
+            status: "active",
+            source: "system",
+            confidence: 92,
+            reason: "卖出仿真失败。",
+            evidenceTags: ["honeypotDetected"],
+            createdAt: "2026-07-08T01:00:00.000Z",
+          },
+        ],
+      }),
+    });
+
+    const response = await client.getAdminRiskLabels();
+
+    expect(response.mode).toBe("mock");
+    expect(response.labels[0]?.label).toBe("疑似貔貅盘");
+    expect(response.labels[0]?.evidenceTags).toContain("honeypotDetected");
+  });
+
   it("reads mock VP ledger summaries", async () => {
     const calls: string[] = [];
     const client = new ChainVigilClient({

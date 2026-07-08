@@ -124,6 +124,23 @@ describe("api app", () => {
     await app.close();
   });
 
+  it("returns mock admin risk labels", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/admin/risk-labels" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.labels[0]).toMatchObject({
+      targetType: "token",
+      riskLevel: "BLOCK",
+      status: "active",
+    });
+    expect(body.labels[0].evidenceTags).toContain("honeypotDetected");
+
+    await app.close();
+  });
+
   it("returns mock Telegram group settings", async () => {
     const app = await buildApiApp();
     const response = await app.inject({ method: "GET", url: "/api/v1/telegram/groups" });

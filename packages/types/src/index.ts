@@ -137,6 +137,25 @@ export interface AdminRiskReviewItem {
   createdAt: string;
 }
 
+export type AdminRiskLabelTargetType = "token" | "deployer" | "spender" | "domain";
+export type AdminRiskLabelStatus = "active" | "pending_review" | "retired";
+export type AdminRiskLabelSource = "system" | "admin_seed" | "user_report";
+
+export interface AdminRiskLabelItem {
+  id: string;
+  targetType: AdminRiskLabelTargetType;
+  chain: ChainId | null;
+  target: string;
+  label: string;
+  riskLevel: RiskLevel;
+  status: AdminRiskLabelStatus;
+  source: AdminRiskLabelSource;
+  confidence: number;
+  reason: string;
+  evidenceTags: string[];
+  createdAt: string;
+}
+
 export type PointEventType =
   | "FIRST_CA_CHECK"
   | "DAILY_FIRST_CA_CHECK"

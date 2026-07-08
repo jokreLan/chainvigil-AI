@@ -66,6 +66,11 @@ const endpoints = [
     path: "/api/v1/admin/risk-review/queue",
     description: "读取高危 CA 人工复核 mock 队列，供 Admin skeleton 展示。",
   },
+  {
+    method: "GET",
+    path: "/api/v1/admin/risk-labels",
+    description: "读取 Token、部署者、授权对象的风险标签 mock 目录。",
+  },
 ];
 
 export default function ApiPage() {

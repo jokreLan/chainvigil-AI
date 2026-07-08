@@ -11,7 +11,7 @@ ChainVigil AI 是一个 Web3 交易安全工具。V0 聚焦免费 CA 安检、To
 - Web DApp 首页与 `/check`
 - `/token/[chain]/[address]` mock 风险报告页
 - 钱包体检入口 `/wallet-check` 与 `/wallet/[address]/health` mock 报告页
-- Fastify API：Token、Wallet、VP rules/ledger、Telegram groups、Referral、readiness、meta、只读 Admin audit/risk review mock 与 OpenAPI skeleton
+- Fastify API：Token、Wallet、VP rules/ledger、Telegram groups、Referral、readiness、meta、只读 Admin audit/risk review/risk labels mock 与 OpenAPI skeleton
 - Telegram Bot skeleton：`/telegram/webhook` 可 mock 调用
 - Admin skeleton
 - Prisma schema、VP 积分事件模型与 Admin 审计事件 contract
@@ -53,6 +53,7 @@ curl http://localhost:4000/api/v1/telegram/groups
 curl http://localhost:4000/api/v1/telegram/commands
 curl http://localhost:4000/api/v1/admin/audit/logs
 curl http://localhost:4000/api/v1/admin/risk-review/queue
+curl http://localhost:4000/api/v1/admin/risk-labels
 curl http://localhost:3000/token/base/0x1111111111111111111111111111111111111110
 ```
 
@@ -72,7 +73,7 @@ pnpm db:validate
 pnpm smoke:v0
 ```
 
-当前 smoke 覆盖 Web `/health`、Web `/check`、Web VP ledger、Web Bot commands、Web API 清单、Token 报告页 JSON-LD、Admin `/health`、Admin readiness、Admin `/audit`、Admin risk review、Admin VP ledger、Admin Telegram groups/commands、API token check、API meta、API VP ledger、API Telegram groups/commands、API 只读审计日志、API 只读风险复核队列、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
+当前 smoke 覆盖 Web `/health`、Web `/check`、Web VP ledger、Web Bot commands、Web API 清单、Token 报告页 JSON-LD、Admin `/health`、Admin readiness、Admin `/audit`、Admin risk review、Admin risk labels、Admin VP ledger、Admin Telegram groups/commands、API token check、API meta、API VP ledger、API Telegram groups/commands、API 只读审计日志、API 只读风险复核队列、API 只读风险标签目录、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
 
 上线前安全边界和生产预检见 `SECURITY.md`。
 
@@ -122,6 +123,7 @@ const telegramGroups = await client.getTelegramGroups();
 const telegramCommands = await client.getTelegramCommands();
 const auditLogs = await client.getAdminAuditLogs();
 const riskReviewQueue = await client.getAdminRiskReviewQueue();
+const riskLabels = await client.getAdminRiskLabels();
 ```
 
 SDK 在 API 返回结构化错误时会抛出 `ChainVigilApiError`，其中包含 `status`、`code`、`field` 和人话 `message`。

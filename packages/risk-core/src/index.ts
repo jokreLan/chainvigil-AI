@@ -1,6 +1,7 @@
 import { parseTokenInput } from "@chainvigil/chain";
 import { isAddress } from "viem";
 import type {
+  AdminRiskLabelItem,
   AdminRiskReviewItem,
   ApprovalRiskItem,
   ChainId,
@@ -67,6 +68,58 @@ export function listMockRiskReviewQueue(appBaseUrl = "http://localhost:3000"): A
   return items.map((item) => ({
     ...item,
     signals: [...item.signals],
+  }));
+}
+
+export function listMockRiskLabels(): AdminRiskLabelItem[] {
+  const labels = [
+    {
+      id: "risk-label-token-1110",
+      targetType: "token",
+      chain: "base",
+      target: "0x1111111111111111111111111111111111111110",
+      label: "疑似貔貅盘",
+      riskLevel: "BLOCK",
+      status: "active",
+      source: "system",
+      confidence: 92,
+      reason: "卖出仿真失败，且 LP 锁定状态未确认。",
+      evidenceTags: ["honeypotDetected", "canSell=false", "lpLocked=false"],
+      createdAt: "2026-07-08T01:00:00.000Z",
+    },
+    {
+      id: "risk-label-deployer-0001",
+      targetType: "deployer",
+      chain: "base",
+      target: "0x9999999999999999999999999999999999999999",
+      label: "高危部署者",
+      riskLevel: "HIGH",
+      status: "pending_review",
+      source: "user_report",
+      confidence: 76,
+      reason: "多个用户举报该部署者地址关联仿盘，等待真实链上聚类补证。",
+      evidenceTags: ["userReport", "clusterPending", "repeatedDeployments"],
+      createdAt: "2026-07-08T01:15:00.000Z",
+    },
+    {
+      id: "risk-label-spender-permit2",
+      targetType: "spender",
+      chain: "ethereum",
+      target: "0x000000000022d473030f116ddee9f6b43ac78ba3",
+      label: "常见授权合约",
+      riskLevel: "LOW",
+      status: "active",
+      source: "admin_seed",
+      confidence: 88,
+      reason: "常见 Permit2 授权合约，风险来自授权额度和使用场景，不直接标记为恶意。",
+      evidenceTags: ["permit2", "knownSpender", "reviewed"],
+      createdAt: "2026-07-08T01:30:00.000Z",
+    },
+  ] satisfies AdminRiskLabelItem[];
+
+  return labels.map((label) => ({
+    ...label,
+    evidenceTags: [...label.evidenceTags],
   }));
 }
 
