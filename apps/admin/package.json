@@ -19,6 +19,7 @@
     "@chainvigil/points": "workspace:*",
     "@chainvigil/risk-core": "workspace:*",
     "@chainvigil/telegram": "workspace:*",
+    "@chainvigil/worker": "workspace:*",
     "next": "^16.2.10",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

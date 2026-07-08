@@ -14,6 +14,7 @@ import type {
   TokenCheckResponse,
   WalletHealthRequest,
   WalletHealthResponse,
+  WorkerHealth,
 } from "@chainvigil/types";
 
 export interface ChainVigilClientOptions {
@@ -57,6 +58,11 @@ export interface DataSourceAdapter {
 
 export interface DataSourceAdaptersResponse {
   adapters: DataSourceAdapter[];
+  mode: "mock";
+}
+
+export interface WorkerJobsResponse {
+  worker: WorkerHealth;
   mode: "mock";
 }
 
@@ -209,6 +215,10 @@ export class ChainVigilClient {
 
   async getDataSourceAdapters(): Promise<DataSourceAdaptersResponse> {
     return this.get<DataSourceAdaptersResponse>("/api/v1/data-sources/adapters");
+  }
+
+  async getWorkerJobs(): Promise<WorkerJobsResponse> {
+    return this.get<WorkerJobsResponse>("/api/v1/worker/jobs");
   }
 
   async getServiceMeta(): Promise<ServiceMeta> {

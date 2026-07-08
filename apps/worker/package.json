@@ -3,6 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./src/jobs.ts"
+  },
+  "types": "./src/jobs.ts",
   "scripts": {
     "dev": "tsx watch src/worker.ts",
     "build": "tsc -p tsconfig.json",
@@ -13,7 +17,8 @@
   },
   "dependencies": {
     "@chainvigil/cache": "workspace:*",
-    "@chainvigil/config": "workspace:*"
+    "@chainvigil/config": "workspace:*",
+    "@chainvigil/types": "workspace:*"
   },
   "devDependencies": {
     "tsx": "^4.20.3",

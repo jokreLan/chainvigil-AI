@@ -49,6 +49,7 @@ curl http://localhost:4000/health
 curl http://localhost:4001/health
 curl http://localhost:4000/api/v1/meta
 curl http://localhost:4000/api/v1/data-sources/adapters
+curl http://localhost:4000/api/v1/worker/jobs
 curl http://localhost:4000/api/v1/points/ledger
 curl http://localhost:4000/api/v1/growth/channels
 curl http://localhost:4000/api/v1/telegram/groups
@@ -76,7 +77,7 @@ pnpm db:validate
 pnpm smoke:v0
 ```
 
-当前 smoke 覆盖 Web `/health`、Web `/check`、Web VP ledger、Web Bot commands、Web API 清单、Token 报告页 JSON-LD、Admin `/health`、Admin readiness、Admin data sources、Admin `/audit`、Admin reports、Admin channels、Admin risk review、Admin risk labels、Admin VP ledger、Admin Telegram groups/commands、API token check、API meta、API data sources、API VP ledger、API growth channels、API Telegram groups/commands、API 只读审计日志、API 只读风险复核队列、API 只读风险标签目录、API 只读 Token 报告索引、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
+当前 smoke 覆盖 Web `/health`、Web `/check`、Web VP ledger、Web Bot commands、Web API 清单、Token 报告页 JSON-LD、Admin `/health`、Admin readiness/worker jobs、Admin data sources、Admin `/audit`、Admin reports、Admin channels、Admin risk review、Admin risk labels、Admin VP ledger、Admin Telegram groups/commands、API token check、API meta、API data sources、API worker jobs、API VP ledger、API growth channels、API Telegram groups/commands、API 只读审计日志、API 只读风险复核队列、API 只读风险标签目录、API 只读 Token 报告索引、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
 
 上线前安全边界和生产预检见 `SECURITY.md`。
 
@@ -122,6 +123,7 @@ const result = await client.checkToken({
 });
 const meta = await client.getServiceMeta();
 const dataSources = await client.getDataSourceAdapters();
+const workerJobs = await client.getWorkerJobs();
 const ledger = await client.getPointLedger();
 const growthChannels = await client.getGrowthChannels();
 const telegramGroups = await client.getTelegramGroups();

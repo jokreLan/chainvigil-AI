@@ -88,6 +88,28 @@ describe("api app", () => {
     await app.close();
   });
 
+  it("returns worker job contract", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/worker/jobs" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.worker).toMatchObject({
+      service: "chainvigil-worker",
+      ok: true,
+    });
+    expect(body.worker.jobs).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: "risk.refresh", enabled: false, mode: "mock" }),
+        expect.objectContaining({ name: "points.settle", enabled: false, mode: "mock" }),
+      ]),
+    );
+    expect(JSON.stringify(body)).not.toContain("postgresql://");
+
+    await app.close();
+  });
+
   it("returns non-secret service metadata", async () => {
     const app = await buildApiApp();
     const response = await app.inject({ method: "GET", url: "/api/v1/meta" });

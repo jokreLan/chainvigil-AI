@@ -267,6 +267,29 @@ export interface ServiceMeta {
   generatedAt: string;
 }
 
+export type WorkerJobName = "risk.refresh" | "points.settle" | "report.snapshot";
+
+export interface WorkerJobDefinition {
+  name: WorkerJobName;
+  cadenceSeconds: number;
+  enabled: boolean;
+  mode: "mock";
+  description: string;
+}
+
+export interface WorkerHealth {
+  ok: boolean;
+  service: "chainvigil-worker";
+  mode: "mock" | "production";
+  cache: {
+    name: string;
+    mode: "mock" | "live" | "disabled";
+    ready: boolean;
+    requiredEnv?: string;
+  };
+  jobs: WorkerJobDefinition[];
+}
+
 export interface TelegramGroupSettings {
   id: string;
   telegramChatId: string;

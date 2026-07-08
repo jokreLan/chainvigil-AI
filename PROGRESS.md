@@ -272,6 +272,11 @@
 - 第 56 轮目标门禁已通过：API typecheck/test/build、SDK typecheck/test/build、Web/Admin typecheck/build；API 测试 26 个用例、SDK 测试 17 个用例通过。
 - 第 56 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
 - 第 56 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin `/data-sources` 和 API `/api/v1/data-sources/adapters`。
+- 开始开发 loop 第 57 轮：将 Worker job contract 暴露给 API/Admin/SDK，并纳入 smoke。
+- 完成开发 loop 第 57 轮：`@chainvigil/worker` 增加 package export 并复用共享 `WorkerHealth`/`WorkerJobDefinition` 类型；API 新增 `GET /api/v1/worker/jobs`；SDK 新增 `getWorkerJobs()`；Admin readiness 展示 Worker 任务；Web `/api`、OpenAPI、README 和 smoke 同步。
+- 第 57 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/worker` typecheck/test/build、API/SDK/Admin/Web 目标 typecheck/test/build；Worker 测试 2 个用例、API 测试 27 个用例、SDK 测试 18 个用例通过。
+- 第 57 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 57 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin `/system-readiness` Worker 任务和 API `/api/v1/worker/jobs`。
 
 ## 下一步
 

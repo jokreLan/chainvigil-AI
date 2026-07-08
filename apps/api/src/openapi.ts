@@ -44,6 +44,16 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/worker/jobs": {
+      get: {
+        summary: "Read mock worker job contract and health",
+        responses: {
+          "200": {
+            description: "Worker service health, cache mode and disabled V0 background job contracts",
+          },
+        },
+      },
+    },
     "/api/v1/meta": {
       get: {
         summary: "Read non-secret service metadata",

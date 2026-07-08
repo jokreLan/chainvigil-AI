@@ -59,6 +59,7 @@ async function main() {
         !html.includes("/api/v1/points/ledger") ||
         !html.includes("/api/v1/system/readiness") ||
         !html.includes("/api/v1/data-sources/adapters") ||
+        !html.includes("/api/v1/worker/jobs") ||
         !html.includes("/api/v1/telegram/groups") ||
         !html.includes("/api/v1/telegram/commands")
       ) {
@@ -122,7 +123,7 @@ async function main() {
       await assertHeader(name, response, "x-frame-options", "DENY");
       const html = await response.text();
 
-      if (!html.includes("系统就绪状态") || !html.includes("生产安全预检")) {
+      if (!html.includes("系统就绪状态") || !html.includes("生产安全预检") || !html.includes("risk.refresh")) {
         throw new Error(`${name} expected readiness page with production security check`);
       }
     }),
@@ -273,6 +274,27 @@ async function main() {
           !body.adapters?.some((adapter) => adapter.name === "InternalRiskDB" && adapter.ready === true)
         ) {
           throw new Error(`${name} expected data source adapter readiness`);
+        }
+
+        if (JSON.stringify(body).includes("postgresql://")) {
+          throw new Error(`${name} leaked connection string`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.worker-jobs", `${apiBaseUrl}/api/v1/worker/jobs`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (
+          body.mode !== "mock" ||
+          body.worker?.service !== "chainvigil-worker" ||
+          !body.worker?.jobs?.some((job) => job.name === "risk.refresh" && job.enabled === false)
+        ) {
+          throw new Error(`${name} expected worker job contract`);
         }
 
         if (JSON.stringify(body).includes("postgresql://")) {

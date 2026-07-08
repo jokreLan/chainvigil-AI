@@ -101,6 +101,35 @@ describe("ChainVigilClient", () => {
     expect(response.adapters[1]?.ready).toBe(true);
   });
 
+  it("reads worker job contract", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        worker: {
+          ok: true,
+          service: "chainvigil-worker",
+          mode: "mock",
+          cache: { name: "memory", mode: "mock", ready: true },
+          jobs: [
+            {
+              name: "risk.refresh",
+              cadenceSeconds: 300,
+              enabled: false,
+              mode: "mock",
+              description: "Refresh token risk snapshots.",
+            },
+          ],
+        },
+      }),
+    });
+
+    const response = await client.getWorkerJobs();
+
+    expect(response.mode).toBe("mock");
+    expect(response.worker.service).toBe("chainvigil-worker");
+    expect(response.worker.jobs[0]?.enabled).toBe(false);
+  });
+
   it("reads service metadata", async () => {
     const client = new ChainVigilClient({
       fetcher: mockFetch({

@@ -1,15 +1,6 @@
 import { getCacheHealth } from "@chainvigil/cache";
 import { getSystemReadiness } from "@chainvigil/config";
-
-export type WorkerJobName = "risk.refresh" | "points.settle" | "report.snapshot";
-
-export interface WorkerJobDefinition {
-  name: WorkerJobName;
-  cadenceSeconds: number;
-  enabled: boolean;
-  mode: "mock";
-  description: string;
-}
+import type { WorkerHealth, WorkerJobDefinition } from "@chainvigil/types";
 
 export function listWorkerJobs(): WorkerJobDefinition[] {
   return [
@@ -37,7 +28,7 @@ export function listWorkerJobs(): WorkerJobDefinition[] {
   ];
 }
 
-export function getWorkerHealth() {
+export function getWorkerHealth(): WorkerHealth {
   const readiness = getSystemReadiness();
   const cache = getCacheHealth();
 

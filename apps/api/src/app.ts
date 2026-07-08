@@ -5,6 +5,7 @@ import { parseTokenInput, supportedChains } from "@chainvigil/chain";
 import { getCacheHealth } from "@chainvigil/cache";
 import { getSystemReadiness, readEnv } from "@chainvigil/config";
 import { collectTokenRiskData, getAdapterHealth } from "@chainvigil/data-adapters";
+import { getWorkerHealth } from "@chainvigil/worker";
 import {
   createPendingPointEvent,
   getMockPointLedgerSummary,
@@ -266,6 +267,11 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
   app.get("/api/v1/data-sources/adapters", async () => ({
     adapters: getAdapterHealth(),
+    mode: "mock",
+  }));
+
+  app.get("/api/v1/worker/jobs", async () => ({
+    worker: getWorkerHealth(),
     mode: "mock",
   }));
 

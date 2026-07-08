@@ -1,6 +1,7 @@
 import { getCacheHealth } from "@chainvigil/cache";
 import { getSystemReadiness } from "@chainvigil/config";
 import { getAdapterHealth } from "@chainvigil/data-adapters";
+import { getWorkerHealth } from "@chainvigil/worker";
 
 const labelByMode = {
   mock: "V0 mock",
@@ -11,7 +12,9 @@ export default function SystemReadinessPage() {
   const readiness = getSystemReadiness();
   const adapters = getAdapterHealth();
   const cache = getCacheHealth();
+  const worker = getWorkerHealth();
   const rows = [readiness.current, readiness.mock, readiness.production];
+  const enabledWorkerJobs = worker.jobs.filter((job) => job.enabled).length;
 
   return (
     <main className="min-h-screen px-6 py-10">
@@ -68,7 +71,34 @@ export default function SystemReadinessPage() {
             <dt className="text-slate-500">Live-ready</dt>
             <dd className="mt-1 font-semibold">{adapters.filter((adapter) => adapter.ready).length}</dd>
           </div>
+          <div className="border border-slate-700 p-3">
+            <dt className="text-slate-500">Worker jobs</dt>
+            <dd className="mt-1 font-semibold">
+              {enabledWorkerJobs} / {worker.jobs.length} enabled
+            </dd>
+          </div>
         </dl>
+      </section>
+
+      <section className="mt-8 border border-slate-700 bg-slate-900 p-5">
+        <h2 className="text-xl font-semibold">Worker 任务 contract</h2>
+        <p className="mt-3 text-sm text-slate-400">
+          V0 只声明后台任务，不启用真实队列消费；后续接 Redis-backed queue 时复用 job 名称。
+        </p>
+        <div className="mt-5 grid gap-3 lg:grid-cols-3">
+          {worker.jobs.map((job) => (
+            <article key={job.name} className="border border-slate-700 p-4">
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="font-semibold text-slate-100">{job.name}</h3>
+                <span className="border border-amber-400/40 px-2 py-1 text-xs text-amber-200">
+                  {job.enabled ? "enabled" : "mock"}
+                </span>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-slate-400">{job.description}</p>
+              <p className="mt-3 text-sm text-slate-500">Cadence {job.cadenceSeconds}s</p>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="mt-8 border border-slate-700 bg-slate-900 p-5">

@@ -47,6 +47,11 @@ const endpoints = [
     description: "读取数据源 adapter mock/live 状态和缺失配置变量名，不返回密钥值。",
   },
   {
+    method: "GET",
+    path: "/api/v1/worker/jobs",
+    description: "读取 Worker 健康状态和 V0 后台任务 contract。",
+  },
+  {
     method: "POST",
     path: "/api/v1/wallet/health",
     description: "提交钱包地址，返回只读钱包健康报告。",
