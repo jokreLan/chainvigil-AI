@@ -172,6 +172,17 @@ async function main() {
   );
 
   checks.push(
+    request("admin.channels", `${adminBaseUrl}/channels`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("KOL 渠道管理") || !html.includes("KOL001") || !html.includes("有效 CA")) {
+        throw new Error(`${name} expected mock growth channel summary`);
+      }
+    }),
+  );
+
+  checks.push(
     request("admin.points", `${adminBaseUrl}/points`).then(async ({ name, response }) => {
       await assertStatus(name, response, 200);
       const html = await response.text();
@@ -251,6 +262,19 @@ async function main() {
           body.ledger?.totalConfirmed !== 20
         ) {
           throw new Error(`${name} expected mock VP ledger summary`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.growth-channels", `${apiBaseUrl}/api/v1/growth/channels`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (body.mode !== "mock" || body.channels?.[0]?.referralCode !== "KOL001" || body.channels?.[0]?.effectiveCaChecks !== 96) {
+          throw new Error(`${name} expected mock growth channels`);
         }
       },
     ),

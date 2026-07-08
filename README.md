@@ -11,7 +11,7 @@ ChainVigil AI 是一个 Web3 交易安全工具。V0 聚焦免费 CA 安检、To
 - Web DApp 首页与 `/check`
 - `/token/[chain]/[address]` mock 风险报告页
 - 钱包体检入口 `/wallet-check` 与 `/wallet/[address]/health` mock 报告页
-- Fastify API：Token、Wallet、VP rules/ledger、Telegram groups、Referral、readiness、meta、只读 Admin audit/risk review/risk labels/token reports mock 与 OpenAPI skeleton
+- Fastify API：Token、Wallet、VP rules/ledger、growth channels、Telegram groups、Referral、readiness、meta、只读 Admin audit/risk review/risk labels/token reports mock 与 OpenAPI skeleton
 - Telegram Bot skeleton：`/telegram/webhook` 可 mock 调用
 - Admin skeleton
 - Prisma schema、VP 积分事件模型与 Admin 审计事件 contract
@@ -49,6 +49,7 @@ curl http://localhost:4000/health
 curl http://localhost:4001/health
 curl http://localhost:4000/api/v1/meta
 curl http://localhost:4000/api/v1/points/ledger
+curl http://localhost:4000/api/v1/growth/channels
 curl http://localhost:4000/api/v1/telegram/groups
 curl http://localhost:4000/api/v1/telegram/commands
 curl http://localhost:4000/api/v1/admin/audit/logs
@@ -74,7 +75,7 @@ pnpm db:validate
 pnpm smoke:v0
 ```
 
-当前 smoke 覆盖 Web `/health`、Web `/check`、Web VP ledger、Web Bot commands、Web API 清单、Token 报告页 JSON-LD、Admin `/health`、Admin readiness、Admin `/audit`、Admin reports、Admin risk review、Admin risk labels、Admin VP ledger、Admin Telegram groups/commands、API token check、API meta、API VP ledger、API Telegram groups/commands、API 只读审计日志、API 只读风险复核队列、API 只读风险标签目录、API 只读 Token 报告索引、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
+当前 smoke 覆盖 Web `/health`、Web `/check`、Web VP ledger、Web Bot commands、Web API 清单、Token 报告页 JSON-LD、Admin `/health`、Admin readiness、Admin `/audit`、Admin reports、Admin channels、Admin risk review、Admin risk labels、Admin VP ledger、Admin Telegram groups/commands、API token check、API meta、API VP ledger、API growth channels、API Telegram groups/commands、API 只读审计日志、API 只读风险复核队列、API 只读风险标签目录、API 只读 Token 报告索引、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
 
 上线前安全边界和生产预检见 `SECURITY.md`。
 
@@ -120,6 +121,7 @@ const result = await client.checkToken({
 });
 const meta = await client.getServiceMeta();
 const ledger = await client.getPointLedger();
+const growthChannels = await client.getGrowthChannels();
 const telegramGroups = await client.getTelegramGroups();
 const telegramCommands = await client.getTelegramCommands();
 const auditLogs = await client.getAdminAuditLogs();

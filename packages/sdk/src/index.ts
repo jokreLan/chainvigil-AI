@@ -3,6 +3,7 @@ import type {
   AdminRiskLabelItem,
   AdminRiskReviewItem,
   AdminTokenReportIndexItem,
+  GrowthChannel,
   PointEvent,
   PointLedgerSummary,
   PointEventType,
@@ -112,6 +113,11 @@ export interface PointLedgerResponse {
   mode: "mock";
 }
 
+export interface GrowthChannelsResponse {
+  channels: GrowthChannel[];
+  mode: "mock";
+}
+
 export interface TelegramGroupsResponse {
   groups: TelegramGroupSettings[];
   mode: "mock";
@@ -179,6 +185,10 @@ export class ChainVigilClient {
     const query = subjectId ? `?subjectId=${encodeURIComponent(subjectId)}` : "";
 
     return this.get<PointLedgerResponse>(`/api/v1/points/ledger${query}`);
+  }
+
+  async getGrowthChannels(): Promise<GrowthChannelsResponse> {
+    return this.get<GrowthChannelsResponse>("/api/v1/growth/channels");
   }
 
   async getSystemReadiness(): Promise<SystemReadinessResponse> {

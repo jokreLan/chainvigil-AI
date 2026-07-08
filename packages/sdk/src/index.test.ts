@@ -248,6 +248,38 @@ describe("ChainVigilClient", () => {
     expect(response.ledger.shortName).toBe("VP");
   });
 
+  it("reads mock growth channels", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        channels: [
+          {
+            id: "channel-kol-001",
+            type: "kol",
+            name: "KOL-001",
+            status: "active",
+            owner: "growth-local",
+            referralCode: "KOL001",
+            visits: 1280,
+            effectiveVisits: 318,
+            effectiveCaChecks: 96,
+            pendingVp: 420,
+            confirmedVp: 860,
+            conversionRate: 0.25,
+            note: "按有效访问和有效 CA 检测结算。",
+            updatedAt: "2026-07-08T02:00:00.000Z",
+          },
+        ],
+      }),
+    });
+
+    const response = await client.getGrowthChannels();
+
+    expect(response.mode).toBe("mock");
+    expect(response.channels[0]?.referralCode).toBe("KOL001");
+    expect(response.channels[0]?.effectiveCaChecks).toBe(96);
+  });
+
   it("reads mock Telegram group settings", async () => {
     const client = new ChainVigilClient({
       fetcher: mockFetch({

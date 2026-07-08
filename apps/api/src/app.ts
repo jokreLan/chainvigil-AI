@@ -9,6 +9,7 @@ import {
   createPendingPointEvent,
   getMockPointLedgerSummary,
   getPointProgram,
+  listMockGrowthChannels,
   listPointRules,
 } from "@chainvigil/points";
 import {
@@ -379,6 +380,11 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
   app.get<{ Querystring: { subjectId?: string } }>("/api/v1/points/ledger", async (request) => ({
     ledger: getMockPointLedgerSummary(request.query.subjectId?.trim() || "visitor:mock"),
+    mode: "mock",
+  }));
+
+  app.get("/api/v1/growth/channels", async () => ({
+    channels: listMockGrowthChannels(),
     mode: "mock",
   }));
 

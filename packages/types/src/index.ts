@@ -217,6 +217,26 @@ export interface PointLedgerSummary {
   disclaimer: string;
 }
 
+export type GrowthChannelType = "kol" | "telegram_group" | "x_thread";
+export type GrowthChannelStatus = "active" | "paused" | "pending_review";
+
+export interface GrowthChannel {
+  id: string;
+  type: GrowthChannelType;
+  name: string;
+  status: GrowthChannelStatus;
+  owner: string;
+  referralCode: string;
+  visits: number;
+  effectiveVisits: number;
+  effectiveCaChecks: number;
+  pendingVp: number;
+  confirmedVp: number;
+  conversionRate: number;
+  note: string;
+  updatedAt: string;
+}
+
 export type AdminAuditAction =
   | "risk_report.reviewed"
   | "risk_label.created"

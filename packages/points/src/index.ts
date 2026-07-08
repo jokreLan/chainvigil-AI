@@ -1,4 +1,5 @@
 import type {
+  GrowthChannel,
   PointEvent,
   PointEventStatus,
   PointEventType,
@@ -139,6 +140,61 @@ export function getMockPointLedgerSummary(subjectId = "visitor:mock"): PointLedg
     recentEvents,
     disclaimer: pointProgramMeta.disclaimer,
   };
+}
+
+export function listMockGrowthChannels(): GrowthChannel[] {
+  const channels = [
+    {
+      id: "channel-kol-001",
+      type: "kol",
+      name: "KOL-001",
+      status: "active",
+      owner: "growth-local",
+      referralCode: "KOL001",
+      visits: 1280,
+      effectiveVisits: 318,
+      effectiveCaChecks: 96,
+      pendingVp: 420,
+      confirmedVp: 860,
+      conversionRate: 0.25,
+      note: "按有效访问和有效 CA 检测结算，不奖励空点击。",
+      updatedAt: "2026-07-08T02:00:00.000Z",
+    },
+    {
+      id: "channel-tg-base",
+      type: "telegram_group",
+      name: "TG-GROUP-BASE",
+      status: "pending_review",
+      owner: "telegram-admin",
+      referralCode: "TGBASE",
+      visits: 860,
+      effectiveVisits: 172,
+      effectiveCaChecks: 64,
+      pendingVp: 260,
+      confirmedVp: 510,
+      conversionRate: 0.2,
+      note: "等待真实群组归因和反作弊策略接入后再确认待结算 VP。",
+      updatedAt: "2026-07-08T02:10:00.000Z",
+    },
+    {
+      id: "channel-x-weekly",
+      type: "x_thread",
+      name: "X-THREAD-WEEKLY",
+      status: "paused",
+      owner: "content-local",
+      referralCode: "XWEEKLY",
+      visits: 430,
+      effectiveVisits: 86,
+      effectiveCaChecks: 21,
+      pendingVp: 0,
+      confirmedVp: 180,
+      conversionRate: 0.2,
+      note: "旧周报入口暂停新增奖励，保留历史统计。",
+      updatedAt: "2026-07-08T02:20:00.000Z",
+    },
+  ] satisfies GrowthChannel[];
+
+  return channels.map((channel) => ({ ...channel }));
 }
 
 export function getPointProgram() {

@@ -58,6 +58,11 @@ const endpoints = [
   },
   {
     method: "GET",
+    path: "/api/v1/growth/channels",
+    description: "读取 KOL、Telegram、X 渠道 mock 归因和 VP 结算摘要。",
+  },
+  {
+    method: "GET",
     path: "/api/v1/admin/audit/logs",
     description: "读取只读 Admin 审计日志 mock contract，metadata 已脱敏。",
   },

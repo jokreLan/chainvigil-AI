@@ -262,6 +262,11 @@
 - 第 54 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/risk-core` typecheck/test/build、API/SDK/Admin/Web 目标 typecheck/test/build；Risk Core 测试 5 个用例、API 测试 24 个用例、SDK 测试 15 个用例通过。
 - 第 54 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
 - 第 54 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin `/reports` 和 API `/api/v1/admin/token-reports`。
+- 开始开发 loop 第 55 轮：将 Admin KOL 渠道管理页从字符串列表推进到只读增长渠道归因 contract。
+- 完成开发 loop 第 55 轮：新增 `GrowthChannel` 类型、`listMockGrowthChannels()`、API `GET /api/v1/growth/channels`、SDK `getGrowthChannels()`；Admin `/channels` 展示 KOL、Telegram、X 渠道有效访问、有效 CA 和 VP 摘要；Web `/api`、OpenAPI、README 和 smoke 同步。
+- 第 55 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/points` typecheck/test/build、API/SDK/Admin/Web 目标 typecheck/test/build；Points 测试 4 个用例、API 测试 25 个用例、SDK 测试 16 个用例通过。
+- 第 55 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 55 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin `/channels` 和 API `/api/v1/growth/channels`。
 
 ## 下一步
 

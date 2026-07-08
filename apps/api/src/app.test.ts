@@ -421,6 +421,22 @@ describe("api app", () => {
     await app.close();
   });
 
+  it("returns mock growth channels", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/growth/channels" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.channels[0]).toMatchObject({
+      name: "KOL-001",
+      referralCode: "KOL001",
+      status: "active",
+    });
+
+    await app.close();
+  });
+
   it("rejects unknown VP event types", async () => {
     const app = await buildApiApp();
     const response = await app.inject({

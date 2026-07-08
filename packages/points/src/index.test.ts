@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { createPendingPointEvent, getMockPointLedgerSummary, getPointProgram } from "./index";
+import {
+  createPendingPointEvent,
+  getMockPointLedgerSummary,
+  getPointProgram,
+  listMockGrowthChannels,
+} from "./index";
 
 describe("createPendingPointEvent", () => {
   it("creates pending VP events by default", () => {
@@ -38,5 +43,17 @@ describe("createPendingPointEvent", () => {
       confirmed: 0,
       rejected: 0,
     });
+  });
+
+  it("lists mock growth channels as defensive copies", () => {
+    const channels = listMockGrowthChannels();
+    channels[0]!.name = "mutated";
+
+    expect(channels[0]).toMatchObject({
+      type: "kol",
+      status: "active",
+      referralCode: "KOL001",
+    });
+    expect(listMockGrowthChannels()[0]?.name).toBe("KOL-001");
   });
 });

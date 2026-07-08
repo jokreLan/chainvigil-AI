@@ -49,3 +49,4 @@
 - 高危 CA 人工复核队列 V0 由 `@chainvigil/risk-core` 提供只读 mock contract，Admin/API/SDK 复用；在权限、审计写入和真实数据源接入前不提供审核动作接口。
 - 风险标签目录 V0 同样由 `@chainvigil/risk-core` 提供只读 mock contract，Admin/API/SDK 复用；标签新增、修正、停用动作等到权限和审计写入稳定后再开放。
 - Admin Token 报告索引 V0 由 `@chainvigil/risk-core` 提供只读 mock contract，Admin/API/SDK 复用；真实检索、分页和数据库查询等到 PostgreSQL 报告落库后再开放。
+- 增长渠道归因 V0 由 `@chainvigil/points` 提供只读 mock contract，Admin/API/SDK 复用；只展示有效访问、有效 CA 和 VP 结算摘要，不提供真实结算或平台币 claim。

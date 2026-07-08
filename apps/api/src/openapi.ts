@@ -195,6 +195,16 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/growth/channels": {
+      get: {
+        summary: "Read mock growth channel attribution summary",
+        responses: {
+          "200": {
+            description: "Mock KOL, Telegram and X channel attribution metrics",
+          },
+        },
+      },
+    },
     "/api/v1/points/event": {
       post: {
         summary: "Record a pending VP event",
