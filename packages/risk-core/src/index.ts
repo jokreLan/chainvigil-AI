@@ -6,6 +6,7 @@ import type {
   AdminTokenReportIndexItem,
   ApprovalRiskItem,
   ChainId,
+  RiskDatabaseEntry,
   RiskReason,
   TokenRiskReport,
   WalletHealthReport,
@@ -108,6 +109,61 @@ export function listMockWalletWatchlist(appBaseUrl = "http://localhost:3000"): W
   ] satisfies WalletWatchlistItem[];
 
   return items.map((item) => ({ ...item }));
+}
+
+export function listMockRiskDatabaseEntries(): RiskDatabaseEntry[] {
+  const entries = [
+    {
+      id: "risk-honeypot",
+      title: "貔貅盘 / Honeypot",
+      category: "honeypot",
+      severity: "BLOCK",
+      plainLanguage: "买得进但卖不出，或卖出税接近 100%，属于 V0 一票否决风险。",
+      signals: ["canSell=false", "honeypotDetected", "sellTaxPercent>=90"],
+      recommendedAction: "不要买入；如果已经持有，先停止加仓，等待人工复核和真实数据源确认。",
+    },
+    {
+      id: "risk-impersonation",
+      title: "假冒主流 Token",
+      category: "impersonation",
+      severity: "HIGH",
+      plainLanguage: "使用相似名称、符号或图标仿冒 USDT、USDC、WETH、PEPE 等知名资产。",
+      signals: ["symbolImpersonation", "unverifiedContract", "newPair"],
+      recommendedAction: "只从官方渠道复制 CA，并用多数据源核对合约地址。",
+    },
+    {
+      id: "risk-owner-privilege",
+      title: "Owner 后门",
+      category: "owner_privilege",
+      severity: "HIGH",
+      plainLanguage: "项目方仍可修改税率、暂停交易、拉黑地址或增发，后续风险可能突然变化。",
+      signals: ["ownerCanModifyTax", "blacklistFunction", "pausable", "mintable"],
+      recommendedAction: "只小额验证，并持续观察权限是否 renounce、timelock 或多签管理。",
+    },
+    {
+      id: "risk-liquidity-unlocked",
+      title: "LP 未锁",
+      category: "liquidity",
+      severity: "MEDIUM",
+      plainLanguage: "流动性未锁定或未燃烧时，项目方可能撤池，导致用户无法正常退出。",
+      signals: ["lpLocked=false", "lpValueLow", "lpOwnerConcentrated"],
+      recommendedAction: "等待 LP 锁定证明；没有证明时，不把短期热度当作安全信号。",
+    },
+    {
+      id: "risk-approval-unlimited",
+      title: "无限授权",
+      category: "approval",
+      severity: "MEDIUM",
+      plainLanguage: "授权额度过大时，spender 一旦被攻击或作恶，可能转走对应资产。",
+      signals: ["allowance=infinite", "spenderUnknown", "lastUsedAt=null"],
+      recommendedAction: "定期复查授权，对长期不用或未知 spender 优先撤销。",
+    },
+  ] satisfies RiskDatabaseEntry[];
+
+  return entries.map((entry) => ({
+    ...entry,
+    signals: [...entry.signals],
+  }));
 }
 
 export function listMockRiskReviewQueue(appBaseUrl = "http://localhost:3000"): AdminRiskReviewItem[] {

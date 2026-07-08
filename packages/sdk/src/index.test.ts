@@ -130,6 +130,27 @@ describe("ChainVigilClient", () => {
     expect(response.worker.jobs[0]?.enabled).toBe(false);
   });
 
+  it("reads risk database glossary", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        entries: [
+          {
+            id: "risk-honeypot",
+            title: "貔貅盘 / Honeypot",
+            severity: "BLOCK",
+            plainLanguage: "买得进但卖不出。",
+          },
+        ],
+      }),
+    });
+
+    const response = await client.getRiskDatabase();
+
+    expect(response.mode).toBe("mock");
+    expect(response.entries[0]?.id).toBe("risk-honeypot");
+  });
+
   it("reads service metadata", async () => {
     const client = new ChainVigilClient({
       fetcher: mockFetch({

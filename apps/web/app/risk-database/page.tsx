@@ -1,25 +1,9 @@
 import Link from "next/link";
-
-const entries = [
-  {
-    title: "貔貅盘 / Honeypot",
-    description: "买得进但卖不出，或卖出税接近 100%，是 V0 一票否决风险。",
-  },
-  {
-    title: "假冒主流 Token",
-    description: "仿冒 USDT、USDC、WETH、PEPE 等知名资产，常通过相似名称和图标误导用户。",
-  },
-  {
-    title: "Owner 后门",
-    description: "项目方仍可修改税率、暂停交易、拉黑地址或增发，后续风险可能突然变化。",
-  },
-  {
-    title: "LP 未锁",
-    description: "流动性未锁定或未燃烧时，项目方可能撤池，导致用户无法正常退出。",
-  },
-];
+import { listMockRiskDatabaseEntries } from "@chainvigil/risk-core";
 
 export default function RiskDatabasePage() {
+  const entries = listMockRiskDatabaseEntries();
+
   return (
     <main className="mx-auto min-h-screen max-w-5xl px-5 py-12">
       <nav className="flex items-center justify-between text-sm text-emerald-100/70">
@@ -45,9 +29,20 @@ export default function RiskDatabasePage() {
 
       <section className="mt-10 grid gap-4 md:grid-cols-2">
         {entries.map((entry) => (
-          <article key={entry.title} className="border border-emerald-300/14 bg-black/20 p-5">
-            <h2 className="text-xl font-semibold text-white">{entry.title}</h2>
-            <p className="mt-3 leading-7 text-emerald-50/70">{entry.description}</p>
+          <article key={entry.id} className="border border-emerald-300/14 bg-black/20 p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-xl font-semibold text-white">{entry.title}</h2>
+              <span className="text-sm text-emerald-200">{entry.severity}</span>
+            </div>
+            <p className="mt-3 leading-7 text-emerald-50/70">{entry.plainLanguage}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {entry.signals.map((signal) => (
+                <span key={signal} className="border border-emerald-300/20 px-2 py-1 text-xs text-emerald-100/70">
+                  {signal}
+                </span>
+              ))}
+            </div>
+            <p className="mt-4 leading-7 text-emerald-100/72">{entry.recommendedAction}</p>
           </article>
         ))}
       </section>

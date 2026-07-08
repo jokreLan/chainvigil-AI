@@ -7,6 +7,7 @@ import type {
   PointEvent,
   PointLedgerSummary,
   PointEventType,
+  RiskDatabaseEntry,
   ServiceMeta,
   TelegramCommand,
   TelegramGroupSettings,
@@ -152,6 +153,11 @@ export interface WalletWatchlistResponse {
   mode: "mock";
 }
 
+export interface RiskDatabaseResponse {
+  entries: RiskDatabaseEntry[];
+  mode: "mock";
+}
+
 export class ChainVigilApiError extends Error {
   constructor(
     message: string,
@@ -229,6 +235,10 @@ export class ChainVigilClient {
 
   async getWorkerJobs(): Promise<WorkerJobsResponse> {
     return this.get<WorkerJobsResponse>("/api/v1/worker/jobs");
+  }
+
+  async getRiskDatabase(): Promise<RiskDatabaseResponse> {
+    return this.get<RiskDatabaseResponse>("/api/v1/risk/database");
   }
 
   async getServiceMeta(): Promise<ServiceMeta> {

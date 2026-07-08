@@ -54,6 +54,16 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/risk/database": {
+      get: {
+        summary: "Read mock risk database glossary",
+        responses: {
+          "200": {
+            description: "Human-readable risk categories, signals and recommended actions for V0 SEO/GEO pages",
+          },
+        },
+      },
+    },
     "/api/v1/meta": {
       get: {
         summary: "Read non-secret service metadata",

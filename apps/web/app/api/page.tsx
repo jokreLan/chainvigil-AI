@@ -52,6 +52,11 @@ const endpoints = [
     description: "读取 Worker 健康状态和 V0 后台任务 contract。",
   },
   {
+    method: "GET",
+    path: "/api/v1/risk/database",
+    description: "读取风险数据库人话解释、信号和建议动作。",
+  },
+  {
     method: "POST",
     path: "/api/v1/wallet/health",
     description: "提交钱包地址，返回只读钱包健康报告。",

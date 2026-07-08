@@ -3,6 +3,7 @@ import {
   buildMockTokenRiskReport,
   buildMockWalletHealthReport,
   listMockWalletWatchlist,
+  listMockRiskDatabaseEntries,
   listMockRiskLabels,
   listMockRiskReviewQueue,
   listMockTokenReportIndex,
@@ -42,6 +43,19 @@ describe("listMockWalletWatchlist", () => {
       reportUrl: "https://chainvigil.example/wallet/0x1111111111111111111111111111111111111110/health",
     });
     expect(listMockWalletWatchlist()[0]?.label).toBe("主钱包");
+  });
+});
+
+describe("listMockRiskDatabaseEntries", () => {
+  it("returns human-readable risk database entries as defensive copies", () => {
+    const entries = listMockRiskDatabaseEntries();
+    entries[0]!.signals.push("mutated");
+
+    expect(entries[0]).toMatchObject({
+      id: "risk-honeypot",
+      severity: "BLOCK",
+    });
+    expect(listMockRiskDatabaseEntries()[0]?.signals).not.toContain("mutated");
   });
 });
 

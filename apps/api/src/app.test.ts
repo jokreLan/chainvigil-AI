@@ -110,6 +110,22 @@ describe("api app", () => {
     await app.close();
   });
 
+  it("returns mock risk database entries", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/risk/database" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.entries[0]).toMatchObject({
+      id: "risk-honeypot",
+      severity: "BLOCK",
+    });
+    expect(body.entries[0].plainLanguage).toContain("买得进但卖不出");
+
+    await app.close();
+  });
+
   it("returns non-secret service metadata", async () => {
     const app = await buildApiApp();
     const response = await app.inject({ method: "GET", url: "/api/v1/meta" });

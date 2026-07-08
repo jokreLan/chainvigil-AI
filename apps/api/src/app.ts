@@ -16,6 +16,7 @@ import {
 import {
   buildMockTokenRiskReport,
   buildMockWalletHealthReport,
+  listMockRiskDatabaseEntries,
   listMockRiskLabels,
   listMockRiskReviewQueue,
   listMockTokenReportIndex,
@@ -273,6 +274,11 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
   app.get("/api/v1/worker/jobs", async () => ({
     worker: getWorkerHealth(),
+    mode: "mock",
+  }));
+
+  app.get("/api/v1/risk/database", async () => ({
+    entries: listMockRiskDatabaseEntries(),
     mode: "mock",
   }));
 

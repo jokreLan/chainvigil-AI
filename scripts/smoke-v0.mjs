@@ -60,6 +60,7 @@ async function main() {
         !html.includes("/api/v1/system/readiness") ||
         !html.includes("/api/v1/data-sources/adapters") ||
         !html.includes("/api/v1/worker/jobs") ||
+        !html.includes("/api/v1/risk/database") ||
         !html.includes("/api/v1/wallet/watchlist") ||
         !html.includes("/api/v1/telegram/groups") ||
         !html.includes("/api/v1/telegram/commands")
@@ -91,6 +92,17 @@ async function main() {
         !html.includes("riskAssessment")
       ) {
         throw new Error(`${name} expected report JSON-LD`);
+      }
+    }),
+  );
+
+  checks.push(
+    request("web.risk-database", `${webBaseUrl}/risk-database`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("风险数据库") || !html.includes("貔貅盘 / Honeypot") || !html.includes("canSell=false")) {
+        throw new Error(`${name} expected risk database glossary`);
       }
     }),
   );
@@ -357,6 +369,23 @@ async function main() {
 
         if (JSON.stringify(body).includes("privateKey")) {
           throw new Error(`${name} leaked private key field`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.risk-database", `${apiBaseUrl}/api/v1/risk/database`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (
+          body.mode !== "mock" ||
+          body.entries?.[0]?.id !== "risk-honeypot" ||
+          !body.entries?.[0]?.plainLanguage?.includes("买得进但卖不出")
+        ) {
+          throw new Error(`${name} expected mock risk database glossary`);
         }
       },
     ),

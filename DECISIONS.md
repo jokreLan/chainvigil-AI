@@ -54,3 +54,4 @@
 - Worker job contract 由 `@chainvigil/worker` 导出并给 API/Admin/SDK 复用；V0 只展示任务名称、节奏和 mock/enabled 状态，不启动真实队列消费。
 - Web App `/app/reports` 复用 `@chainvigil/risk-core` 的只读 mock Token 报告索引；V0 不额外维护钱包体检历史聚合，等账户与报告落库后再统一分页查询。
 - 钱包 watchlist V0 由 `@chainvigil/risk-core` 提供只读 mock contract，并通过 API/SDK/Web 复用；不接钱包连接、不请求签名、不展示任何私钥或助记词字段。
+- 风险数据库 V0 由 `@chainvigil/risk-core` 提供人话解释、信号和建议动作 contract；Web SEO/GEO 页面、API 和 SDK 复用同一份风险解释。

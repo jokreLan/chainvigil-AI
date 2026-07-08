@@ -147,6 +147,16 @@ export interface WalletWatchlistItem {
   note: string;
 }
 
+export interface RiskDatabaseEntry {
+  id: string;
+  title: string;
+  category: "honeypot" | "impersonation" | "owner_privilege" | "liquidity" | "approval";
+  severity: RiskLevel;
+  plainLanguage: string;
+  signals: string[];
+  recommendedAction: string;
+}
+
 export type AdminRiskReviewStatus = "pending" | "needs_data" | "escalated";
 
 export interface AdminRiskReviewItem {
