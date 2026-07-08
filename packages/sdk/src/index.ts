@@ -4,6 +4,7 @@ import type {
   PointLedgerSummary,
   PointEventType,
   ServiceMeta,
+  TelegramGroupSettings,
   TokenCheckRequest,
   TokenCheckResponse,
   WalletHealthRequest,
@@ -92,6 +93,11 @@ export interface PointLedgerResponse {
   mode: "mock";
 }
 
+export interface TelegramGroupsResponse {
+  groups: TelegramGroupSettings[];
+  mode: "mock";
+}
+
 export class ChainVigilApiError extends Error {
   constructor(
     message: string,
@@ -161,6 +167,10 @@ export class ChainVigilClient {
 
   async getAdminAuditLogs(): Promise<AdminAuditLogsResponse> {
     return this.get<AdminAuditLogsResponse>("/api/v1/admin/audit/logs");
+  }
+
+  async getTelegramGroups(): Promise<TelegramGroupsResponse> {
+    return this.get<TelegramGroupsResponse>("/api/v1/telegram/groups");
   }
 
   async recordPointEvent(request: {

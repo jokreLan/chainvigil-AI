@@ -108,12 +108,13 @@ describe("bot app", () => {
       method: "POST",
       url: "/telegram/webhook",
       payload: {
-        message: { text: "/settings" },
+        message: { text: "/settings", chat: { id: "-1001000000002" } },
       },
     });
 
     expect(topResponse.json().reply).toContain("高危 CA 榜单");
     expect(settingsResponse.json().reply).toContain("群设置 skeleton");
+    expect(settingsResponse.json().reply).toContain("Meme Watch CN");
 
     await app.close();
   });

@@ -157,6 +157,34 @@ describe("ChainVigilClient", () => {
     expect(response.ledger.shortName).toBe("VP");
   });
 
+  it("reads mock Telegram group settings", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        groups: [
+          {
+            id: "tg-base-alpha",
+            telegramChatId: "-1001000000001",
+            title: "Base Alpha Group",
+            autoDetectEnabled: false,
+            highRiskAlerts: true,
+            dailyCheckLimit: 100,
+            language: "zh",
+            checksToday: 128,
+            highRiskAlertsToday: 12,
+            lastCheckedAt: "2026-07-08T00:30:00.000Z",
+          },
+        ],
+      }),
+    });
+
+    const response = await client.getTelegramGroups();
+
+    expect(response.mode).toBe("mock");
+    expect(response.groups[0]?.title).toBe("Base Alpha Group");
+    expect(response.groups[0]?.highRiskAlerts).toBe(true);
+  });
+
   it("reads wallet reports by address", async () => {
     const client = new ChainVigilClient({
       fetcher: mockFetch({

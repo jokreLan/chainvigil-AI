@@ -55,7 +55,11 @@ async function main() {
       await assertStatus(name, response, 200);
       const html = await response.text();
 
-      if (!html.includes("/api/v1/points/ledger") || !html.includes("/api/v1/system/readiness")) {
+      if (
+        !html.includes("/api/v1/points/ledger") ||
+        !html.includes("/api/v1/system/readiness") ||
+        !html.includes("/api/v1/telegram/groups")
+      ) {
         throw new Error(`${name} expected current API endpoint list`);
       }
     }),
@@ -134,6 +138,17 @@ async function main() {
   );
 
   checks.push(
+    request("admin.telegram", `${adminBaseUrl}/telegram`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("Base Alpha Group") || !html.includes("自动检测")) {
+        throw new Error(`${name} expected Telegram group settings`);
+      }
+    }),
+  );
+
+  checks.push(
     request("api.token-check", `${apiBaseUrl}/api/v1/token/check`, {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -191,6 +206,19 @@ async function main() {
           body.ledger?.totalConfirmed !== 20
         ) {
           throw new Error(`${name} expected mock VP ledger summary`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.telegram-groups", `${apiBaseUrl}/api/v1/telegram/groups`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (body.mode !== "mock" || body.groups?.[0]?.title !== "Base Alpha Group") {
+          throw new Error(`${name} expected mock Telegram group settings`);
         }
       },
     ),

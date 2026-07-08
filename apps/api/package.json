@@ -19,6 +19,7 @@
     "@chainvigil/data-adapters": "workspace:*",
     "@chainvigil/points": "workspace:*",
     "@chainvigil/risk-core": "workspace:*",
+    "@chainvigil/telegram": "workspace:*",
     "@chainvigil/types": "workspace:*",
     "@fastify/cors": "^11.0.1",
     "fastify": "^5.4.0"

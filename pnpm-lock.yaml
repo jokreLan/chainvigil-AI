@@ -41,6 +41,9 @@ importers:
       '@chainvigil/points':
         specifier: workspace:*
         version: link:../../packages/points
+      '@chainvigil/telegram':
+        specifier: workspace:*
+        version: link:../../packages/telegram
       next:
         specifier: ^16.2.10
         version: 16.2.10(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -90,6 +93,9 @@ importers:
       '@chainvigil/risk-core':
         specifier: workspace:*
         version: link:../../packages/risk-core
+      '@chainvigil/telegram':
+        specifier: workspace:*
+        version: link:../../packages/telegram
       '@chainvigil/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -124,6 +130,9 @@ importers:
       '@chainvigil/risk-core':
         specifier: workspace:*
         version: link:../../packages/risk-core
+      '@chainvigil/telegram':
+        specifier: workspace:*
+        version: link:../../packages/telegram
       fastify:
         specifier: ^5.4.0
         version: 5.10.0
@@ -325,6 +334,19 @@ importers:
         version: 3.2.7(@types/node@20.19.43)(jiti@2.7.0)(tsx@4.23.0)
 
   packages/sdk:
+    dependencies:
+      '@chainvigil/types':
+        specifier: workspace:*
+        version: link:../types
+    devDependencies:
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/node@20.19.43)(jiti@2.7.0)(tsx@4.23.0)
+
+  packages/telegram:
     dependencies:
       '@chainvigil/types':
         specifier: workspace:*

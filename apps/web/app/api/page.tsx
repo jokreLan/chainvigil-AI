@@ -18,6 +18,11 @@ const endpoints = [
   },
   {
     method: "GET",
+    path: "/api/v1/telegram/groups",
+    description: "读取 Telegram 群组 mock 设置、检测额度和高危提醒状态。",
+  },
+  {
+    method: "GET",
     path: "/openapi.json",
     description: "机器可读 API contract，用于 SDK、测试和未来开发者集成。",
   },

@@ -228,6 +228,13 @@
 - 第 48 轮目标门禁已通过：`pnpm --filter @chainvigil/web typecheck/build`。
 - 第 48 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
 - 第 48 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web `/api` 最新端点清单。
+- 开始开发 loop 第 49 轮：集中 Telegram 群组设置 contract，避免 Bot/Admin/API 各自维护 mock 群组数据。
+- 完成开发 loop 第 49 轮：新增 `@chainvigil/telegram` 包、Telegram 命令和群组 mock contract；Bot `/start` `/help` `/settings` 复用共享回复；Admin `/telegram` 展示共享群组设置；API 新增 `GET /api/v1/telegram/groups`；SDK 新增 `getTelegramGroups()`；Web `/api`、README、OpenAPI 和 smoke 同步。
+- 第 49 轮执行 `pnpm install` 后 workspace 扩展为 18 个项目。
+- 第 49 轮目标门禁首次发现新包缺少 `exports/types`，导致 Bot 无法解析 `@chainvigil/telegram`；已补齐 package export。
+- 第 49 轮目标门禁第 2 次通过：`@chainvigil/types` typecheck/build、`@chainvigil/telegram` typecheck/test/build、Bot/API/Admin/SDK/Web 目标 typecheck/test/build；Telegram 测试 3 个用例、API 测试 20 个用例、SDK 测试 11 个用例通过。
+- 第 49 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 49 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin Telegram 页面和 API Telegram groups。
 
 ## 下一步
 

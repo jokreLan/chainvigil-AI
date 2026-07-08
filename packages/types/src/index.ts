@@ -194,3 +194,16 @@ export interface ServiceMeta {
   commitSha?: string;
   generatedAt: string;
 }
+
+export interface TelegramGroupSettings {
+  id: string;
+  telegramChatId: string;
+  title: string;
+  autoDetectEnabled: boolean;
+  highRiskAlerts: boolean;
+  dailyCheckLimit: number;
+  language: "zh" | "en";
+  checksToday: number;
+  highRiskAlertsToday: number;
+  lastCheckedAt: string | null;
+}

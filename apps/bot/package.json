@@ -16,6 +16,7 @@
     "@chainvigil/config": "workspace:*",
     "@chainvigil/report": "workspace:*",
     "@chainvigil/risk-core": "workspace:*",
+    "@chainvigil/telegram": "workspace:*",
     "fastify": "^5.4.0"
   },
   "devDependencies": {

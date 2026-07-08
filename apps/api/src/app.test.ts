@@ -107,6 +107,23 @@ describe("api app", () => {
     await app.close();
   });
 
+  it("returns mock Telegram group settings", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/telegram/groups" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.groups[0]).toMatchObject({
+      title: "Base Alpha Group",
+      autoDetectEnabled: false,
+      highRiskAlerts: true,
+      dailyCheckLimit: 100,
+    });
+
+    await app.close();
+  });
+
   it("checks a mock CA and returns a pending VP event", async () => {
     const app = await buildApiApp();
     const response = await app.inject({

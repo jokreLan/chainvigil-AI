@@ -54,6 +54,16 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/telegram/groups": {
+      get: {
+        summary: "Read mock Telegram group settings",
+        responses: {
+          "200": {
+            description: "Mock Telegram group settings and daily usage summary",
+          },
+        },
+      },
+    },
     "/api/v1/token/check": {
       post: {
         summary: "Check a token contract address or DEX link",

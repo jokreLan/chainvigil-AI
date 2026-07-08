@@ -3,6 +3,11 @@ import { parseTokenInput } from "@chainvigil/chain";
 import { readEnv } from "@chainvigil/config";
 import { buildTelegramCheckReply } from "@chainvigil/report";
 import { buildMockTokenRiskReport } from "@chainvigil/risk-core";
+import {
+  buildTelegramHelpReply,
+  buildTelegramSettingsReply,
+  buildTelegramStartReply,
+} from "@chainvigil/telegram";
 
 interface TelegramWebhookBody {
   message?: {
@@ -37,13 +42,7 @@ export function buildBotApp() {
       return {
         ok: true,
         mode: "mock",
-        reply: [
-          "ChainVigil AI｜链哨 AI",
-          "买币前，先查 CA。",
-          "",
-          "发送 /check 0x... 可 mock 查询 Token 风险报告。",
-          "发送 /help 查看全部可用命令。",
-        ].join("\n"),
+        reply: buildTelegramStartReply(),
       };
     }
 
@@ -51,16 +50,7 @@ export function buildBotApp() {
       return {
         ok: true,
         mode: "mock",
-        reply: [
-          "ChainVigil AI｜链哨 AI",
-          "",
-          "可用命令：",
-          "/check 0x... - 查 CA 风险",
-          "/top - 查看高危 CA 榜单",
-          "/settings - 查看群设置骨架",
-          "",
-          "买币前，先查 CA。",
-        ].join("\n"),
+        reply: buildTelegramHelpReply(),
       };
     }
 
@@ -82,13 +72,7 @@ export function buildBotApp() {
       return {
         ok: true,
         mode: "mock",
-        reply: [
-          "群设置 skeleton",
-          "自动检测 CA：关闭",
-          "高危提醒：开启",
-          "每日检测上限：100",
-          "语言：中文",
-        ].join("\n"),
+        reply: buildTelegramSettingsReply(request.body.message?.chat?.id),
       };
     }
 

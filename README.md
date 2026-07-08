@@ -11,7 +11,7 @@ ChainVigil AI 是一个 Web3 交易安全工具。V0 聚焦免费 CA 安检、To
 - Web DApp 首页与 `/check`
 - `/token/[chain]/[address]` mock 风险报告页
 - 钱包体检入口 `/wallet-check` 与 `/wallet/[address]/health` mock 报告页
-- Fastify API：Token、Wallet、VP rules/ledger、Referral、readiness、meta、只读 Admin audit mock 与 OpenAPI skeleton
+- Fastify API：Token、Wallet、VP rules/ledger、Telegram groups、Referral、readiness、meta、只读 Admin audit mock 与 OpenAPI skeleton
 - Telegram Bot skeleton：`/telegram/webhook` 可 mock 调用
 - Admin skeleton
 - Prisma schema、VP 积分事件模型与 Admin 审计事件 contract
@@ -49,6 +49,7 @@ curl http://localhost:4000/health
 curl http://localhost:4001/health
 curl http://localhost:4000/api/v1/meta
 curl http://localhost:4000/api/v1/points/ledger
+curl http://localhost:4000/api/v1/telegram/groups
 curl http://localhost:4000/api/v1/admin/audit/logs
 curl http://localhost:3000/token/base/0x1111111111111111111111111111111111111110
 ```
@@ -69,7 +70,7 @@ pnpm db:validate
 pnpm smoke:v0
 ```
 
-当前 smoke 覆盖 Web `/health`、Web `/check`、Web VP ledger、Token 报告页 JSON-LD、Admin `/health`、Admin readiness、Admin `/audit`、Admin VP ledger、API token check、API meta、API VP ledger、API 只读审计日志、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
+当前 smoke 覆盖 Web `/health`、Web `/check`、Web VP ledger、Web API 清单、Token 报告页 JSON-LD、Admin `/health`、Admin readiness、Admin `/audit`、Admin VP ledger、Admin Telegram groups、API token check、API meta、API VP ledger、API Telegram groups、API 只读审计日志、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
 
 上线前安全边界和生产预检见 `SECURITY.md`。
 
@@ -115,6 +116,7 @@ const result = await client.checkToken({
 });
 const meta = await client.getServiceMeta();
 const ledger = await client.getPointLedger();
+const telegramGroups = await client.getTelegramGroups();
 const auditLogs = await client.getAdminAuditLogs();
 ```
 

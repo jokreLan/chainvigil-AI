@@ -43,3 +43,4 @@
 - Admin `/audit` 优先读取 API `/api/v1/admin/audit/logs`，API 不可用时回落到本地 mock，避免构建或本地开发被 API 服务状态卡死。
 - 生产安全预检由 `@chainvigil/config` 统一提供，只返回变量名和原因，不返回真实密钥值；Admin/API/SDK 复用同一 readiness contract。
 - VP ledger V0 只提供只读 mock 摘要，明确区分 pending、confirmed、rejected；不把待确认 VP 展示为可用余额。
+- Telegram 群组设置 V0 由 `@chainvigil/telegram` 统一提供 mock contract，Bot/Admin/API/SDK 复用；真实 Telegram token 接入前不提供写设置接口。

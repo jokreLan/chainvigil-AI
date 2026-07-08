@@ -12,6 +12,7 @@ import {
   listPointRules,
 } from "@chainvigil/points";
 import { buildMockTokenRiskReport, buildMockWalletHealthReport } from "@chainvigil/risk-core";
+import { listMockTelegramGroups } from "@chainvigil/telegram";
 import type {
   ChainId,
   PointEventType,
@@ -260,6 +261,11 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
   app.get("/api/v1/admin/audit/logs", async () => ({
     logs: listMockAdminAuditLogs(),
+    mode: "mock",
+  }));
+
+  app.get("/api/v1/telegram/groups", async () => ({
+    groups: listMockTelegramGroups(),
     mode: "mock",
   }));
 
