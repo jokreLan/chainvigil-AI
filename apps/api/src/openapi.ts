@@ -64,6 +64,16 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/telegram/commands": {
+      get: {
+        summary: "Read Telegram bot command list",
+        responses: {
+          "200": {
+            description: "Telegram bot commands and descriptions",
+          },
+        },
+      },
+    },
     "/api/v1/token/check": {
       post: {
         summary: "Check a token contract address or DEX link",

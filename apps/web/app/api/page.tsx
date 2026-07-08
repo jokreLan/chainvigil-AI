@@ -23,6 +23,11 @@ const endpoints = [
   },
   {
     method: "GET",
+    path: "/api/v1/telegram/commands",
+    description: "读取 Telegram Bot 命令清单和人话说明。",
+  },
+  {
+    method: "GET",
     path: "/openapi.json",
     description: "机器可读 API contract，用于 SDK、测试和未来开发者集成。",
   },

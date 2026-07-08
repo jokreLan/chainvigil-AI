@@ -207,3 +207,8 @@ export interface TelegramGroupSettings {
   highRiskAlertsToday: number;
   lastCheckedAt: string | null;
 }
+
+export interface TelegramCommand {
+  command: string;
+  description: string;
+}

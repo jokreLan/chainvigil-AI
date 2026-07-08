@@ -185,6 +185,25 @@ describe("ChainVigilClient", () => {
     expect(response.groups[0]?.highRiskAlerts).toBe(true);
   });
 
+  it("reads Telegram command list", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        commands: [
+          {
+            command: "/check 0x...",
+            description: "提交 EVM 合约地址，生成 mock 风险报告。",
+          },
+        ],
+      }),
+    });
+
+    const response = await client.getTelegramCommands();
+
+    expect(response.mode).toBe("mock");
+    expect(response.commands[0]?.command).toBe("/check 0x...");
+  });
+
   it("reads wallet reports by address", async () => {
     const client = new ChainVigilClient({
       fetcher: mockFetch({

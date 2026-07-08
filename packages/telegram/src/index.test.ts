@@ -32,6 +32,16 @@ describe("telegram contract", () => {
     });
   });
 
+  it("lists Telegram commands as defensive copies", () => {
+    const commands = listTelegramCommands();
+    commands[0]!.description = "mutated";
+
+    expect(listTelegramCommands()[0]).toEqual({
+      command: "/start",
+      description: "查看 ChainVigil AI 欢迎语和 CA 安检入口。",
+    });
+  });
+
   it("builds settings replies from group settings", () => {
     const reply = buildTelegramSettingsReply("-1001000000002");
 

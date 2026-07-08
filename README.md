@@ -50,6 +50,7 @@ curl http://localhost:4001/health
 curl http://localhost:4000/api/v1/meta
 curl http://localhost:4000/api/v1/points/ledger
 curl http://localhost:4000/api/v1/telegram/groups
+curl http://localhost:4000/api/v1/telegram/commands
 curl http://localhost:4000/api/v1/admin/audit/logs
 curl http://localhost:3000/token/base/0x1111111111111111111111111111111111111110
 ```
@@ -70,7 +71,7 @@ pnpm db:validate
 pnpm smoke:v0
 ```
 
-当前 smoke 覆盖 Web `/health`、Web `/check`、Web VP ledger、Web API 清单、Token 报告页 JSON-LD、Admin `/health`、Admin readiness、Admin `/audit`、Admin VP ledger、Admin Telegram groups、API token check、API meta、API VP ledger、API Telegram groups、API 只读审计日志、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
+当前 smoke 覆盖 Web `/health`、Web `/check`、Web VP ledger、Web Bot commands、Web API 清单、Token 报告页 JSON-LD、Admin `/health`、Admin readiness、Admin `/audit`、Admin VP ledger、Admin Telegram groups、API token check、API meta、API VP ledger、API Telegram groups/commands、API 只读审计日志、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
 
 上线前安全边界和生产预检见 `SECURITY.md`。
 
@@ -117,6 +118,7 @@ const result = await client.checkToken({
 const meta = await client.getServiceMeta();
 const ledger = await client.getPointLedger();
 const telegramGroups = await client.getTelegramGroups();
+const telegramCommands = await client.getTelegramCommands();
 const auditLogs = await client.getAdminAuditLogs();
 ```
 

@@ -58,9 +58,21 @@ async function main() {
       if (
         !html.includes("/api/v1/points/ledger") ||
         !html.includes("/api/v1/system/readiness") ||
-        !html.includes("/api/v1/telegram/groups")
+        !html.includes("/api/v1/telegram/groups") ||
+        !html.includes("/api/v1/telegram/commands")
       ) {
         throw new Error(`${name} expected current API endpoint list`);
+      }
+    }),
+  );
+
+  checks.push(
+    request("web.bot", `${webBaseUrl}/bot`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("/check 0x...") || !html.includes("/settings")) {
+        throw new Error(`${name} expected Telegram command list`);
       }
     }),
   );
@@ -219,6 +231,19 @@ async function main() {
 
         if (body.mode !== "mock" || body.groups?.[0]?.title !== "Base Alpha Group") {
           throw new Error(`${name} expected mock Telegram group settings`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.telegram-commands", `${apiBaseUrl}/api/v1/telegram/commands`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (body.mode !== "mock" || !body.commands?.some((item) => item.command === "/check 0x...")) {
+          throw new Error(`${name} expected Telegram command list`);
         }
       },
     ),

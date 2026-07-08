@@ -1,4 +1,4 @@
-import type { TelegramGroupSettings } from "@chainvigil/types";
+import type { TelegramCommand, TelegramGroupSettings } from "@chainvigil/types";
 
 const telegramCommands = [
   { command: "/start", description: "查看 ChainVigil AI 欢迎语和 CA 安检入口。" },
@@ -6,7 +6,7 @@ const telegramCommands = [
   { command: "/check 0x...", description: "提交 EVM 合约地址，生成 mock 风险报告。" },
   { command: "/top", description: "查看高危 CA 榜单 mock。" },
   { command: "/settings", description: "查看群设置 skeleton。" },
-] as const;
+] satisfies TelegramCommand[];
 
 const mockTelegramGroups = [
   {
@@ -36,7 +36,7 @@ const mockTelegramGroups = [
 ] satisfies TelegramGroupSettings[];
 
 export function listTelegramCommands() {
-  return telegramCommands;
+  return telegramCommands.map((item) => ({ ...item }));
 }
 
 export function buildTelegramStartReply() {
@@ -54,7 +54,7 @@ export function buildTelegramHelpReply() {
     "ChainVigil AI｜链哨 AI",
     "",
     "可用命令：",
-    ...telegramCommands
+    ...listTelegramCommands()
       .filter((item) => item.command !== "/start")
       .map((item) => `${item.command} - ${item.description}`),
     "",
