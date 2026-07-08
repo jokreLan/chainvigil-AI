@@ -4,6 +4,7 @@ import {
   buildMockWalletHealthReport,
   listMockWalletWatchlist,
   listMockRiskDatabaseEntries,
+  listMockRiskMonitorRules,
   listMockRiskLabels,
   listMockRiskReviewQueue,
   listMockTokenReportIndex,
@@ -56,6 +57,19 @@ describe("listMockRiskDatabaseEntries", () => {
       severity: "BLOCK",
     });
     expect(listMockRiskDatabaseEntries()[0]?.signals).not.toContain("mutated");
+  });
+});
+
+describe("listMockRiskMonitorRules", () => {
+  it("returns defensive copies of risk monitor rules", () => {
+    const rules = listMockRiskMonitorRules();
+    rules[0]!.signals.push("mutated");
+
+    expect(rules[0]).toMatchObject({
+      id: "monitor-high-risk-token",
+      status: "needs_review",
+    });
+    expect(listMockRiskMonitorRules()[0]?.signals).not.toContain("mutated");
   });
 });
 

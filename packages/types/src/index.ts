@@ -157,6 +157,18 @@ export interface RiskDatabaseEntry {
   recommendedAction: string;
 }
 
+export interface RiskMonitorRule {
+  id: string;
+  title: string;
+  targetType: "token" | "wallet" | "deployer" | "liquidity";
+  severity: RiskLevel;
+  status: "watching" | "needs_review" | "paused";
+  cadenceLabel: string;
+  lastSignalAt: string | null;
+  signals: string[];
+  explanation: string;
+}
+
 export type AdminRiskReviewStatus = "pending" | "needs_data" | "escalated";
 
 export interface AdminRiskReviewItem {

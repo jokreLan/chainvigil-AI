@@ -297,6 +297,11 @@
 - 第 61 轮目标门禁已通过：`@chainvigil/points` typecheck/test/build、`@chainvigil/web` typecheck/test/build；Points 测试 4 个用例、Web 测试 4 个用例通过。
 - 第 61 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
 - 第 61 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web `/app/growth` 推广中心。
+- 开始开发 loop 第 62 轮：将 Web `/app/monitor` 从静态列表推进到共享只读风险监控规则 contract，并暴露给 API/SDK/smoke。
+- 完成开发 loop 第 62 轮：新增 `RiskMonitorRule` 类型和 `listMockRiskMonitorRules()`；API 新增 `GET /api/v1/risk/monitor-rules`；SDK 新增 `getRiskMonitorRules()`；Web `/app/monitor` 复用共享监控规则；Web `/api`、OpenAPI、README 和 smoke 同步。
+- 第 62 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/risk-core` typecheck/test/build、API/SDK/Web 目标 typecheck/test/build；Risk Core 测试 8 个用例、API 测试 30 个用例、SDK 测试 21 个用例、Web 测试 4 个用例通过。
+- 第 62 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 62 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web `/app/monitor` 和 API `/api/v1/risk/monitor-rules`。
 
 ## 下一步
 

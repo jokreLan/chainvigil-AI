@@ -18,6 +18,7 @@ import {
   buildMockWalletHealthReport,
   listMockRiskDatabaseEntries,
   listMockRiskLabels,
+  listMockRiskMonitorRules,
   listMockRiskReviewQueue,
   listMockTokenReportIndex,
   listMockWalletWatchlist,
@@ -279,6 +280,11 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
   app.get("/api/v1/risk/database", async () => ({
     entries: listMockRiskDatabaseEntries(),
+    mode: "mock",
+  }));
+
+  app.get("/api/v1/risk/monitor-rules", async () => ({
+    rules: listMockRiskMonitorRules(),
     mode: "mock",
   }));
 

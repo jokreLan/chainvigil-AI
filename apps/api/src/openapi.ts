@@ -64,6 +64,16 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/risk/monitor-rules": {
+      get: {
+        summary: "Read mock risk monitor rules",
+        responses: {
+          "200": {
+            description: "Read-only risk monitoring rule contracts without automated trading or wallet actions",
+          },
+        },
+      },
+    },
     "/api/v1/meta": {
       get: {
         summary: "Read non-secret service metadata",

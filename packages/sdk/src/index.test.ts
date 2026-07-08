@@ -151,6 +151,26 @@ describe("ChainVigilClient", () => {
     expect(response.entries[0]?.id).toBe("risk-honeypot");
   });
 
+  it("reads risk monitor rules", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        rules: [
+          {
+            id: "monitor-high-risk-token",
+            status: "needs_review",
+            explanation: "不自动阻断交易。",
+          },
+        ],
+      }),
+    });
+
+    const response = await client.getRiskMonitorRules();
+
+    expect(response.mode).toBe("mock");
+    expect(response.rules[0]?.id).toBe("monitor-high-risk-token");
+  });
+
   it("reads service metadata", async () => {
     const client = new ChainVigilClient({
       fetcher: mockFetch({

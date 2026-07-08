@@ -57,6 +57,11 @@ const endpoints = [
     description: "读取风险数据库人话解释、信号和建议动作。",
   },
   {
+    method: "GET",
+    path: "/api/v1/risk/monitor-rules",
+    description: "读取只读风险监控规则，不执行自动交易拦截或钱包操作。",
+  },
+  {
     method: "POST",
     path: "/api/v1/wallet/health",
     description: "提交钱包地址，返回只读钱包健康报告。",

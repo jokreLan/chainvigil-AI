@@ -126,6 +126,22 @@ describe("api app", () => {
     await app.close();
   });
 
+  it("returns mock risk monitor rules", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/risk/monitor-rules" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.rules[0]).toMatchObject({
+      id: "monitor-high-risk-token",
+      status: "needs_review",
+    });
+    expect(body.rules[0].explanation).toContain("不自动阻断交易");
+
+    await app.close();
+  });
+
   it("returns non-secret service metadata", async () => {
     const app = await buildApiApp();
     const response = await app.inject({ method: "GET", url: "/api/v1/meta" });

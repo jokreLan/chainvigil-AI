@@ -61,6 +61,7 @@ async function main() {
         !html.includes("/api/v1/data-sources/adapters") ||
         !html.includes("/api/v1/worker/jobs") ||
         !html.includes("/api/v1/risk/database") ||
+        !html.includes("/api/v1/risk/monitor-rules") ||
         !html.includes("/api/v1/wallet/watchlist") ||
         !html.includes("/api/v1/telegram/groups") ||
         !html.includes("/api/v1/telegram/commands")
@@ -147,6 +148,17 @@ async function main() {
 
       if (!html.includes("推广中心") || !html.includes("KOL001") || !html.includes("有效 CA")) {
         throw new Error(`${name} expected growth channel summary`);
+      }
+    }),
+  );
+
+  checks.push(
+    request("web.monitor", `${webBaseUrl}/app/monitor`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("风险监控") || !html.includes("高危 token 复查") || !html.includes("不自动阻断交易")) {
+        throw new Error(`${name} expected risk monitor rule summary`);
       }
     }),
   );
@@ -397,6 +409,23 @@ async function main() {
           !body.entries?.[0]?.plainLanguage?.includes("买得进但卖不出")
         ) {
           throw new Error(`${name} expected mock risk database glossary`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.risk-monitor-rules", `${apiBaseUrl}/api/v1/risk/monitor-rules`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (
+          body.mode !== "mock" ||
+          body.rules?.[0]?.id !== "monitor-high-risk-token" ||
+          !body.rules?.[0]?.explanation?.includes("不自动阻断交易")
+        ) {
+          throw new Error(`${name} expected mock risk monitor rules`);
         }
       },
     ),

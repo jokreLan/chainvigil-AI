@@ -7,6 +7,7 @@ import type {
   ApprovalRiskItem,
   ChainId,
   RiskDatabaseEntry,
+  RiskMonitorRule,
   RiskReason,
   TokenRiskReport,
   WalletHealthReport,
@@ -163,6 +164,60 @@ export function listMockRiskDatabaseEntries(): RiskDatabaseEntry[] {
   return entries.map((entry) => ({
     ...entry,
     signals: [...entry.signals],
+  }));
+}
+
+export function listMockRiskMonitorRules(): RiskMonitorRule[] {
+  const rules = [
+    {
+      id: "monitor-high-risk-token",
+      title: "高危 token 复查",
+      targetType: "token",
+      severity: "HIGH",
+      status: "needs_review",
+      cadenceLabel: "每 6 小时",
+      lastSignalAt: "2026-07-08T03:00:00.000Z",
+      signals: ["riskLevelChanged", "honeypotDetected", "sellTaxPercent>=50"],
+      explanation: "当已查询 token 出现更高风险信号时提醒用户复查，不自动阻断交易。",
+    },
+    {
+      id: "monitor-approval-change",
+      title: "授权变更提醒",
+      targetType: "wallet",
+      severity: "MEDIUM",
+      status: "watching",
+      cadenceLabel: "每日",
+      lastSignalAt: "2026-07-08T02:30:00.000Z",
+      signals: ["newInfiniteApproval", "unknownSpender", "spenderLabelChanged"],
+      explanation: "仅提示新增或异常授权，不替用户自动撤销，也不请求签名。",
+    },
+    {
+      id: "monitor-deployer-profile",
+      title: "部署者画像变化",
+      targetType: "deployer",
+      severity: "HIGH",
+      status: "watching",
+      cadenceLabel: "每 12 小时",
+      lastSignalAt: "2026-07-07T22:00:00.000Z",
+      signals: ["repeatedDeployments", "linkedRiskLabels", "clusterPending"],
+      explanation: "追踪部署者关联风险标签变化，等待真实链上聚类接入后提升准确率。",
+    },
+    {
+      id: "monitor-liquidity-pull",
+      title: "LP 撤出风险",
+      targetType: "liquidity",
+      severity: "BLOCK",
+      status: "paused",
+      cadenceLabel: "真实 RPC 接入后启用",
+      lastSignalAt: null,
+      signals: ["lpRemoved", "lpLocked=false", "ownerConcentrated"],
+      explanation: "V0 只保留监控规则 contract，真实 LP 撤出监听需要 RPC 和索引器。",
+    },
+  ] satisfies RiskMonitorRule[];
+
+  return rules.map((rule) => ({
+    ...rule,
+    signals: [...rule.signals],
   }));
 }
 
