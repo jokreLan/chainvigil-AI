@@ -277,6 +277,11 @@
 - 第 57 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/worker` typecheck/test/build、API/SDK/Admin/Web 目标 typecheck/test/build；Worker 测试 2 个用例、API 测试 27 个用例、SDK 测试 18 个用例通过。
 - 第 57 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
 - 第 57 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin `/system-readiness` Worker 任务和 API `/api/v1/worker/jobs`。
+- 开始开发 loop 第 58 轮：将 Web App `/app/reports` 从本地静态样例改为复用共享只读 mock Token 报告索引 contract。
+- 完成开发 loop 第 58 轮：Web App `/app/reports` 复用 `listMockTokenReportIndex()` 展示 CA 安检报告历史；`pnpm smoke:v0` 新增用户报告历史页面断言。
+- 第 58 轮目标门禁已通过：`pnpm --filter @chainvigil/web typecheck/test/build`，Web 测试 4 个用例通过。
+- 第 58 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 58 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web `/app/reports` 用户报告历史。
 
 ## 下一步
 

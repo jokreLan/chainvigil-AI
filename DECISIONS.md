@@ -52,3 +52,4 @@
 - 增长渠道归因 V0 由 `@chainvigil/points` 提供只读 mock contract，Admin/API/SDK 复用；只展示有效访问、有效 CA 和 VP 结算摘要，不提供真实结算或平台币 claim。
 - 数据源 adapter readiness 通过 API/SDK 暴露时只返回 provider 名称、mock/live 状态和 required env 名称，不返回任何 API key、RPC URL 或连接串。
 - Worker job contract 由 `@chainvigil/worker` 导出并给 API/Admin/SDK 复用；V0 只展示任务名称、节奏和 mock/enabled 状态，不启动真实队列消费。
+- Web App `/app/reports` 复用 `@chainvigil/risk-core` 的只读 mock Token 报告索引；V0 不额外维护钱包体检历史聚合，等账户与报告落库后再统一分页查询。

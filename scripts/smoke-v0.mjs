@@ -106,6 +106,17 @@ async function main() {
   );
 
   checks.push(
+    request("web.reports", `${webBaseUrl}/app/reports`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("报告历史") || !html.includes("Mock Vigil Token") || !html.includes("疑似貔貅盘")) {
+        throw new Error(`${name} expected user token report index`);
+      }
+    }),
+  );
+
+  checks.push(
     request("admin.health", `${adminBaseUrl}/health`).then(async ({ name, response }) => {
       await assertStatus(name, response, 200);
       await assertHeader(name, response, "x-frame-options", "DENY");

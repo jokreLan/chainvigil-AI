@@ -16,6 +16,7 @@
 - 第 55 轮无新增阻塞；增长渠道归因仍为只读 mock contract，真实结算、反作弊和渠道归因需等待数据埋点与权限系统接入。
 - 第 56 轮无新增阻塞；数据源 adapter readiness 只暴露 required env 名称，不调用真实 provider，也不返回任何密钥值。
 - 第 57 轮无新增阻塞；Worker job contract 仍为只读 mock，真实队列消费需等待 Redis-backed queue 和幂等执行策略。
+- 第 58 轮无新增阻塞；Web App 报告历史暂只展示 Token 报告索引，钱包体检历史聚合需等待账户与报告落库模型接入。
 - Prisma schema 校验需要 `DATABASE_URL`；已在 db package 校验脚本中提供本地默认连接串，仅用于 schema validate。
 - 严格 TypeScript 可选字段导致 VP 事件和 API mock 输入报错；已修复。
 - Token 报告 OG 图片在本地边缘运行器中因中文动态字体加载和 `fit-content` 布局限制返回 500；已改为英文 ASCII 分享图文案和显式 flex 布局。
