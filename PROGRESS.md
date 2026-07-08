@@ -1,0 +1,234 @@
+# PROGRESS
+
+## 2026-07-08
+
+- 阅读产品总案、版本规划与技术设计、Monorepo 架构设计。
+- 确认品牌使用 ChainVigil AI｜链哨 AI，核心口号为“买币前，先查 CA。”。
+- V0 范围锁定为：Web DApp、CA 安检入口、Token 风险报告页、分享报告基础能力、SEO/GEO 基础结构、哨点 VP 积分事件模型、Telegram Bot skeleton、Admin skeleton、Monorepo 基础工程。
+- 初始化轻量 monorepo 文件：pnpm workspace、Turborepo、统一 TypeScript 配置、README、环境变量样例。
+- 建立共享 packages：types、config、db、chain、risk-core、data-adapters、report、points。
+- 建立 Prisma schema：TokenReport、TokenRiskSnapshot、RiskFactor、PointEvent、ReferralEvent、TelegramGroup、AdminAuditLog。
+- 建立 apps/web：首页、`/check`、`/token/[chain]/[address]`、`/bot`、`/app/points`。
+- 建立 apps/api：`/health`、`/api/v1/token/check`、`/api/v1/token/:chain/:address`。
+- 建立 apps/bot：`/health`、`/telegram/webhook` mock `/check 0x...`。
+- 建立 apps/admin：后台 skeleton 首页。
+- 完成 `pnpm install`，pnpm 构建脚本审批使用 `pnpm approve-builds --all` 非交互处理。
+- 完成校验：`pnpm lint`、`pnpm typecheck`、`pnpm test`、`pnpm build` 均通过。
+- 启动 `pnpm dev` 并实测：
+  - Web 首页 `http://localhost:3000` 返回 200。
+  - Token 报告页 `/token/base/0x1111111111111111111111111111111111111110` 返回 200。
+  - API health 返回 mock adapters 状态。
+  - API CA check 返回 mock 风险报告和 pending VP 事件。
+  - Bot webhook 返回 mock `/check` 文案。
+- 归档用户提供的三份产品/技术 Markdown 到仓库：
+  - `docs/product/token_sentinel_product_master_doc_v0_2.md`
+  - `docs/tech/token_sentinel_version_tech_plan_v0_1.md`
+  - `docs/tech/token_sentinel_monorepo_architecture_v0_1.md`
+- 归档用户提供的三份 ChainVigil AI 新文档到仓库：
+  - `docs/product/chainvigil_ai_full_product_prd_v0_1.md`
+  - `docs/design/chainvigil_ai_stitch_prompt_pack_v0_1.md`
+  - `docs/design/chainvigil_ai_ux_ui_standard_v0_1.md`
+- 新增 `docs/tech/development_iteration_loop.md`，明确后续开发-测试-修复循环。
+- 完成开发 loop 第 1 轮：`/check` 表单改为调用 API `POST /api/v1/token/check`，成功后进入报告页。
+- 完成开发 loop 第 2 轮：拆出 API/Bot Fastify app 构造，新增 API token check 与 Bot webhook contract tests。
+- 完成开发 loop 第 3 轮：Token 报告页新增复制链接、复制分享文案、Telegram/X 分享入口。
+- 完成开发 loop 第 4 轮：新增 Web `/risk-database` 与 `/api` 基础 SEO/GEO 入口页。
+- 完成开发 loop 第 5 轮：Admin 新增 `/reports` Token 报告查询 skeleton。
+- 完成开发 loop 第 6 轮：为 `packages/report` 和 `packages/data-adapters` 增加契约测试，固定报告文案与 mock adapter snapshot 结构。
+- 第 1、2、3、4、5、6 轮均已通过 `pnpm lint && pnpm typecheck && pnpm test && pnpm build`。
+- 运行态 smoke check 已通过：
+  - `http://localhost:3000/risk-database` 返回 200。
+  - `http://localhost:3000/api` 返回 200。
+  - `http://localhost:3001/reports` 返回 200。
+  - `POST http://localhost:4000/api/v1/token/check` 返回 `禁买` 报告和 `pending` VP 事件。
+- 新增钱包体检与授权风险 mock 闭环：
+  - `POST /api/v1/wallet/health`
+  - `GET /api/v1/wallet/:address/health`
+  - `/wallet-check`
+  - `/wallet/[address]/health`
+- 补齐 Public Web 主要信息架构入口：`/leaderboard/high-risk-tokens`、`/fake-token-database`、`/learn`、`/pricing`、`/developers`。
+- 补齐 App Area 主要入口：`/app/wallets`、`/app/approval-cleaner`、`/app/asset-barber`、`/app/dust`、`/app/monitor`、`/app/settings`。
+- 补齐 Admin 主要入口：`/points`、`/telegram`、`/channels`、`/risk-review`、`/risk-labels`。
+- 增加增长与 Bot 能力：
+  - `GET /api/v1/points/rules`
+  - `POST /api/v1/points/event`
+  - `POST /api/v1/referral/event`
+  - Bot `/help`、`/top`、`/settings`
+- 新增 `docker-compose.yml`，提供本地 PostgreSQL / Redis 启动方式。
+- 新增 `.github/workflows/ci.yml`，固定 CI 校验：install、lint、typecheck、test、build、Prisma schema validate。
+- 新增 `/openapi.json` API contract。
+- 新增 `@chainvigil/sdk` TypeScript SDK skeleton，支持 token check、wallet health、VP rules、VP event。
+- 新增 Web 基础 SEO/GEO 文件：`robots.txt`、`sitemap.xml`、`manifest.webmanifest`。
+- 新增 Token 报告动态 OG 图片：`/token/[chain]/[address]/opengraph-image`，用于基础分享卡片。
+- 完成开发 loop 第 7 轮：修复 OG 图片边缘运行器布局/字体限制，改为稳定 PNG 输出。
+- 完成开发 loop 第 8 轮：API 增加输入校验与统一 400 错误格式，覆盖 CA、链、钱包地址、VP 事件类型。
+- 第 7 轮通过 `pnpm --filter @chainvigil/web typecheck && pnpm --filter @chainvigil/web build`，OG 路由 smoke check 返回 `200 image/png`。
+- 第 8 轮通过 `pnpm install && pnpm --filter @chainvigil/api typecheck && pnpm --filter @chainvigil/api test`。
+- 最新全仓校验通过：`pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm db:validate`。
+- 重启 `pnpm dev` 后运行态 smoke check 已通过：
+  - API `/health` 返回 200。
+  - API 无效 CA 返回稳定 `400 BAD_REQUEST`。
+  - Web Token 报告页返回 200。
+  - Web OG 图片返回 `200 image/png`。
+  - Admin `/reports` 返回 200。
+  - Bot webhook mock `/check` 返回报告文案。
+- 完成开发 loop 第 9 轮：新增 Docker 运行骨架，包括 `.dockerignore`、Web/Admin/API/Bot Dockerfile、compose app profile 和 README Docker 说明。
+- 第 9 轮通过 `docker compose config`、`pnpm lint`、`pnpm typecheck`、`pnpm test`、`pnpm build`、`pnpm db:validate`。
+- 完成开发 loop 第 10 轮：Web 新增 API 错误解析工具，`/check` 与钱包体检表单可显示 API 返回的人话错误；新增 Web 单测。
+- 第 10 轮通过 `pnpm --filter @chainvigil/web typecheck/test/build`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 完成开发 loop 第 11 轮：报告分享链接支持 `ref` 参数透传，复制/Telegram/X 分享会向 mock referral API 记录事件。
+- 第 11 轮通过 `pnpm --filter @chainvigil/web typecheck/test/build`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 11 轮运行态 smoke check 已通过：
+  - 报告页 `?ref=testref` 渲染出 `ref=testref` 分享参数。
+  - `POST /api/v1/referral/event` 返回 `status=recorded`。
+- Docker 镜像构建实测尝试：`docker build -f apps/api/Dockerfile ...` 与 `docker pull node:20-bookworm-slim` 因 Docker Hub 请求超时/EOF 失败，已写入 `BLOCKERS.md`；`docker compose config` 已通过。
+- 完成开发 loop 第 12 轮：`@chainvigil/config` 新增环境变量契约与 `validateEnv`，`.env.example` 补齐公开站点地址、API/Bot host/port，README 补充环境变量说明。
+- 第 12 轮通过 `pnpm --filter @chainvigil/config typecheck/test/build`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 完成开发 loop 第 13 轮：`@chainvigil/data-adapters` 新增多 provider 风险数据 bundle，API 新增 `/api/v1/token/:chain/:address/data` 调试端点，并对 GET Token 报告路径参数补 400 校验。
+- 第 13 轮通过 `pnpm --filter @chainvigil/data-adapters typecheck/test/build`、`pnpm --filter @chainvigil/api typecheck/test/build`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 13 轮运行态 smoke check 已通过：
+  - `/api/v1/token/base/0x.../data` 返回 5 个 provider snapshot。
+  - `/api/v1/token/solana/not-a-ca` 返回 400。
+- 完成开发 loop 第 14 轮：Web layout 新增 `metadataBase`，使用 `NEXT_PUBLIC_APP_BASE_URL` 生成稳定 OpenGraph/Twitter 图片绝对地址。
+- 第 14 轮通过 `pnpm --filter @chainvigil/web typecheck/build`，并通过最终全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 完成开发 loop 第 15 轮：Prisma 新增 `prisma/seed.ts` 演示数据脚本，README 补充 seed 命令。
+- 完成开发 loop 第 16 轮：Admin 新增 `/data-sources` 数据源状态页，首页增加入口，展示 GoPlus/Honeypot/RPC/DEX/InternalRiskDB 的 mock/live-ready 状态。
+- 第 15、16 轮通过 `pnpm install`、相关包 typecheck/build、全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 16 轮运行态 smoke check 已通过：
+  - Admin `/data-sources` 返回 200。
+  - Admin `/` 返回 200。
+  - API `/health` 返回 `ok=true` 和 5 个 adapter。
+- 完成开发 loop 第 17 轮：SDK 新增 `ChainVigilApiError`，保留 API 结构化错误的 `status/code/field/message`，便于外部调用方做表单级错误处理。
+- 第 17 轮通过 `pnpm --filter @chainvigil/sdk typecheck/test/build`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 完成开发 loop 第 18 轮：新增 `@chainvigil/cache` Redis skeleton，提供 memory/noop cache、TTL 行为、cache health；API `/health` 增加 cache 状态。
+- 第 18 轮通过 `pnpm --filter @chainvigil/cache typecheck/test/build`、`pnpm --filter @chainvigil/api typecheck/test`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 完成开发 loop 第 19 轮：将 `packages/db/prisma/seed.ts` 纳入 db TypeScript 校验范围，修复 Prisma JSON 输入类型，避免 seed 演示脚本游离在类型检查之外。
+- 第 19 轮通过 `pnpm --filter @chainvigil/db typecheck/build/prisma:validate`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 完成开发 loop 第 20 轮：API 新增基础限流骨架，覆盖 `/api/v1/token/check`、`/api/v1/wallet/health`、`/api/v1/points/event`、`/api/v1/referral/event` 四类写入口。
+- 第 20 轮新增 `apps/api/src/rate-limit.ts` 与单测，API contract test 覆盖 429 `RATE_LIMITED` 返回结构。
+- 第 20 轮通过 `pnpm --filter @chainvigil/api typecheck/test/build`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 20 轮运行态 smoke check 已通过：连续 61 次请求 `/api/v1/token/check`，第 1/60 次返回 200，第 61 次返回 429。
+- 完成开发 loop 第 21 轮：SDK 新增 `getTokenRiskData`，并保留 API `RATE_LIMITED` 等结构化错误；OpenAPI 补充写入口 400/429 错误响应说明。
+- 第 21 轮通过 `pnpm --filter @chainvigil/sdk typecheck/test/build`、`pnpm --filter @chainvigil/api typecheck/test/build`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 完成开发 loop 第 22 轮：Admin 新增可配置 Basic Auth skeleton，未设置 `ADMIN_BASIC_AUTH_PASSWORD` 时保持本地免登录，生产可启用账号密码门禁。
+- 第 22 轮新增 Admin auth 单测，并将 Next.js 16 的访问保护约定调整为 `proxy.ts`，避免使用已废弃 middleware 文件名。
+- 第 22 轮通过 `pnpm --filter @chainvigil/admin typecheck/test/build`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 完成开发 loop 第 23 轮：新增系统就绪状态 contract，API 提供 `/api/v1/system/readiness`，Admin 新增 `/system-readiness` 页面展示 mock/production 配置缺口、adapter 和 cache 摘要。
+- 第 23 轮新增 `@chainvigil/config` readiness 单测、API readiness contract test，并更新 OpenAPI/README/.env.example。
+- 第 23 轮通过 `pnpm install`、`pnpm --filter @chainvigil/config/api/admin typecheck/test/build`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 23 轮运行态 smoke check 已通过：
+  - `GET /api/v1/system/readiness` 返回 200，且只展示缺失配置名称，不泄露 secret 值。
+  - Admin `/system-readiness` 返回 200。
+  - 设置 `ADMIN_BASIC_AUTH_PASSWORD=smoke-test` 后，Admin 未带凭证返回 401，带 `admin:smoke-test` 返回 200。
+- 开始开发 loop 第 24 轮：新增 Worker skeleton，用于承接后续风险刷新、VP 入账、报告快照等异步任务。
+- 第 24 轮运行态 smoke 首次发现 Node `start` 直接执行 dist 时会解析到 workspace 包 TS 源码；已将 API/Bot/Worker 的 V0 `start` 统一改为 `tsx src/...`，等待后续生产镜像阶段再做 dist exports/bundle。
+- 第 24 轮新增 `apps/worker`、Worker job contract 单测、Worker Dockerfile，并将 worker 加入 compose `app` profile。
+- 第 24 轮通过 `pnpm --filter @chainvigil/worker typecheck/test/build`、`docker compose --profile app config`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 24 轮 Worker 运行态 smoke check 已通过：`pnpm --filter @chainvigil/worker start` 输出健康 heartbeat JSON。
+- 第 24 轮 `pnpm dev` 运行态 smoke check 已通过：Web `/check`、Admin `/system-readiness`、API `/api/v1/system/readiness`、Bot `/health` 均返回 200，Worker heartbeat 正常输出。
+- 开始开发 loop 第 25 轮：SDK 跟进系统就绪 API，新增 `getSystemReadiness()` 与非 secret readiness 返回结构类型。
+- 完成开发 loop 第 25 轮：SDK 新增 `SystemReadinessResponse` 与 `getSystemReadiness()`，覆盖 readiness、adapter、cache 摘要读取。
+- 第 25 轮通过 `pnpm --filter @chainvigil/sdk typecheck/test/build`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 开始开发 loop 第 26 轮：Web/Admin 新增品牌化 not-found 与 error 页面，替换默认框架兜底页。
+- 完成开发 loop 第 26 轮：Web/Admin 新增 `not-found.tsx` 与 `error.tsx`，Web 404 引导回 CA 安检，Admin 404 引导回后台首页。
+- 第 26 轮通过 `pnpm --filter @chainvigil/web/admin typecheck/build`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 26 轮运行态 smoke check 已通过：Web `/does-not-exist` 返回 404 并渲染“没有找到这个页面”，Admin `/does-not-exist` 返回 404 并渲染“后台页面不存在”。
+- 开始开发 loop 第 27 轮：补齐 GET 钱包体检报告路径参数校验，统一无效钱包地址的 400 `BAD_REQUEST` 响应。
+- 完成开发 loop 第 27 轮：`GET /api/v1/wallet/:address/health` 增加 EVM 地址校验，并同步 OpenAPI 400 描述。
+- 第 27 轮通过 `pnpm --filter @chainvigil/api typecheck/test/build`，API 测试 17 个用例通过，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 27 轮运行态 smoke check 已通过：`GET /api/v1/wallet/not-a-wallet/health` 返回 400 `BAD_REQUEST`，`field=address`。
+- 开始开发 loop 第 28 轮：SDK 跟进钱包报告读取 API，新增 `getWalletReport(address)`。
+- 完成开发 loop 第 28 轮：SDK 新增 `getWalletReport(address)`，用于读取 `GET /api/v1/wallet/:address/health` 钱包报告。
+- 第 28 轮通过 `pnpm --filter @chainvigil/sdk typecheck/test/build`，SDK 测试 7 个用例通过，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 开始开发 loop 第 29 轮：Telegram Bot `/check` 增加 EVM 地址校验和无效输入人话提示。
+- 完成开发 loop 第 29 轮：Bot `/check` 先通过 `@chainvigil/chain` 解析 EVM 地址，坏输入返回中文用法提示，不再生成误导性的 mock 报告。
+- 第 29 轮通过 `pnpm install`、`pnpm --filter @chainvigil/bot typecheck/test/build`，Bot 测试 4 个用例通过，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 29 轮运行态 smoke check 已通过：Bot webhook `/check not-a-ca` 返回“请输入有效的 EVM 合约地址”提示。
+- 开始开发 loop 第 30 轮：Web/Admin/API/Bot 增加最小安全响应头 skeleton。
+- 完成开发 loop 第 30 轮：Web/Admin 使用 Next `headers()`，API/Bot 使用 Fastify `onRequest` hook，统一增加 `X-Content-Type-Options`、`Referrer-Policy`、`X-Frame-Options`、`Permissions-Policy`。
+- 第 30 轮通过 API/Bot/Web/Admin 目标 typecheck/test/build，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 30 轮运行态 smoke check 已通过：Web `/check`、Admin `/system-readiness`、API `/health`、Bot `/health` 均返回安全响应头。
+- 开始开发 loop 第 31 轮：将哨点 VP 项目元信息和免责声明集中到 `@chainvigil/points`，避免 API 等调用方复制文案。
+- 完成开发 loop 第 31 轮：`@chainvigil/points` 新增 `getPointProgram()`，集中导出“哨点 / Vigil Points / VP / 不承诺平台币”元信息和规则；API `/api/v1/points/rules` 改为复用该 contract。
+- 第 31 轮通过 `pnpm --filter @chainvigil/points typecheck/test/build`、`pnpm --filter @chainvigil/api typecheck/test/build`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 开始开发 loop 第 32 轮：新增 `pnpm smoke:v0` 脚本，统一验收 Web/API/Admin/Bot 的 V0 运行态关键路径。
+- 完成开发 loop 第 32 轮：新增 `scripts/smoke-v0.mjs` 与根命令 `pnpm smoke:v0`，覆盖 Web `/check`、Token 报告页、Admin readiness、API token check、API 坏钱包 400、Bot 坏 `/check` 提示和关键安全响应头。
+- 第 32 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 32 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`。
+- 开始开发 loop 第 33 轮：Token 风险报告页新增 JSON-LD 结构化数据，增强基础 SEO/GEO。
+- 完成开发 loop 第 33 轮：Token 报告页注入 `application/ld+json`，由 `@chainvigil/report` 统一生成公开报告摘要、风险解释、风险评估和免责声明。
+- 第 33 轮通过 `pnpm --filter @chainvigil/report typecheck/test/build`、`pnpm --filter @chainvigil/web typecheck/build`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 33 轮运行态 smoke check 已通过：`pnpm dev` 启动后 `pnpm smoke:v0` 返回 `V0 smoke passed`，Token 报告页包含 `application/ld+json`、`"@type":"Report"` 与 `riskAssessment`。
+- 开始开发 loop 第 34 轮：新增 Admin 审计事件 contract，用于后续风险审核、标签改动、Telegram 群设置等后台操作留痕。
+- 完成开发 loop 第 34 轮：新增 `@chainvigil/audit` 包、`AdminAuditLog`/`AdminAuditAction` 共享类型、metadata 脱敏规则，以及 token/Telegram 审计 target formatter。
+- 第 34 轮目标门禁已通过：`pnpm --filter @chainvigil/audit typecheck/test/build`，审计包测试 3 个用例通过。
+- 第 34 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 开始开发 loop 第 35 轮：将 Token 报告 JSON-LD 检查固化到 V0 运行态 smoke。
+- 完成开发 loop 第 35 轮：`scripts/smoke-v0.mjs` 的 Web Token 报告检查新增 `application/ld+json`、`"@type":"Report"`、`riskAssessment` 断言。
+- 第 35 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 35 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行新版 `pnpm smoke:v0` 返回 `V0 smoke passed`。
+- 开始开发 loop 第 36 轮：补齐 Web/Admin `/health` 探活端点，并纳入 V0 smoke。
+- 完成开发 loop 第 36 轮：Web `/health` 返回 `chainvigil-web` 健康 JSON，Admin `/health` 返回 `chainvigil-admin` 健康 JSON；`scripts/smoke-v0.mjs` 新增两项断言。
+- 第 36 轮通过 Web/Admin 目标 `typecheck/build`，并通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 36 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，Web/Admin `/health` 均为 200。
+- 开始开发 loop 第 37 轮：新增 API 服务元信息端点和 SDK 读取方法，用于确认客户端连接到 ChainVigil AI V0。
+- 完成开发 loop 第 37 轮：新增 `ServiceMeta` 共享类型、API `/api/v1/meta`、OpenAPI path、SDK `getServiceMeta()`，并将 API meta 纳入 `pnpm smoke:v0`。
+- 第 37 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/api` typecheck/test/build、`@chainvigil/sdk` typecheck/test/build；API 测试 18 个用例、SDK 测试 8 个用例通过。
+- 第 37 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 37 轮运行态 smoke 首次发现 Web dev 缓存状态导致动态路由 `/token/[chain]/[address]` 与 `/wallet/[address]/health` 返回 404；清理 Web/Admin `.next` 生成缓存后恢复，已记录到 `BLOCKERS.md` 已处理问题。
+- 第 37 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，其中 API `/api/v1/meta`、Web/Admin `/health`、Token 报告 JSON-LD 均通过断言。
+- 开始开发 loop 第 38 轮：同步 README，补齐第一阶段已实现端点、health/meta、钱包体检、smoke 范围、SDK meta 与 Admin 审计说明。
+- 完成开发 loop 第 38 轮：README 已更新 V0 范围、健康检查、V0 smoke 覆盖范围、钱包体检 mock、SDK `getServiceMeta()`、readiness/meta 区分和 `@chainvigil/audit` contract。
+- 第 38 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 开始开发 loop 第 39 轮：Admin skeleton 新增后台审计日志页，展示审计事件 contract 和敏感字段脱敏效果。
+- 完成开发 loop 第 39 轮：新增 Admin `/audit` 页面、首页入口、Admin workspace 依赖 `@chainvigil/audit`，并将 `/audit` 纳入 `pnpm smoke:v0`。
+- 第 39 轮目标门禁已通过：`pnpm install`、`pnpm --filter @chainvigil/admin typecheck/build`，Admin 构建路由表包含 `/audit`。
+- 第 39 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 39 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，Admin `/audit` 返回 200 且包含脱敏 metadata。
+- 开始开发 loop 第 40 轮：将 mock Admin 审计日志集中到 `@chainvigil/audit`，并新增 API 只读审计日志 contract。
+- 完成开发 loop 第 40 轮：`@chainvigil/audit` 新增 `listMockAdminAuditLogs()`；Admin `/audit` 改为复用共享日志；API 新增 `GET /api/v1/admin/audit/logs` 与 OpenAPI path；`pnpm smoke:v0` 新增 API 审计日志脱敏断言。
+- 第 40 轮目标门禁已通过：`pnpm install`、`@chainvigil/audit` typecheck/test/build、`@chainvigil/admin` typecheck/build、`@chainvigil/api` typecheck/test/build；Audit 测试 4 个用例、API 测试 19 个用例通过。
+- 第 40 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 40 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，Admin `/audit` 与 API `/api/v1/admin/audit/logs` 均通过脱敏断言。
+- 开始开发 loop 第 41 轮：同步 README，补齐只读 Admin audit mock API、Admin `/audit` 与新版 smoke 覆盖范围。
+- 完成开发 loop 第 41 轮：README 已更新 API 范围、健康检查示例、smoke 范围和 Admin 审计章节，明确 V0 不提供无权限写审计日志接口。
+- 第 41 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 开始开发 loop 第 42 轮：SDK 跟进只读 Admin audit mock API，新增 `getAdminAuditLogs()`。
+- 完成开发 loop 第 42 轮：SDK 新增 `AdminAuditLogsResponse` 与 `getAdminAuditLogs()`，README SDK 示例同步增加审计日志读取。
+- 第 42 轮目标门禁已通过：`pnpm --filter @chainvigil/sdk typecheck/test/build`，SDK 测试 9 个用例通过。
+- 第 42 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 开始开发 loop 第 43 轮：Admin `/audit` 改为优先读取 API 只读审计日志，失败时回落到本地 mock。
+- 完成开发 loop 第 43 轮：新增 `apps/admin/lib/admin-audit-logs.ts` 与单测；Admin `/audit` 使用 API-first/fallback 读取逻辑，并在页面显示数据来源；`pnpm smoke:v0` 增加 API 数据来源断言。
+- 第 43 轮目标门禁已通过：`pnpm --filter @chainvigil/admin typecheck/test/build`，Admin 测试 5 个用例通过。
+- 第 43 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 43 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，Admin `/audit` 确认显示 API 只读审计日志来源。
+- 开始开发 loop 第 44 轮：新增生产安全预检 contract 与中文安全边界文档，避免 V0 mock 能力被误用为生产安全承诺。
+- 完成开发 loop 第 44 轮：`@chainvigil/config` 新增 `getProductionSecurityReadiness()`，API readiness 返回非密钥安全警告，Admin `/system-readiness` 展示生产安全预检，README 和 `SECURITY.md` 同步说明上线边界。
+- 第 44 轮目标门禁已通过：`@chainvigil/config` typecheck/test/build、`@chainvigil/api` typecheck/test/build、`@chainvigil/admin` typecheck/build、`@chainvigil/sdk` typecheck/test/build；Config 测试 5 个用例通过。
+- 第 44 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 44 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin 生产安全预检页面与 API readiness 非密钥安全警告。
+- 开始开发 loop 第 45 轮：加固 API readiness contract test，固定生产安全预检字段和“不泄露占位密钥值”的响应边界。
+- 完成开发 loop 第 45 轮：`apps/api/src/app.test.ts` 断言 `readiness.productionSecurity` 返回变量名级警告，并确认响应不包含 `replace-me` 等示例密钥值。
+- 第 45 轮目标门禁已通过：`pnpm --filter @chainvigil/api typecheck/test/build`，API 测试 19 个用例通过。
+- 第 45 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 开始开发 loop 第 46 轮：补齐 Telegram Bot `/start` 欢迎入口，完善 Bot skeleton 的自然用户入口。
+- 完成开发 loop 第 46 轮：Bot webhook 支持 `/start` 返回品牌、口号和 `/check` 引导；Bot 单测和 `pnpm smoke:v0` 均新增 `/start` 断言，README 同步示例。
+- 第 46 轮目标门禁已通过：`pnpm --filter @chainvigil/bot typecheck/test/build`，Bot 测试 6 个用例通过。
+- 第 46 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 46 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Bot `/start` 品牌欢迎入口。
+- 开始开发 loop 第 47 轮：补齐 VP ledger 只读 mock 摘要，用于 Web/Admin/API/SDK 展示 pending、confirmed、rejected 的哨点状态。
+- 完成开发 loop 第 47 轮：`@chainvigil/points` 新增 mock ledger summary；API 新增 `GET /api/v1/points/ledger`；SDK 新增 `getPointLedger()`；Web `/app/points` 与 Admin `/points` 展示 ledger 摘要；`pnpm smoke:v0` 新增 VP ledger 断言。
+- 第 47 轮目标门禁首次发现 Admin 缺少 `@chainvigil/points` workspace 依赖；已补齐依赖并执行 `pnpm install`。
+- 第 47 轮目标门禁第 2 次通过：`@chainvigil/types` typecheck/build、`@chainvigil/points` typecheck/test/build、`@chainvigil/api` typecheck/test/build、`@chainvigil/sdk` typecheck/test/build、Web/Admin typecheck/build；Points 测试 3 个用例、SDK 测试 10 个用例通过。
+- 第 47 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 47 轮运行态 smoke 首次遇到 Next/Turbopack dev cache 缺失 `.sst` 文件导致 Web `/app/points` 500；清理 Web/Admin `.next` 后重启 dev，已恢复。
+- 第 47 轮运行态 smoke check 第 2 次已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web/Admin/API VP ledger。
+- 开始开发 loop 第 48 轮：同步 Web `/api` 开发者页面，补齐当前 V0 API contract 清单。
+- 完成开发 loop 第 48 轮：Web `/api` 新增 meta、readiness、VP ledger、Admin audit 端点说明；`pnpm smoke:v0` 新增开发者页面端点清单断言。
+- 第 48 轮目标门禁已通过：`pnpm --filter @chainvigil/web typecheck/build`。
+- 第 48 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 第 48 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web `/api` 最新端点清单。
+
+## 下一步
+
+- 若进入真实风险检测，需要配置 `DATABASE_URL`、RPC、GoPlus/Honeypot 等凭证，并决定本地 PostgreSQL/Redis 启动方式。

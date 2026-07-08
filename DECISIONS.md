@@ -1,0 +1,45 @@
+# DECISIONS
+
+## 2026-07-08
+
+- 品牌命名统一为 ChainVigil AI｜链哨 AI；旧文档中的 Token 哨兵仅作为历史产品名参考，不进入 V0 对外主文案。
+- 积分对外命名为“哨点”，英文为 Vigil Points，简称 VP。
+- V0 首页不要求连接钱包，不要求签名，不做交易执行。
+- V0 风险报告使用 mock 数据闭环，接口和页面结构先稳定，后续再接 GoPlus、Honeypot、RPC、DEX 等数据源。
+- package scope 使用 `@chainvigil/*`，匹配当前品牌，而不是旧文档里的 `@token-sentinel/*`。
+- Prisma schema 先作为模型契约存在，第一阶段不强制本地 PostgreSQL 启动。
+- `pnpm dev` 同时启动 Web、Admin、API、Bot；默认端口分别为 3000、3001、4000、4001。
+- V0 mock 风险等级使用确定性地址尾号逻辑，便于页面和 Bot 在没有外部 API 时稳定演示。
+- VP 积分事件默认以 `pending` 写入模型和 mock API 响应，避免早期把推广/贡献积分直接确认为可用余额。
+- 用户提供的产品和技术文档作为仓库内 SSOT 归档到 `docs/`，后续迭代以这些文档和品牌定稿共同约束范围。
+- 新增 ChainVigil AI 全产品 PRD、Stitch Prompt Pack、UX/UI 交互设计标准后，后续页面与组件实现优先遵守 `docs/product/chainvigil_ai_full_product_prd_v0_1.md` 与 `docs/design/chainvigil_ai_ux_ui_standard_v0_1.md`。
+- 后续执行采用小任务循环：开发、测试、修复、再开发；无法继续时才写入 BLOCKERS 并返回。
+- 不继续编写假装接入真实链上数据的大块代码；在没有 RPC / GoPlus / Honeypot / PostgreSQL 运行环境前，真实风险检测只保留 adapter contract 和 mock snapshot。
+- 分享 OG 图片先采用英文 ASCII 文案，网页主体继续使用中文品牌与中文解释；原因是 Next/Vercel OG 边缘运行器在本地无字体网络时会因中文动态字体加载失败。
+- API 边界统一返回 `{ error: { code, message, field } }` 形式的 400 输入错误；Web、Bot、SDK 后续复用同一错误语义。
+- API 包显式依赖 `@chainvigil/chain`，避免依靠 `risk-core` 的间接依赖解析。
+- Dockerfile 第一阶段优先可读与可运行，不做生产镜像裁剪；后续确定部署平台后再做 pnpm deploy / standalone / distroless 优化。
+- Web 表单错误文案优先展示 API 返回的人话 `error.message`，解析失败时才使用页面本地兜底文案。
+- Prisma seed 作为 V0 演示数据初始化脚本存在，不默认在 `pnpm install` 或 build 中执行，避免要求本地 PostgreSQL 必须运行。
+- Admin 数据源状态页只读取 adapter contract 和环境变量就绪状态，不直接调用外部 provider，避免后台页面触发额度消耗或慢请求。
+- SDK 错误处理与 API 统一错误格式对齐，保留 `field` 给前端表单定位，不只暴露 HTTP status。
+- Redis 在 V0 先以 `@chainvigil/cache` contract 和 memory mock 实现存在；只有检测到 `REDIS_URL` 时标记为 live-ready，暂不引入 Redis 客户端。
+- DB seed 脚本必须纳入 TypeScript 校验；Prisma JSON 字段使用 runtime 导出的 `InputJsonObject/InputJsonArray` 类型。
+- API V0 默认使用内存限流，每 IP/每写入口 60 次/分钟；真实部署时可替换为 Redis-backed cache，不改变 handler 语义。
+- SDK 必须跟随已稳定的 API contract 暴露能力，例如 token 原始数据 bundle 与结构化错误，避免外部调用方绕过 SDK 直接拼接口。
+- OpenAPI contract 需要同步标注 400/429 等错误返回，尤其是写入口限流后，便于前端、Bot 和 SDK 使用同一错误语义。
+- Admin V0 使用可配置 Basic Auth skeleton；未设置 `ADMIN_BASIC_AUTH_PASSWORD` 时不阻塞本地开发，生产模式必须配置。
+- 系统就绪状态只暴露缺失环境变量名称和依赖 ready/mock 状态，严禁返回密钥、数据库连接串、Bot token 等真实值。
+- Worker V0 只保留后台任务 contract 和健康心跳，不启用真实队列消费；后续接 Redis-backed queue 时不改变 job 名称语义。
+- Node 服务类应用的 V0 `start` 使用 `tsx src/...`，因为 workspace 包当前导出 TS 源码；生产镜像裁剪阶段再统一切换 dist exports 或 bundle。
+- V0 先使用框架内置能力设置最小安全响应头，不引入 helmet 等新依赖；后续生产部署再按域名、嵌入策略和 CDN 调整 CSP。
+- 哨点 VP 的项目名、英文名、简称和免责声明必须由 `@chainvigil/points` 集中导出，API/Web/SDK 不各自复制，避免误导成平台币承诺。
+- Token 报告 JSON-LD 只输出公开报告摘要、风险解释和免责声明，不输出内部 evidence 字段，避免搜索引擎或 AI 摘要误读内部 mock 证据。
+- Admin 审计先以 `@chainvigil/audit` contract 固化事件格式和脱敏策略，不在 V0 直接强制写库；后续接 Prisma `AdminAuditLog` 时复用同一事件结构。
+- Web/Admin 均提供 `/health` JSON 探活端点；API/Bot 仍使用服务内 `/health`，系统就绪细节继续放在 API `/api/v1/system/readiness` 与 Admin `/system-readiness`。
+- API `/api/v1/meta` 只返回品牌、V0 版本、运行模式、支持链和可选 commit sha，不返回任何密钥、连接串或环境变量真实值。
+- Admin `/audit` V0 只展示 mock 审计日志和脱敏规则效果，不提供人工编辑入口；真实写入需等 Prisma `AdminAuditLog` 和权限系统接入。
+- API `/api/v1/admin/audit/logs` 仅提供只读 mock 审计日志，用于 Admin/API contract 联调；V0 不提供无权限写审计日志接口。
+- Admin `/audit` 优先读取 API `/api/v1/admin/audit/logs`，API 不可用时回落到本地 mock，避免构建或本地开发被 API 服务状态卡死。
+- 生产安全预检由 `@chainvigil/config` 统一提供，只返回变量名和原因，不返回真实密钥值；Admin/API/SDK 复用同一 readiness contract。
+- VP ledger V0 只提供只读 mock 摘要，明确区分 pending、confirmed、rejected；不把待确认 VP 展示为可用余额。

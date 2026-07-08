@@ -1,0 +1,354 @@
+import { describe, expect, it } from "vitest";
+import { buildApiApp } from "./app.js";
+
+describe("api app", () => {
+  it("returns health and adapter skeleton state", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/health" });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.headers["x-content-type-options"]).toBe("nosniff");
+    expect(response.headers["x-frame-options"]).toBe("DENY");
+    expect(response.json()).toMatchObject({
+      ok: true,
+      service: "chainvigil-api",
+      cache: {
+        name: "memory",
+        mode: "mock",
+        ready: true,
+      },
+    });
+
+    await app.close();
+  });
+
+  it("serves an OpenAPI document", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/openapi.json" });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toMatchObject({
+      openapi: "3.1.0",
+      info: {
+        title: "ChainVigil AI API",
+      },
+    });
+
+    await app.close();
+  });
+
+  it("returns system readiness without secret values", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/system/readiness" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body).toMatchObject({
+      service: "chainvigil-api",
+      readiness: {
+        current: {
+          mode: "mock",
+        },
+        productionSecurity: {
+          ok: false,
+        },
+      },
+      cache: {
+        name: "memory",
+      },
+    });
+    expect(body.readiness.productionSecurity.warnings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: "ADMIN_SECRET",
+        }),
+      ]),
+    );
+    expect(JSON.stringify(body)).not.toContain("postgresql://");
+    expect(JSON.stringify(body)).not.toContain("replace-me");
+
+    await app.close();
+  });
+
+  it("returns non-secret service metadata", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/meta" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body).toMatchObject({
+      service: "chainvigil-api",
+      brand: "ChainVigil AI",
+      chineseName: "链哨 AI",
+      slogan: "买币前，先查 CA。",
+      version: "v0",
+      mode: "mock",
+    });
+    expect(body.supportedChains).toContain("base");
+    expect(JSON.stringify(body)).not.toContain("postgresql://");
+
+    await app.close();
+  });
+
+  it("returns mock admin audit logs with redacted metadata", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/admin/audit/logs" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.logs[0]).toMatchObject({
+      action: "risk_report.reviewed",
+      target: "token:base:0x1111111111111111111111111111111111111110",
+    });
+    expect(JSON.stringify(body)).toContain("[redacted]");
+    expect(JSON.stringify(body)).not.toContain("mock-secret");
+
+    await app.close();
+  });
+
+  it("checks a mock CA and returns a pending VP event", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/token/check",
+      headers: {
+        "content-type": "application/json",
+      },
+      payload: {
+        input: "0x1111111111111111111111111111111111111110",
+        chain: "base",
+        source: "web",
+      },
+    });
+
+    const body = response.json();
+    expect(response.statusCode).toBe(200);
+    expect(body.report.label).toBe("禁买");
+    expect(body.pointEvent).toMatchObject({
+      type: "FIRST_CA_CHECK",
+      status: "pending",
+      points: 20,
+    });
+
+    await app.close();
+  });
+
+  it("rate-limits write endpoints with a stable 429 shape", async () => {
+    const app = await buildApiApp({
+      rateLimit: {
+        maxRequests: 1,
+        windowSeconds: 60,
+        now: () => 1_000,
+      },
+    });
+    const payload = {
+      input: "0x1111111111111111111111111111111111111110",
+      chain: "base",
+      source: "web",
+    };
+
+    const firstResponse = await app.inject({
+      method: "POST",
+      url: "/api/v1/token/check",
+      payload,
+    });
+    const secondResponse = await app.inject({
+      method: "POST",
+      url: "/api/v1/token/check",
+      payload,
+    });
+
+    expect(firstResponse.statusCode).toBe(200);
+    expect(secondResponse.statusCode).toBe(429);
+    expect(secondResponse.json()).toMatchObject({
+      error: {
+        code: "RATE_LIMITED",
+        message: "请求过于频繁，请稍后再试。",
+      },
+    });
+
+    await app.close();
+  });
+
+  it("returns raw adapter data bundle for token risk debugging", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/v1/token/base/0x1111111111111111111111111111111111111110/data",
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().data).toMatchObject({
+      chain: "base",
+      address: "0x1111111111111111111111111111111111111110",
+      missingLiveConfig: expect.arrayContaining(["GOPLUS_API_KEY", "HONEYPOT_API_KEY"]),
+    });
+    expect(response.json().data.snapshots.length).toBeGreaterThanOrEqual(5);
+
+    await app.close();
+  });
+
+  it("rejects invalid token check input with a stable 400 shape", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/token/check",
+      payload: {
+        input: "not-a-ca",
+        chain: "base",
+      },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toMatchObject({
+      error: {
+        code: "BAD_REQUEST",
+        field: "input",
+      },
+    });
+
+    await app.close();
+  });
+
+  it("rejects invalid token report path params", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/v1/token/solana/not-a-ca",
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json().error.field).toBe("chain");
+
+    await app.close();
+  });
+
+  it("rejects unsupported chains before building a report", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/token/check",
+      payload: {
+        input: "0x1111111111111111111111111111111111111110",
+        chain: "solana",
+      },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json().error.field).toBe("chain");
+
+    await app.close();
+  });
+
+  it("returns a mock wallet health report", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/wallet/health",
+      headers: {
+        "content-type": "application/json",
+      },
+      payload: {
+        address: "0x1111111111111111111111111111111111111110",
+        chain: "base",
+        source: "web",
+      },
+    });
+
+    const body = response.json();
+    expect(response.statusCode).toBe(200);
+    expect(body.report.summary.highRiskApprovals).toBeGreaterThan(0);
+    expect(body.report.approvals.length).toBeGreaterThan(0);
+
+    await app.close();
+  });
+
+  it("rejects invalid wallet addresses", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/wallet/health",
+      payload: {
+        address: "not-a-wallet",
+      },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json().error.field).toBe("address");
+
+    await app.close();
+  });
+
+  it("rejects invalid wallet report path params", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/v1/wallet/not-a-wallet/health",
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toMatchObject({
+      error: {
+        code: "BAD_REQUEST",
+        field: "address",
+      },
+    });
+
+    await app.close();
+  });
+
+  it("returns VP rules and accepts pending point events", async () => {
+    const app = await buildApiApp();
+    const rulesResponse = await app.inject({ method: "GET", url: "/api/v1/points/rules" });
+    const ledgerResponse = await app.inject({
+      method: "GET",
+      url: "/api/v1/points/ledger?subjectId=visitor:test",
+    });
+    const eventResponse = await app.inject({
+      method: "POST",
+      url: "/api/v1/points/event",
+      payload: {
+        type: "REPORT_SHARED",
+        subjectId: "base:0x1111111111111111111111111111111111111110",
+        idempotencyKey: "test:report-shared",
+      },
+    });
+
+    expect(rulesResponse.statusCode).toBe(200);
+    expect(rulesResponse.json().shortName).toBe("VP");
+    expect(ledgerResponse.statusCode).toBe(200);
+    expect(ledgerResponse.json()).toMatchObject({
+      mode: "mock",
+      ledger: {
+        subjectId: "visitor:test",
+        totalConfirmed: 20,
+        totalPending: 35,
+      },
+    });
+    expect(eventResponse.statusCode).toBe(200);
+    expect(eventResponse.json().event).toMatchObject({
+      type: "REPORT_SHARED",
+      status: "pending",
+    });
+
+    await app.close();
+  });
+
+  it("rejects unknown VP event types", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/points/event",
+      payload: {
+        type: "CLAIM_PLATFORM_TOKEN",
+        idempotencyKey: "test:invalid",
+      },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json().error.field).toBe("type");
+
+    await app.close();
+  });
+});

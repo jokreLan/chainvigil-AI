@@ -1,0 +1,24 @@
+{
+  "name": "chainvigil-ai",
+  "private": true,
+  "packageManager": "pnpm@11.7.0",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "typecheck": "turbo typecheck",
+    "db:validate": "pnpm --filter @chainvigil/db prisma:validate",
+    "db:generate": "pnpm --filter @chainvigil/db prisma:generate",
+    "db:migrate": "pnpm --filter @chainvigil/db prisma:migrate",
+    "format": "prettier --write .",
+    "smoke:v0": "node scripts/smoke-v0.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.4",
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}

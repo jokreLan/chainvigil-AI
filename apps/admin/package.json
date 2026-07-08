@@ -1,0 +1,31 @@
+{
+  "name": "@chainvigil/admin",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --port 3001",
+    "build": "next build",
+    "start": "next start --port 3001",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@chainvigil/audit": "workspace:*",
+    "@chainvigil/cache": "workspace:*",
+    "@chainvigil/config": "workspace:*",
+    "@chainvigil/data-adapters": "workspace:*",
+    "@chainvigil/points": "workspace:*",
+    "next": "^16.2.10",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "tailwindcss": "^4.1.11",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}

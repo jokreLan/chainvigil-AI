@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RiskLevel {
+  BLOCK
+  HIGH
+  MEDIUM
+  LOW
+  UNKNOWN
+}
+
+enum PointEventStatus {
+  pending
+  confirmed
+  rejected
+}
+
+enum PointLedger {
+  xp
+  security_contribution
+  growth_reward
+}
+
+model User {
+  id          String       @id @default(cuid())
+  wallet      String?      @unique
+  telegramId  String?      @unique
+  referralCode String?     @unique
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  pointEvents PointEvent[]
+}
+
+model TokenReport {
+  id           String              @id @default(cuid())
+  chain        String
+  tokenAddress String
+  tokenName    String?
+  tokenSymbol  String?
+  riskLevel    RiskLevel
+  score        Int?
+  summary      String
+  recommendation String
+  checkedAt    DateTime
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  snapshots    TokenRiskSnapshot[]
+  riskFactors  RiskFactor[]
+
+  @@unique([chain, tokenAddress])
+  @@index([riskLevel])
+  @@index([checkedAt])
+}
+
+model TokenRiskSnapshot {
+  id            String      @id @default(cuid())
+  tokenReportId String
+  tokenReport   TokenReport @relation(fields: [tokenReportId], references: [id], onDelete: Cascade)
+  riskLevel     RiskLevel
+  score         Int?
+  evidence      Json
+  reasons       Json
+  checkedAt     DateTime
+  createdAt     DateTime    @default(now())
+}
+
+model RiskFactor {
+  id            String      @id @default(cuid())
+  tokenReportId String
+  tokenReport   TokenReport @relation(fields: [tokenReportId], references: [id], onDelete: Cascade)
+  key           String
+  severity      String
+  title         String
+  explanation   String
+  evidence      Json?
+  createdAt     DateTime    @default(now())
+
+  @@index([key])
+  @@index([severity])
+}
+
+model PointEvent {
+  id             String           @id @default(cuid())
+  userId         String?
+  user           User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  type           String
+  ledger         PointLedger
+  status         PointEventStatus @default(pending)
+  points         Int
+  subjectType    String?
+  subjectId      String?
+  idempotencyKey String           @unique
+  reason         String
+  metadata       Json?
+  createdAt      DateTime         @default(now())
+  reviewedAt     DateTime?
+  reviewerId     String?
+
+  @@index([type])
+  @@index([status])
+  @@index([ledger])
+}
+
+model ReferralEvent {
+  id             String   @id @default(cuid())
+  referralCode   String
+  source         String
+  action         String
+  visitorHash    String?
+  subjectId      String?
+  metadata       Json?
+  createdAt      DateTime @default(now())
+
+  @@index([referralCode])
+  @@index([action])
+}
+
+model TelegramGroup {
+  id                 String   @id @default(cuid())
+  telegramChatId     String   @unique
+  title              String?
+  autoDetectEnabled  Boolean  @default(false)
+  highRiskAlerts     Boolean  @default(true)
+  dailyCheckLimit    Int      @default(100)
+  language           String   @default("zh")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model AdminAuditLog {
+  id        String   @id @default(cuid())
+  actorId   String
+  action    String
+  target    String
+  reason    String
+  metadata  Json?
+  createdAt DateTime @default(now())
+}
