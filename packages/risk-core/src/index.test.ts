@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildMockTokenRiskReport,
   buildMockWalletHealthReport,
+  listMockAssetCleanupPolicies,
   listMockWalletWatchlist,
   listMockRiskDatabaseEntries,
   listMockRiskMonitorRules,
@@ -70,6 +71,19 @@ describe("listMockRiskMonitorRules", () => {
       status: "needs_review",
     });
     expect(listMockRiskMonitorRules()[0]?.signals).not.toContain("mutated");
+  });
+});
+
+describe("listMockAssetCleanupPolicies", () => {
+  it("returns defensive copies of asset cleanup policies", () => {
+    const policies = listMockAssetCleanupPolicies();
+    policies[0]!.requiredChecks.push("mutated");
+
+    expect(policies[0]).toMatchObject({
+      flow: "approval_cleaner",
+      decision: "manual_confirm",
+    });
+    expect(listMockAssetCleanupPolicies()[0]?.requiredChecks).not.toContain("mutated");
   });
 });
 

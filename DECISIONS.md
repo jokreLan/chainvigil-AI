@@ -57,3 +57,4 @@
 - 风险数据库 V0 由 `@chainvigil/risk-core` 提供人话解释、信号和建议动作 contract；Web SEO/GEO 页面、API 和 SDK 复用同一份风险解释。
 - Web `/app/growth` 复用 `@chainvigil/points` 的增长渠道归因 contract；V0 只展示有效访问、有效 CA 和 VP 摘要，不提供真实结算或提现动作。
 - 风险监控规则 V0 由 `@chainvigil/risk-core` 提供只读 contract；Web/API/SDK 只展示提醒规则，不执行自动交易拦截、钱包签名拦截或资产操作。
+- 买后清理策略 V0 由 `@chainvigil/risk-core` 提供只读 asset cleanup policy contract；授权清理、资产理发师和粉尘扫描只展示检查项与禁止动作，不做自动 swap、bridge、粉尘归集或授权撤销。

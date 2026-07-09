@@ -16,6 +16,7 @@ import {
 import {
   buildMockTokenRiskReport,
   buildMockWalletHealthReport,
+  listMockAssetCleanupPolicies,
   listMockRiskDatabaseEntries,
   listMockRiskLabels,
   listMockRiskMonitorRules,
@@ -285,6 +286,11 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
   app.get("/api/v1/risk/monitor-rules", async () => ({
     rules: listMockRiskMonitorRules(),
+    mode: "mock",
+  }));
+
+  app.get("/api/v1/asset-cleanup/policies", async () => ({
+    policies: listMockAssetCleanupPolicies(),
     mode: "mock",
   }));
 

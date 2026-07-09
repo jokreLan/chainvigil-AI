@@ -11,7 +11,7 @@ ChainVigil AI 是一个 Web3 交易安全工具。V0 聚焦免费 CA 安检、To
 - Web DApp 首页与 `/check`
 - `/token/[chain]/[address]` mock 风险报告页
 - 钱包体检入口 `/wallet-check` 与 `/wallet/[address]/health` mock 报告页
-- Fastify API：Token、Wallet/watchlist、risk database/monitor rules、VP rules/ledger、growth channels、Telegram groups、Referral、readiness、meta、只读 Admin audit/risk review/risk labels/token reports mock 与 OpenAPI skeleton
+- Fastify API：Token、Wallet/watchlist、risk database/monitor rules、asset cleanup policies、VP rules/ledger、growth channels、Telegram groups、Referral、readiness、meta、只读 Admin audit/risk review/risk labels/token reports mock 与 OpenAPI skeleton
 - Telegram Bot skeleton：`/telegram/webhook` 可 mock 调用
 - Admin skeleton
 - Prisma schema、VP 积分事件模型与 Admin 审计事件 contract
@@ -52,6 +52,7 @@ curl http://localhost:4000/api/v1/data-sources/adapters
 curl http://localhost:4000/api/v1/worker/jobs
 curl http://localhost:4000/api/v1/risk/database
 curl http://localhost:4000/api/v1/risk/monitor-rules
+curl http://localhost:4000/api/v1/asset-cleanup/policies
 curl http://localhost:4000/api/v1/wallet/watchlist
 curl http://localhost:4000/api/v1/points/ledger
 curl http://localhost:4000/api/v1/growth/channels
@@ -80,7 +81,7 @@ pnpm db:validate
 pnpm smoke:v0
 ```
 
-当前 smoke 覆盖 Web `/health`、Web `/check`、Web 风险数据库、Web 风险监控、Web VP ledger、Web Bot commands、Web API 清单、Web 用户报告历史、Web 钱包 watchlist、Web 推广中心、Token 报告页 JSON-LD、Admin `/health`、Admin readiness/worker jobs、Admin data sources、Admin `/audit`、Admin reports、Admin channels、Admin risk review、Admin risk labels、Admin VP ledger、Admin Telegram groups/commands、API token check、API meta、API data sources、API worker jobs、API 风险数据库、API 风险监控规则、API 钱包 watchlist、API VP ledger、API growth channels、API Telegram groups/commands、API 只读审计日志、API 只读风险复核队列、API 只读风险标签目录、API 只读 Token 报告索引、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
+当前 smoke 覆盖 Web `/health`、Web `/check`、Web 风险数据库、Web 风险监控、Web 买后清理策略、Web VP ledger、Web Bot commands、Web API 清单、Web 用户报告历史、Web 钱包 watchlist、Web 推广中心、Token 报告页 JSON-LD、Admin `/health`、Admin readiness/worker jobs、Admin data sources、Admin `/audit`、Admin reports、Admin channels、Admin risk review、Admin risk labels、Admin VP ledger、Admin Telegram groups/commands、API token check、API meta、API data sources、API worker jobs、API 风险数据库、API 风险监控规则、API 买后清理策略、API 钱包 watchlist、API VP ledger、API growth channels、API Telegram groups/commands、API 只读审计日志、API 只读风险复核队列、API 只读风险标签目录、API 只读 Token 报告索引、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
 
 上线前安全边界和生产预检见 `SECURITY.md`。
 

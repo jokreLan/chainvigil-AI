@@ -3,6 +3,7 @@ import type {
   AdminRiskLabelItem,
   AdminRiskReviewItem,
   AdminTokenReportIndexItem,
+  AssetCleanupPolicy,
   GrowthChannel,
   PointEvent,
   PointLedgerSummary,
@@ -164,6 +165,11 @@ export interface RiskMonitorRulesResponse {
   mode: "mock";
 }
 
+export interface AssetCleanupPoliciesResponse {
+  policies: AssetCleanupPolicy[];
+  mode: "mock";
+}
+
 export class ChainVigilApiError extends Error {
   constructor(
     message: string,
@@ -249,6 +255,10 @@ export class ChainVigilClient {
 
   async getRiskMonitorRules(): Promise<RiskMonitorRulesResponse> {
     return this.get<RiskMonitorRulesResponse>("/api/v1/risk/monitor-rules");
+  }
+
+  async getAssetCleanupPolicies(): Promise<AssetCleanupPoliciesResponse> {
+    return this.get<AssetCleanupPoliciesResponse>("/api/v1/asset-cleanup/policies");
   }
 
   async getServiceMeta(): Promise<ServiceMeta> {

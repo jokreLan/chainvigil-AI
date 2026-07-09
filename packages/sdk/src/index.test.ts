@@ -171,6 +171,26 @@ describe("ChainVigilClient", () => {
     expect(response.rules[0]?.id).toBe("monitor-high-risk-token");
   });
 
+  it("reads asset cleanup policies", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        policies: [
+          {
+            id: "cleanup-approval-manual-confirm",
+            flow: "approval_cleaner",
+            decision: "manual_confirm",
+          },
+        ],
+      }),
+    });
+
+    const response = await client.getAssetCleanupPolicies();
+
+    expect(response.mode).toBe("mock");
+    expect(response.policies[0]?.flow).toBe("approval_cleaner");
+  });
+
   it("reads service metadata", async () => {
     const client = new ChainVigilClient({
       fetcher: mockFetch({

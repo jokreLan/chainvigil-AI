@@ -5,6 +5,7 @@ import type {
   AdminRiskReviewItem,
   AdminTokenReportIndexItem,
   ApprovalRiskItem,
+  AssetCleanupPolicy,
   ChainId,
   RiskDatabaseEntry,
   RiskMonitorRule,
@@ -218,6 +219,62 @@ export function listMockRiskMonitorRules(): RiskMonitorRule[] {
   return rules.map((rule) => ({
     ...rule,
     signals: [...rule.signals],
+  }));
+}
+
+export function listMockAssetCleanupPolicies(): AssetCleanupPolicy[] {
+  const policies = [
+    {
+      id: "cleanup-approval-manual-confirm",
+      flow: "approval_cleaner",
+      title: "授权撤销必须用户确认",
+      decision: "manual_confirm",
+      description: "撤销授权属于执行类能力，V0 只展示检查清单，不发起签名、不代替用户广播交易。",
+      requiredChecks: ["spender 地址", "资产类型", "授权额度", "gas 估算", "二次确认"],
+      prohibitedActions: ["自动撤销授权", "请求授权给 ChainVigil 自有合约", "隐藏 spender 风险标签"],
+    },
+    {
+      id: "cleanup-asset-recoverable",
+      flow: "asset_barber",
+      title: "可回收资产",
+      decision: "review",
+      description: "有价格、有流动性，且预估收益大于 gas、滑点和风险成本时，才进入后续候选。",
+      requiredChecks: ["价格来源", "流动性深度", "预估 gas", "滑点", "风险标签"],
+      prohibitedActions: ["自动 swap", "跨链 bridge", "合并未知资产"],
+    },
+    {
+      id: "cleanup-asset-hide",
+      flow: "asset_barber",
+      title: "建议隐藏资产",
+      decision: "hide",
+      description: "无价格、无流动性、spam token 或垃圾 NFT 优先建议隐藏，避免诱导交互。",
+      requiredChecks: ["是否有价格", "是否有流动性", "是否 spam", "是否钓鱼空投"],
+      prohibitedActions: ["点击空投 claim", "授权未知合约", "访问未知站点"],
+    },
+    {
+      id: "cleanup-asset-block",
+      flow: "asset_barber",
+      title: "禁止处理资产",
+      decision: "block",
+      description: "疑似貔貅、钓鱼空投或交互风险高资产不进入归集候选。",
+      requiredChecks: ["honeypot 信号", "钓鱼标签", "交互风险", "合约验证状态"],
+      prohibitedActions: ["自动归集", "自动出售", "自动 claim"],
+    },
+    {
+      id: "cleanup-dust-threshold",
+      flow: "dust_scan",
+      title: "粉尘归集阈值",
+      decision: "review",
+      description: "回收价值必须大于 gas、路由费、滑点、bridge fee 和风险成本；V0/V1 不执行粉尘归集。",
+      requiredChecks: ["回收价值", "gas", "路由费", "滑点", "bridge fee", "风险成本"],
+      prohibitedActions: ["自动 swap", "自动 bridge", "粉尘归集"],
+    },
+  ] satisfies AssetCleanupPolicy[];
+
+  return policies.map((policy) => ({
+    ...policy,
+    requiredChecks: [...policy.requiredChecks],
+    prohibitedActions: [...policy.prohibitedActions],
   }));
 }
 

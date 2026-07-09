@@ -62,6 +62,7 @@ async function main() {
         !html.includes("/api/v1/worker/jobs") ||
         !html.includes("/api/v1/risk/database") ||
         !html.includes("/api/v1/risk/monitor-rules") ||
+        !html.includes("/api/v1/asset-cleanup/policies") ||
         !html.includes("/api/v1/wallet/watchlist") ||
         !html.includes("/api/v1/telegram/groups") ||
         !html.includes("/api/v1/telegram/commands")
@@ -159,6 +160,39 @@ async function main() {
 
       if (!html.includes("风险监控") || !html.includes("高危 token 复查") || !html.includes("不自动阻断交易")) {
         throw new Error(`${name} expected risk monitor rule summary`);
+      }
+    }),
+  );
+
+  checks.push(
+    request("web.approval-cleaner", `${webBaseUrl}/app/approval-cleaner`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("授权清理") || !html.includes("授权撤销必须用户确认") || !html.includes("自动撤销授权")) {
+        throw new Error(`${name} expected approval cleanup policy`);
+      }
+    }),
+  );
+
+  checks.push(
+    request("web.asset-barber", `${webBaseUrl}/app/asset-barber`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("资产理发师") || !html.includes("可回收资产") || !html.includes("禁止处理资产")) {
+        throw new Error(`${name} expected asset cleanup policy`);
+      }
+    }),
+  );
+
+  checks.push(
+    request("web.dust", `${webBaseUrl}/app/dust`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("粉尘扫描") || !html.includes("粉尘归集阈值") || !html.includes("自动 swap")) {
+        throw new Error(`${name} expected dust cleanup policy`);
       }
     }),
   );
@@ -426,6 +460,27 @@ async function main() {
           !body.rules?.[0]?.explanation?.includes("不自动阻断交易")
         ) {
           throw new Error(`${name} expected mock risk monitor rules`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.asset-cleanup-policies", `${apiBaseUrl}/api/v1/asset-cleanup/policies`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (
+          body.mode !== "mock" ||
+          body.policies?.[0]?.flow !== "approval_cleaner" ||
+          body.policies?.[0]?.decision !== "manual_confirm"
+        ) {
+          throw new Error(`${name} expected mock asset cleanup policies`);
+        }
+
+        if (JSON.stringify(body).includes("privateKey")) {
+          throw new Error(`${name} leaked private key field`);
         }
       },
     ),

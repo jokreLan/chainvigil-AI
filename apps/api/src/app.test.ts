@@ -142,6 +142,22 @@ describe("api app", () => {
     await app.close();
   });
 
+  it("returns mock asset cleanup policies", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/asset-cleanup/policies" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.policies[0]).toMatchObject({
+      flow: "approval_cleaner",
+      decision: "manual_confirm",
+    });
+    expect(JSON.stringify(body)).not.toContain("privateKey");
+
+    await app.close();
+  });
+
   it("returns non-secret service metadata", async () => {
     const app = await buildApiApp();
     const response = await app.inject({ method: "GET", url: "/api/v1/meta" });

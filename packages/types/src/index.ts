@@ -169,6 +169,16 @@ export interface RiskMonitorRule {
   explanation: string;
 }
 
+export interface AssetCleanupPolicy {
+  id: string;
+  flow: "approval_cleaner" | "asset_barber" | "dust_scan";
+  title: string;
+  decision: "review" | "hide" | "block" | "manual_confirm";
+  description: string;
+  requiredChecks: string[];
+  prohibitedActions: string[];
+}
+
 export type AdminRiskReviewStatus = "pending" | "needs_data" | "escalated";
 
 export interface AdminRiskReviewItem {

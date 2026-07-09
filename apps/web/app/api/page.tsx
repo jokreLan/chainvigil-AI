@@ -62,6 +62,11 @@ const endpoints = [
     description: "读取只读风险监控规则，不执行自动交易拦截或钱包操作。",
   },
   {
+    method: "GET",
+    path: "/api/v1/asset-cleanup/policies",
+    description: "读取授权清理、资产理发师和粉尘扫描的只读安全策略。",
+  },
+  {
     method: "POST",
     path: "/api/v1/wallet/health",
     description: "提交钱包地址，返回只读钱包健康报告。",
