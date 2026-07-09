@@ -158,6 +158,38 @@ describe("api app", () => {
     await app.close();
   });
 
+  it("returns mock public high-risk token list", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/risk/high-risk-tokens" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.tokens[0]).toMatchObject({
+      label: "禁买",
+      riskLevel: "BLOCK",
+    });
+    expect(body.tokens[0].evidenceTags).toContain("honeypotDetected");
+
+    await app.close();
+  });
+
+  it("returns mock fake token examples", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/risk/fake-token-examples" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.examples[0]).toMatchObject({
+      id: "fake-usdt",
+      impersonates: "USDT",
+    });
+    expect(body.examples[0].signals).toContain("symbolImpersonation");
+
+    await app.close();
+  });
+
   it("returns non-secret service metadata", async () => {
     const app = await buildApiApp();
     const response = await app.inject({ method: "GET", url: "/api/v1/meta" });

@@ -7,6 +7,8 @@ import type {
   ApprovalRiskItem,
   AssetCleanupPolicy,
   ChainId,
+  FakeTokenExample,
+  HighRiskTokenListItem,
   RiskDatabaseEntry,
   RiskMonitorRule,
   RiskReason,
@@ -275,6 +277,98 @@ export function listMockAssetCleanupPolicies(): AssetCleanupPolicy[] {
     ...policy,
     requiredChecks: [...policy.requiredChecks],
     prohibitedActions: [...policy.prohibitedActions],
+  }));
+}
+
+export function listMockHighRiskTokens(appBaseUrl = "http://localhost:3000"): HighRiskTokenListItem[] {
+  const tokens = [
+    {
+      id: "high-risk-base-1110",
+      chain: "base",
+      tokenAddress: "0x1111111111111111111111111111111111111110",
+      tokenSymbol: "MVP",
+      tokenName: "Mock Vigil Token",
+      riskLevel: "BLOCK",
+      label: "禁买",
+      score: 12,
+      reason: "卖出仿真失败 / LP 未锁",
+      reportUrl: `${appBaseUrl}/token/base/0x1111111111111111111111111111111111111110`,
+      evidenceTags: ["honeypotDetected", "canSell=false", "lpLocked=false"],
+      updatedAt: "2026-07-08T04:00:00.000Z",
+    },
+    {
+      id: "high-risk-bsc-2220",
+      chain: "bsc",
+      tokenAddress: "0x2222222222222222222222222222222222222220",
+      tokenSymbol: "FAKE",
+      tokenName: "Fake Router Token",
+      riskLevel: "BLOCK",
+      label: "禁买",
+      score: 18,
+      reason: "疑似貔貅 / 黑名单权限",
+      reportUrl: `${appBaseUrl}/token/bsc/0x2222222222222222222222222222222222222220`,
+      evidenceTags: ["honeypotDetected", "blacklistFunction", "ownerCanModifyTax"],
+      updatedAt: "2026-07-08T04:10:00.000Z",
+    },
+    {
+      id: "high-risk-eth-3330",
+      chain: "ethereum",
+      tokenAddress: "0x3333333333333333333333333333333333333330",
+      tokenSymbol: "MIMIC",
+      tokenName: "Mimic Bluechip Token",
+      riskLevel: "HIGH",
+      label: "高危",
+      score: 31,
+      reason: "Owner 可改税 / 持仓集中",
+      reportUrl: `${appBaseUrl}/token/ethereum/0x3333333333333333333333333333333333333330`,
+      evidenceTags: ["ownerCanModifyTax", "top10HolderPercent=82", "sourceVerified=false"],
+      updatedAt: "2026-07-08T04:20:00.000Z",
+    },
+  ] satisfies HighRiskTokenListItem[];
+
+  return tokens.map((token) => ({
+    ...token,
+    evidenceTags: [...token.evidenceTags],
+  }));
+}
+
+export function listMockFakeTokenExamples(): FakeTokenExample[] {
+  const examples = [
+    {
+      id: "fake-usdt",
+      title: "假 USDT",
+      impersonates: "USDT",
+      chain: "bsc",
+      riskLevel: "HIGH",
+      description: "名称和 symbol 相似，但合约地址不匹配官方地址，常搭配假交易截图传播。",
+      signals: ["symbolImpersonation", "unverifiedContract", "newPair"],
+      recommendedAction: "只从官方渠道复制 CA，并核对区块浏览器、官网和主流行情页。",
+    },
+    {
+      id: "fake-pepe",
+      title: "假 PEPE",
+      impersonates: "PEPE",
+      chain: "base",
+      riskLevel: "BLOCK",
+      description: "借热门币热度传播，常伴随高税、卖出限制或短时间刷量。",
+      signals: ["trendingMimic", "sellTaxPercent>=50", "canSell=false"],
+      recommendedAction: "不要追陌生群链接；先查 CA，再看是否可卖和 LP 状态。",
+    },
+    {
+      id: "fake-airdrop-claim",
+      title: "假空投 Token",
+      impersonates: "空投 claim",
+      chain: "ethereum",
+      riskLevel: "HIGH",
+      description: "通过钱包里凭空出现的 Token/NFT 诱导访问钓鱼站点或授权恶意 spender。",
+      signals: ["spamAirdrop", "unknownClaimSite", "approvalPhishing"],
+      recommendedAction: "不要点击资产备注里的链接，不要给未知 spender 授权。",
+    },
+  ] satisfies FakeTokenExample[];
+
+  return examples.map((example) => ({
+    ...example,
+    signals: [...example.signals],
   }));
 }
 

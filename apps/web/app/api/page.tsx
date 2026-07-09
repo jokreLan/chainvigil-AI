@@ -58,6 +58,16 @@ const endpoints = [
   },
   {
     method: "GET",
+    path: "/api/v1/risk/high-risk-tokens",
+    description: "读取公开高危 CA 榜单 mock contract。",
+  },
+  {
+    method: "GET",
+    path: "/api/v1/risk/fake-token-examples",
+    description: "读取假币识别样例和风险信号。",
+  },
+  {
+    method: "GET",
     path: "/api/v1/risk/monitor-rules",
     description: "读取只读风险监控规则，不执行自动交易拦截或钱包操作。",
   },

@@ -17,6 +17,8 @@ import {
   buildMockTokenRiskReport,
   buildMockWalletHealthReport,
   listMockAssetCleanupPolicies,
+  listMockFakeTokenExamples,
+  listMockHighRiskTokens,
   listMockRiskDatabaseEntries,
   listMockRiskLabels,
   listMockRiskMonitorRules,
@@ -291,6 +293,16 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
   app.get("/api/v1/asset-cleanup/policies", async () => ({
     policies: listMockAssetCleanupPolicies(),
+    mode: "mock",
+  }));
+
+  app.get("/api/v1/risk/high-risk-tokens", async () => ({
+    tokens: listMockHighRiskTokens(readEnv("APP_BASE_URL", "http://localhost:3000")),
+    mode: "mock",
+  }));
+
+  app.get("/api/v1/risk/fake-token-examples", async () => ({
+    examples: listMockFakeTokenExamples(),
     mode: "mock",
   }));
 

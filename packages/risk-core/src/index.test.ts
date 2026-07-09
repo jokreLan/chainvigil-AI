@@ -3,6 +3,8 @@ import {
   buildMockTokenRiskReport,
   buildMockWalletHealthReport,
   listMockAssetCleanupPolicies,
+  listMockFakeTokenExamples,
+  listMockHighRiskTokens,
   listMockWalletWatchlist,
   listMockRiskDatabaseEntries,
   listMockRiskMonitorRules,
@@ -84,6 +86,32 @@ describe("listMockAssetCleanupPolicies", () => {
       decision: "manual_confirm",
     });
     expect(listMockAssetCleanupPolicies()[0]?.requiredChecks).not.toContain("mutated");
+  });
+});
+
+describe("listMockHighRiskTokens", () => {
+  it("returns defensive copies of public high-risk token rows", () => {
+    const tokens = listMockHighRiskTokens("https://chainvigil.example");
+    tokens[0]!.evidenceTags.push("mutated");
+
+    expect(tokens[0]).toMatchObject({
+      riskLevel: "BLOCK",
+      reportUrl: "https://chainvigil.example/token/base/0x1111111111111111111111111111111111111110",
+    });
+    expect(listMockHighRiskTokens()[0]?.evidenceTags).not.toContain("mutated");
+  });
+});
+
+describe("listMockFakeTokenExamples", () => {
+  it("returns defensive copies of fake token examples", () => {
+    const examples = listMockFakeTokenExamples();
+    examples[0]!.signals.push("mutated");
+
+    expect(examples[0]).toMatchObject({
+      id: "fake-usdt",
+      impersonates: "USDT",
+    });
+    expect(listMockFakeTokenExamples()[0]?.signals).not.toContain("mutated");
   });
 });
 

@@ -61,6 +61,8 @@ async function main() {
         !html.includes("/api/v1/data-sources/adapters") ||
         !html.includes("/api/v1/worker/jobs") ||
         !html.includes("/api/v1/risk/database") ||
+        !html.includes("/api/v1/risk/high-risk-tokens") ||
+        !html.includes("/api/v1/risk/fake-token-examples") ||
         !html.includes("/api/v1/risk/monitor-rules") ||
         !html.includes("/api/v1/asset-cleanup/policies") ||
         !html.includes("/api/v1/wallet/watchlist") ||
@@ -105,6 +107,30 @@ async function main() {
 
       if (!html.includes("风险数据库") || !html.includes("貔貅盘 / Honeypot") || !html.includes("canSell=false")) {
         throw new Error(`${name} expected risk database glossary`);
+      }
+    }),
+  );
+
+  checks.push(
+    request("web.high-risk-tokens", `${webBaseUrl}/leaderboard/high-risk-tokens`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const html = await response.text();
+
+        if (!html.includes("高危 CA 榜单") || !html.includes("honeypotDetected") || !html.includes("Mock Vigil Token")) {
+          throw new Error(`${name} expected high-risk token list`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("web.fake-token-database", `${webBaseUrl}/fake-token-database`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("假币数据库") || !html.includes("假 USDT") || !html.includes("symbolImpersonation")) {
+        throw new Error(`${name} expected fake token examples`);
       }
     }),
   );
@@ -443,6 +469,40 @@ async function main() {
           !body.entries?.[0]?.plainLanguage?.includes("买得进但卖不出")
         ) {
           throw new Error(`${name} expected mock risk database glossary`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.high-risk-tokens", `${apiBaseUrl}/api/v1/risk/high-risk-tokens`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (
+          body.mode !== "mock" ||
+          body.tokens?.[0]?.label !== "禁买" ||
+          !body.tokens?.[0]?.evidenceTags?.includes("honeypotDetected")
+        ) {
+          throw new Error(`${name} expected mock high-risk token list`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.fake-token-examples", `${apiBaseUrl}/api/v1/risk/fake-token-examples`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (
+          body.mode !== "mock" ||
+          body.examples?.[0]?.id !== "fake-usdt" ||
+          !body.examples?.[0]?.signals?.includes("symbolImpersonation")
+        ) {
+          throw new Error(`${name} expected mock fake token examples`);
         }
       },
     ),

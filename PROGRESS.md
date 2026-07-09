@@ -307,6 +307,7 @@
 - 第 63 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/risk-core` typecheck/test/build、API/SDK/Web 目标 typecheck/test/build；Risk Core 测试 9 个用例、API 测试 31 个用例、SDK 测试 22 个用例、Web 测试 4 个用例通过。
 - 第 63 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
 - 第 63 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web 买后清理三页和 API `/api/v1/asset-cleanup/policies`。
+- 开始开发 loop 第 64 轮：将 Web 高危 CA 榜单和假币数据库从页面静态数组推进到共享公开风险情报 contract，并暴露给 API/SDK/smoke。
 
 ## 下一步
 

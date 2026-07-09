@@ -179,6 +179,32 @@ export interface AssetCleanupPolicy {
   prohibitedActions: string[];
 }
 
+export interface HighRiskTokenListItem {
+  id: string;
+  chain: ChainId;
+  tokenAddress: string;
+  tokenSymbol: string;
+  tokenName: string;
+  riskLevel: RiskLevel;
+  label: string;
+  score: number | null;
+  reason: string;
+  reportUrl: string;
+  evidenceTags: string[];
+  updatedAt: string;
+}
+
+export interface FakeTokenExample {
+  id: string;
+  title: string;
+  impersonates: string;
+  chain: ChainId;
+  riskLevel: RiskLevel;
+  description: string;
+  signals: string[];
+  recommendedAction: string;
+}
+
 export type AdminRiskReviewStatus = "pending" | "needs_data" | "escalated";
 
 export interface AdminRiskReviewItem {

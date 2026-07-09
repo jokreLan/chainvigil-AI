@@ -1,12 +1,9 @@
 import Link from "next/link";
-
-const examples = [
-  "假 USDT：名称和 symbol 相似，但合约地址不匹配官方地址。",
-  "假 PEPE：借热门币热度传播，常伴随高税或卖出限制。",
-  "假空投 Token：诱导授权或访问钓鱼站点。",
-];
+import { listMockFakeTokenExamples } from "@chainvigil/risk-core";
 
 export default function FakeTokenDatabasePage() {
+  const examples = listMockFakeTokenExamples();
+
   return (
     <main className="mx-auto min-h-screen max-w-5xl px-5 py-12">
       <nav className="flex items-center justify-between text-sm text-emerald-100/70">
@@ -26,8 +23,20 @@ export default function FakeTokenDatabasePage() {
       </section>
       <section className="mt-10 grid gap-4 md:grid-cols-3">
         {examples.map((example) => (
-          <article key={example} className="border border-emerald-300/14 bg-black/20 p-5 leading-7 text-emerald-50/75">
-            {example}
+          <article key={example.id} className="border border-emerald-300/14 bg-black/20 p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-xl font-semibold text-white">{example.title}</h2>
+              <span className="text-sm text-emerald-200">{example.impersonates}</span>
+            </div>
+            <p className="mt-3 leading-7 text-emerald-50/75">{example.description}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {example.signals.map((signal) => (
+                <span key={signal} className="border border-emerald-300/20 px-2 py-1 text-xs text-emerald-100/70">
+                  {signal}
+                </span>
+              ))}
+            </div>
+            <p className="mt-4 leading-7 text-emerald-100/72">{example.recommendedAction}</p>
           </article>
         ))}
       </section>

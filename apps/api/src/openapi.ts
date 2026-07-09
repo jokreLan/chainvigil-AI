@@ -84,6 +84,26 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/risk/high-risk-tokens": {
+      get: {
+        summary: "Read mock public high-risk token list",
+        responses: {
+          "200": {
+            description: "Public high-risk token rows for V0 leaderboard and SEO/GEO pages",
+          },
+        },
+      },
+    },
+    "/api/v1/risk/fake-token-examples": {
+      get: {
+        summary: "Read mock fake token examples",
+        responses: {
+          "200": {
+            description: "Fake token examples and signals for V0 education and SEO/GEO pages",
+          },
+        },
+      },
+    },
     "/api/v1/meta": {
       get: {
         summary: "Read non-secret service metadata",

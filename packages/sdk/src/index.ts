@@ -4,7 +4,9 @@ import type {
   AdminRiskReviewItem,
   AdminTokenReportIndexItem,
   AssetCleanupPolicy,
+  FakeTokenExample,
   GrowthChannel,
+  HighRiskTokenListItem,
   PointEvent,
   PointLedgerSummary,
   PointEventType,
@@ -170,6 +172,16 @@ export interface AssetCleanupPoliciesResponse {
   mode: "mock";
 }
 
+export interface HighRiskTokensResponse {
+  tokens: HighRiskTokenListItem[];
+  mode: "mock";
+}
+
+export interface FakeTokenExamplesResponse {
+  examples: FakeTokenExample[];
+  mode: "mock";
+}
+
 export class ChainVigilApiError extends Error {
   constructor(
     message: string,
@@ -259,6 +271,14 @@ export class ChainVigilClient {
 
   async getAssetCleanupPolicies(): Promise<AssetCleanupPoliciesResponse> {
     return this.get<AssetCleanupPoliciesResponse>("/api/v1/asset-cleanup/policies");
+  }
+
+  async getHighRiskTokens(): Promise<HighRiskTokensResponse> {
+    return this.get<HighRiskTokensResponse>("/api/v1/risk/high-risk-tokens");
+  }
+
+  async getFakeTokenExamples(): Promise<FakeTokenExamplesResponse> {
+    return this.get<FakeTokenExamplesResponse>("/api/v1/risk/fake-token-examples");
   }
 
   async getServiceMeta(): Promise<ServiceMeta> {

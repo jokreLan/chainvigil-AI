@@ -191,6 +191,34 @@ describe("ChainVigilClient", () => {
     expect(response.policies[0]?.flow).toBe("approval_cleaner");
   });
 
+  it("reads public high-risk tokens", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        tokens: [{ tokenSymbol: "MVP", label: "禁买", riskLevel: "BLOCK" }],
+      }),
+    });
+
+    const response = await client.getHighRiskTokens();
+
+    expect(response.mode).toBe("mock");
+    expect(response.tokens[0]?.label).toBe("禁买");
+  });
+
+  it("reads fake token examples", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        examples: [{ id: "fake-usdt", impersonates: "USDT" }],
+      }),
+    });
+
+    const response = await client.getFakeTokenExamples();
+
+    expect(response.mode).toBe("mock");
+    expect(response.examples[0]?.impersonates).toBe("USDT");
+  });
+
   it("reads service metadata", async () => {
     const client = new ChainVigilClient({
       fetcher: mockFetch({

@@ -1,27 +1,9 @@
 import Link from "next/link";
-
-const tokens = [
-  {
-    chain: "base",
-    address: "0x1111111111111111111111111111111111111110",
-    label: "禁买",
-    reason: "卖出仿真失败 / LP 未锁",
-  },
-  {
-    chain: "bsc",
-    address: "0x2222222222222222222222222222222222222220",
-    label: "禁买",
-    reason: "疑似貔貅 / 黑名单权限",
-  },
-  {
-    chain: "ethereum",
-    address: "0x3333333333333333333333333333333333333330",
-    label: "高危",
-    reason: "Owner 可改税 / 持仓集中",
-  },
-];
+import { listMockHighRiskTokens } from "@chainvigil/risk-core";
 
 export default function HighRiskTokensPage() {
+  const tokens = listMockHighRiskTokens("");
+
   return (
     <main className="mx-auto min-h-screen max-w-6xl px-5 py-12">
       <nav className="flex items-center justify-between text-sm text-emerald-100/70">
@@ -42,12 +24,12 @@ export default function HighRiskTokensPage() {
       <section className="mt-10 space-y-4">
         {tokens.map((token) => (
           <Link
-            key={`${token.chain}-${token.address}`}
-            href={`/token/${token.chain}/${token.address}`}
+            key={token.id}
+            href={token.reportUrl}
             className="block border border-emerald-300/14 bg-black/20 p-5"
           >
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="font-mono text-lg text-white">{token.address}</h2>
+              <h2 className="font-mono text-lg text-white">{token.tokenAddress}</h2>
               <span className="border border-red-300/40 px-3 py-1 text-sm text-red-100">
                 {token.label}
               </span>
@@ -55,6 +37,16 @@ export default function HighRiskTokensPage() {
             <p className="mt-3 text-emerald-50/70">
               {token.chain}｜{token.reason}
             </p>
+            <p className="mt-2 text-sm text-emerald-100/60">
+              {token.tokenName} · {token.tokenSymbol} · 风险分 {token.score}
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {token.evidenceTags.map((tag) => (
+                <span key={tag} className="border border-emerald-300/20 px-2 py-1 text-xs text-emerald-100/70">
+                  {tag}
+                </span>
+              ))}
+            </div>
           </Link>
         ))}
       </section>
