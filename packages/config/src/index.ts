@@ -77,7 +77,7 @@ export const envVarSpecs: EnvVarSpec[] = [
   {
     name: "RPC_BASE_URL",
     requiredIn: ["production"],
-    description: "Base 链 RPC endpoint。",
+    description: "BNB/Solana 主优先链 RPC endpoint。",
   },
 ];
 

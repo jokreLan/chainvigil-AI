@@ -63,3 +63,4 @@
 - 钱包体检能力清单 V0 由 `@chainvigil/risk-core` 提供只读 contract；Web `/wallet-check`、API 和 SDK 复用同一份能力边界，所有能力均声明不请求签名、不自动撤销授权、不自动 swap/bridge/粉尘归集。
 - 第一版主优先链调整为 Solana（SOL）和 BNB Smart Chain（BNB/BSC）；BNB 沿用 EVM/viem 地址路径，Solana 先进入地址解析、mock 报告、API metadata 和 smoke contract，不假装已接入真实 Solana 风险数据源。
 - 用户偏好设置 V0 由 `@chainvigil/risk-core` 提供只读 contract；Web `/app/settings`、API 和 SDK 复用同一份语言、风险阈值、榜单昵称和分享隐私设置，账户体系稳定前不开放写入。
+- Telegram Bot 和群设置 mock 文案跟随第一版 SOL/BNB 优先策略；`/check <CA>` 替代旧 `/check 0x...` 对外命令展示，避免把第一版误导为仅 EVM。

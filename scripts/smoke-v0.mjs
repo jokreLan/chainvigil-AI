@@ -94,7 +94,7 @@ async function main() {
       await assertStatus(name, response, 200);
       const html = await response.text();
 
-      if (!html.includes("/check 0x...") || !html.includes("/settings")) {
+      if (!html.includes("/check &lt;CA&gt;") || !html.includes("/settings")) {
         throw new Error(`${name} expected Telegram command list`);
       }
     }),
@@ -366,7 +366,7 @@ async function main() {
       await assertStatus(name, response, 200);
       const html = await response.text();
 
-      if (!html.includes("Base Alpha Group") || !html.includes("自动检测") || !html.includes("/check 0x...")) {
+      if (!html.includes("SOL / BNB Alpha Group") || !html.includes("自动检测") || !html.includes("/check &lt;CA&gt;")) {
         throw new Error(`${name} expected Telegram group settings and command list`);
       }
     }),
@@ -667,7 +667,7 @@ async function main() {
         await assertStatus(name, response, 200);
         const body = await response.json();
 
-        if (body.mode !== "mock" || body.groups?.[0]?.title !== "Base Alpha Group") {
+        if (body.mode !== "mock" || body.groups?.[0]?.title !== "SOL / BNB Alpha Group") {
           throw new Error(`${name} expected mock Telegram group settings`);
         }
       },
@@ -680,7 +680,7 @@ async function main() {
         await assertStatus(name, response, 200);
         const body = await response.json();
 
-        if (body.mode !== "mock" || !body.commands?.some((item) => item.command === "/check 0x...")) {
+        if (body.mode !== "mock" || !body.commands?.some((item) => item.command === "/check <CA>")) {
           throw new Error(`${name} expected Telegram command list`);
         }
       },
@@ -785,7 +785,7 @@ async function main() {
       await assertHeader(name, response, "x-frame-options", "DENY");
       const body = await response.json();
 
-      if (!body.reply?.includes("请输入有效的 EVM 合约地址")) {
+      if (!body.reply?.includes("请输入有效的 SOL 或 BNB Token 合约地址")) {
         throw new Error(`${name} expected invalid address hint`);
       }
     }),

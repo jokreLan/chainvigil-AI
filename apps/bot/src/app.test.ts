@@ -29,7 +29,7 @@ describe("bot app", () => {
     });
 
     expect(response.statusCode).toBe(200);
-    expect(response.json().reply).toContain("/check 0x");
+    expect(response.json().reply).toContain("/check <CA>");
 
     await app.close();
   });
@@ -49,7 +49,7 @@ describe("bot app", () => {
     expect(response.statusCode).toBe(200);
     expect(response.json().reply).toContain("ChainVigil AI｜链哨 AI");
     expect(response.json().reply).toContain("买币前，先查 CA。");
-    expect(response.json().reply).toContain("/check 0x");
+    expect(response.json().reply).toContain("/check <CA>");
 
     await app.close();
   });
@@ -77,6 +77,28 @@ describe("bot app", () => {
     await app.close();
   });
 
+  it("handles /check for a Solana CA", async () => {
+    const app = buildBotApp();
+    const response = await app.inject({
+      method: "POST",
+      url: "/telegram/webhook",
+      payload: {
+        message: {
+          text: "/check So11111111111111111111111111111111111111112",
+          chat: {
+            id: 1,
+          },
+        },
+      },
+    });
+
+    const body = response.json();
+    expect(response.statusCode).toBe(200);
+    expect(body.reply).toContain("/token/solana/So11111111111111111111111111111111111111112");
+
+    await app.close();
+  });
+
   it("returns a helpful reply for invalid /check input", async () => {
     const app = buildBotApp();
     const response = await app.inject({
@@ -90,7 +112,7 @@ describe("bot app", () => {
     });
 
     expect(response.statusCode).toBe(200);
-    expect(response.json().reply).toContain("请输入有效的 EVM 合约地址");
+    expect(response.json().reply).toContain("请输入有效的 SOL 或 BNB Token 合约地址");
 
     await app.close();
   });
@@ -113,6 +135,8 @@ describe("bot app", () => {
     });
 
     expect(topResponse.json().reply).toContain("高危 CA 榜单");
+    expect(topResponse.json().reply).toContain("SOL So111");
+    expect(topResponse.json().reply).toContain("BNB 0x2222");
     expect(settingsResponse.json().reply).toContain("群设置 skeleton");
     expect(settingsResponse.json().reply).toContain("Meme Watch CN");
 

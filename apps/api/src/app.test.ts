@@ -303,7 +303,7 @@ describe("api app", () => {
     expect(response.statusCode).toBe(200);
     expect(body.mode).toBe("mock");
     expect(body.groups[0]).toMatchObject({
-      title: "Base Alpha Group",
+      title: "SOL / BNB Alpha Group",
       autoDetectEnabled: false,
       highRiskAlerts: true,
       dailyCheckLimit: 100,
@@ -322,7 +322,7 @@ describe("api app", () => {
     expect(body.commands).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          command: "/check 0x...",
+          command: "/check <CA>",
         }),
       ]),
     );

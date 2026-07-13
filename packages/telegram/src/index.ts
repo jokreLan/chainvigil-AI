@@ -3,16 +3,16 @@ import type { TelegramCommand, TelegramGroupSettings } from "@chainvigil/types";
 const telegramCommands = [
   { command: "/start", description: "查看 ChainVigil AI 欢迎语和 CA 安检入口。" },
   { command: "/help", description: "查看群内可用命令。" },
-  { command: "/check 0x...", description: "提交 EVM 合约地址，生成 mock 风险报告。" },
+  { command: "/check <CA>", description: "提交 SOL 或 BNB Token 合约地址，生成 mock 风险报告。" },
   { command: "/top", description: "查看高危 CA 榜单 mock。" },
   { command: "/settings", description: "查看群设置 skeleton。" },
 ] satisfies TelegramCommand[];
 
 const mockTelegramGroups = [
   {
-    id: "tg-base-alpha",
+    id: "tg-sol-bnb-alpha",
     telegramChatId: "-1001000000001",
-    title: "Base Alpha Group",
+    title: "SOL / BNB Alpha Group",
     autoDetectEnabled: false,
     highRiskAlerts: true,
     dailyCheckLimit: 100,
@@ -44,7 +44,7 @@ export function buildTelegramStartReply() {
     "ChainVigil AI｜链哨 AI",
     "买币前，先查 CA。",
     "",
-    "发送 /check 0x... 可 mock 查询 Token 风险报告。",
+    "发送 /check <CA> 可 mock 查询 SOL 或 BNB Token 风险报告。",
     "发送 /help 查看全部可用命令。",
   ].join("\n");
 }

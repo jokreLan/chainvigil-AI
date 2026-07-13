@@ -34,7 +34,7 @@ export default function HomePage() {
               <CheckForm compact={false} />
             </div>
             <p className="mt-5 text-sm text-emerald-100/60">
-              支持 ETH / BSC / Base / Arbitrum / Polygon / Optimism。V0 当前返回 mock 风险报告。
+              第一版优先支持 SOL 和 BNB。其它 EVM 链保留 mock contract 兼容，后续按数据源接入推进。
             </p>
           </div>
 

@@ -10,11 +10,11 @@ import {
 describe("telegram contract", () => {
   it("builds brand-safe start and help replies", () => {
     expect(buildTelegramStartReply()).toContain("买币前，先查 CA。");
-    expect(buildTelegramHelpReply()).toContain("/check 0x...");
+    expect(buildTelegramHelpReply()).toContain("/check <CA>");
     expect(listTelegramCommands().map((item) => item.command)).toEqual([
       "/start",
       "/help",
-      "/check 0x...",
+      "/check <CA>",
       "/top",
       "/settings",
     ]);
@@ -25,7 +25,7 @@ describe("telegram contract", () => {
     groups[0]!.title = "mutated";
 
     expect(listMockTelegramGroups()[0]).toMatchObject({
-      title: "Base Alpha Group",
+      title: "SOL / BNB Alpha Group",
       autoDetectEnabled: false,
       highRiskAlerts: true,
       dailyCheckLimit: 100,

@@ -437,9 +437,9 @@ describe("ChainVigilClient", () => {
         mode: "mock",
         groups: [
           {
-            id: "tg-base-alpha",
+            id: "tg-sol-bnb-alpha",
             telegramChatId: "-1001000000001",
-            title: "Base Alpha Group",
+            title: "SOL / BNB Alpha Group",
             autoDetectEnabled: false,
             highRiskAlerts: true,
             dailyCheckLimit: 100,
@@ -455,7 +455,7 @@ describe("ChainVigilClient", () => {
     const response = await client.getTelegramGroups();
 
     expect(response.mode).toBe("mock");
-    expect(response.groups[0]?.title).toBe("Base Alpha Group");
+    expect(response.groups[0]?.title).toBe("SOL / BNB Alpha Group");
     expect(response.groups[0]?.highRiskAlerts).toBe(true);
   });
 
@@ -465,8 +465,8 @@ describe("ChainVigilClient", () => {
         mode: "mock",
         commands: [
           {
-            command: "/check 0x...",
-            description: "提交 EVM 合约地址，生成 mock 风险报告。",
+            command: "/check <CA>",
+            description: "提交 SOL 或 BNB Token 合约地址，生成 mock 风险报告。",
           },
         ],
       }),
@@ -475,7 +475,7 @@ describe("ChainVigilClient", () => {
     const response = await client.getTelegramCommands();
 
     expect(response.mode).toBe("mock");
-    expect(response.commands[0]?.command).toBe("/check 0x...");
+    expect(response.commands[0]?.command).toBe("/check <CA>");
   });
 
   it("reads wallet reports by address", async () => {

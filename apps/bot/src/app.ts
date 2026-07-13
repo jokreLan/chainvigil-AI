@@ -60,8 +60,8 @@ export function buildBotApp() {
         mode: "mock",
         reply: [
           "高危 CA 榜单（mock）",
-          "1. Base 0x1111...1110｜禁买｜卖出失败",
-          "2. BSC 0x2222...2220｜禁买｜黑名单权限",
+          "1. SOL So111...1112｜谨慎｜权限与流动性待复核",
+          "2. BNB 0x2222...2220｜禁买｜黑名单权限",
           "",
           "完整榜单：http://localhost:3000/leaderboard/high-risk-tokens",
         ].join("\n"),
@@ -82,7 +82,7 @@ export function buildBotApp() {
       return {
         ok: true,
         mode: "mock",
-        reply: "请发送 /check 0x... 来 mock 调用链哨 AI 安检。",
+        reply: "请发送 /check <CA> 来 mock 调用链哨 AI 安检，优先支持 SOL 和 BNB。",
       };
     }
 
@@ -94,7 +94,7 @@ export function buildBotApp() {
       return {
         ok: true,
         mode: "mock",
-        reply: "请输入有效的 EVM 合约地址。例如：/check 0x1111111111111111111111111111111111111110",
+        reply: "请输入有效的 SOL 或 BNB Token 合约地址。例如：/check So11111111111111111111111111111111111111112",
       };
     }
 
