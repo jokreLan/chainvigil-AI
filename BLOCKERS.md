@@ -5,6 +5,7 @@
 - 继续从 mock 风险报告升级到真实链上风险检测，需要至少一个 EVM RPC、GoPlus/Honeypot 或等价安全数据源凭证。当前 V0 mock 闭环不受影响。
 - Docker 镜像构建实测暂时受 Docker Hub / 本机 Docker 网络影响：`node:20-bookworm-slim` 基础镜像元数据拉取超时或 EOF。Dockerfile 与 `docker compose config` 已通过静态校验，但镜像实际构建需等基础镜像可拉取后补验。
 - 第 64 轮验证记录本地已提交，但连续 3 次 `git push` 均被远端关闭连接：`Connection closed by 198.18.0.46 port 443`。当前本地 `main` 暂时领先 `origin/main`，待 GitHub SSH/网络恢复后重试推送。
+- 第 65 轮代码已本地提交；`git push origin main` 仍被远端关闭连接：`Connection closed by 198.18.0.46 port 443`。该问题不影响本地开发、测试和提交，待 GitHub SSH/网络恢复后统一推送。
 
 ## 已处理问题
 
