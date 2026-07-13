@@ -169,7 +169,7 @@ describe("api app", () => {
       label: "禁买",
       riskLevel: "BLOCK",
     });
-    expect(body.tokens[0].evidenceTags).toContain("honeypotDetected");
+    expect(body.tokens[0].evidenceTags).toContain("solanaAuthorityRisk");
 
     await app.close();
   });
@@ -254,7 +254,7 @@ describe("api app", () => {
     expect(body.items[0]).toMatchObject({
       riskLevel: "BLOCK",
       status: "pending",
-      tokenAddress: "0x1111111111111111111111111111111111111110",
+      tokenAddress: "0x1111111111111111111111111111111111111113",
     });
     expect(body.items[0].signals).toContain("honeypotDetected");
 
@@ -286,11 +286,11 @@ describe("api app", () => {
     expect(response.statusCode).toBe(200);
     expect(body.mode).toBe("mock");
     expect(body.reports[0]).toMatchObject({
-      tokenSymbol: "MVP",
+      tokenSymbol: "BNB-MVP",
       riskLevel: "BLOCK",
       label: "禁买",
     });
-    expect(body.reports[0].reportUrl).toContain("/token/base/0x1111111111111111111111111111111111111110");
+    expect(body.reports[0].reportUrl).toContain("/token/bsc/0x1111111111111111111111111111111111111113");
 
     await app.close();
   });

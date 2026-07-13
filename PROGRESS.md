@@ -331,6 +331,12 @@
 - 第 68 轮目标门禁已通过：`@chainvigil/telegram`、`@chainvigil/config`、Bot、API、SDK、Web 目标 typecheck/test/build；Telegram 测试 4 个用例、Config 测试 5 个用例、Bot 测试 7 个用例、API 测试 37 个用例、SDK 测试 27 个用例、Web 测试 4 个用例通过。
 - 第 68 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；当前 shell 只有 Node 20，因此继续使用临时 Node 22.13.1 + pnpm 11.7.0 执行。
 - 第 68 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web Bot、Admin Telegram、API Telegram groups/commands 和 Bot invalid check 新文案。
+- 开始开发 loop 第 69 轮：将公开高危 CA 榜单、假币样例、Admin 复核队列和 Token 报告索引 mock 数据调整为 SOL/BNB 优先，并同步 API/SDK/smoke 断言。
+- 第 69 轮目标门禁首次发现 API 测试仍断言旧 Base token 地址和旧 `MVP` 符号；已同步为 BNB 优先 mock 数据。
+- 第 69 轮目标门禁第 2 次通过：`@chainvigil/risk-core`、API、SDK、Web 目标 typecheck/test/build；Risk Core 测试 14 个用例、API 测试 37 个用例、SDK 测试 27 个用例、Web 测试 4 个用例通过。
+- 第 69 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；当前 shell 只有 Node 20，因此继续使用临时 Node 22.13.1 + pnpm 11.7.0 执行。
+- 第 69 轮运行态 smoke 首次发现 API admin token reports 仍断言旧 `MVP`；已改为 `BNB-MVP`。
+- 第 69 轮运行态 smoke check 第 2 次通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 SOL/BNB 优先的高危榜单、Admin 复核队列和 Token 报告索引。
 
 ## 下一步
 

@@ -126,7 +126,7 @@ describe("listMockHighRiskTokens", () => {
 
     expect(tokens[0]).toMatchObject({
       riskLevel: "BLOCK",
-      reportUrl: "https://chainvigil.example/token/base/0x1111111111111111111111111111111111111110",
+      reportUrl: "https://chainvigil.example/token/solana/So11111111111111111111111111111111111111112",
     });
     expect(listMockHighRiskTokens()[0]?.evidenceTags).not.toContain("mutated");
   });
@@ -165,7 +165,7 @@ describe("listMockTokenReportIndex", () => {
 
     expect(reports[0]).toMatchObject({
       riskLevel: "BLOCK",
-      reportUrl: "https://chainvigil.example/token/base/0x1111111111111111111111111111111111111110",
+      reportUrl: "https://chainvigil.example/token/bsc/0x1111111111111111111111111111111111111113",
     });
     expect(listMockTokenReportIndex()[0]?.label).toBe("禁买");
   });
@@ -179,7 +179,7 @@ describe("listMockRiskReviewQueue", () => {
     expect(queue[0]).toMatchObject({
       riskLevel: "BLOCK",
       status: "pending",
-      reportUrl: "https://chainvigil.example/token/base/0x1111111111111111111111111111111111111110",
+      reportUrl: "https://chainvigil.example/token/bsc/0x1111111111111111111111111111111111111113",
     });
     expect(listMockRiskReviewQueue()[0]?.signals).not.toContain("mutated");
   });

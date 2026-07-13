@@ -143,7 +143,7 @@ async function main() {
         await assertStatus(name, response, 200);
         const html = await response.text();
 
-        if (!html.includes("高危 CA 榜单") || !html.includes("honeypotDetected") || !html.includes("Mock Vigil Token")) {
+        if (!html.includes("高危 CA 榜单") || !html.includes("solanaAuthorityRisk") || !html.includes("Mock Solana Vigil Token")) {
           throw new Error(`${name} expected high-risk token list`);
         }
       },
@@ -177,7 +177,7 @@ async function main() {
       await assertStatus(name, response, 200);
       const html = await response.text();
 
-      if (!html.includes("报告历史") || !html.includes("Mock Vigil Token") || !html.includes("疑似貔貅盘")) {
+      if (!html.includes("报告历史") || !html.includes("Mock BNB Vigil Token") || !html.includes("疑似貔貅盘")) {
         throw new Error(`${name} expected user token report index`);
       }
     }),
@@ -311,7 +311,7 @@ async function main() {
       await assertStatus(name, response, 200);
       const html = await response.text();
 
-      if (!html.includes("高危 CA 审核") || !html.includes("待复核") || !html.includes("honeypotDetected")) {
+      if (!html.includes("高危 CA 审核") || !html.includes("待复核") || !html.includes("solanaAuthorityRisk")) {
         throw new Error(`${name} expected mock risk review queue`);
       }
     }),
@@ -568,7 +568,7 @@ async function main() {
         if (
           body.mode !== "mock" ||
           body.tokens?.[0]?.label !== "禁买" ||
-          !body.tokens?.[0]?.evidenceTags?.includes("honeypotDetected")
+          !body.tokens?.[0]?.evidenceTags?.includes("solanaAuthorityRisk")
         ) {
           throw new Error(`${name} expected mock high-risk token list`);
         }
@@ -740,7 +740,7 @@ async function main() {
         await assertStatus(name, response, 200);
         const body = await response.json();
 
-        if (body.mode !== "mock" || body.reports?.[0]?.label !== "禁买" || body.reports?.[0]?.tokenSymbol !== "MVP") {
+        if (body.mode !== "mock" || body.reports?.[0]?.label !== "禁买" || body.reports?.[0]?.tokenSymbol !== "BNB-MVP") {
           throw new Error(`${name} expected mock admin token report index`);
         }
       },

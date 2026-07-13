@@ -32,6 +32,7 @@
 - 第 66 轮无新增阻塞；钱包体检能力清单仍为只读 mock contract，真实授权扫描、资产识别和撤销执行需等待 RPC/索引器、钱包连接和二次确认流程。
 - 第 67 轮无新增阻塞；Solana 已进入 V0 地址解析、metadata 和 mock 报告 contract，但真实 Solana 风险检测仍需 Solana RPC、DEX/LP 数据、Token 权限解析和独立误报复核流程。
 - 第 68 轮无新增阻塞；Telegram Bot 已改为 SOL/BNB 优先 mock 文案，真实群内自动识别和频控仍需 Telegram token、群权限模型和生产 webhook 配置。
+- 第 69 轮无新增阻塞；公开风险情报与 Admin 复核队列已切到 SOL/BNB mock 示例，真实榜单仍需数据源证据、误报处理和人工复核机制。
 - Prisma schema 校验需要 `DATABASE_URL`；已在 db package 校验脚本中提供本地默认连接串，仅用于 schema validate。
 - 严格 TypeScript 可选字段导致 VP 事件和 API mock 输入报错；已修复。
 - Token 报告 OG 图片在本地边缘运行器中因中文动态字体加载和 `fit-content` 布局限制返回 500；已改为英文 ASCII 分享图文案和显式 flex 布局。
