@@ -7,6 +7,7 @@ import {
   listMockHighRiskTokens,
   listMockWalletWatchlist,
   listMockRiskDatabaseEntries,
+  listMockRiskEducationLessons,
   listMockRiskMonitorRules,
   listMockRiskLabels,
   listMockRiskReviewQueue,
@@ -112,6 +113,19 @@ describe("listMockFakeTokenExamples", () => {
       impersonates: "USDT",
     });
     expect(listMockFakeTokenExamples()[0]?.signals).not.toContain("mutated");
+  });
+});
+
+describe("listMockRiskEducationLessons", () => {
+  it("returns defensive copies of risk education lessons", () => {
+    const lessons = listMockRiskEducationLessons();
+    lessons[0]!.relatedSignals.push("mutated");
+
+    expect(lessons[0]).toMatchObject({
+      id: "lesson-honeypot-basics",
+      category: "token",
+    });
+    expect(listMockRiskEducationLessons()[0]?.relatedSignals).not.toContain("mutated");
   });
 });
 

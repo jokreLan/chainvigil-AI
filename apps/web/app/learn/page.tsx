@@ -1,23 +1,7 @@
 import Link from "next/link";
+import { listMockRiskEducationLessons } from "@chainvigil/risk-core";
 
-const lessons = [
-  {
-    title: "什么是貔貅盘？",
-    desc: "能买不能卖，或卖出成本极高的 token 风险。",
-  },
-  {
-    title: "为什么 LP 未锁有风险？",
-    desc: "流动性可被撤走时，用户可能无法按预期退出。",
-  },
-  {
-    title: "无限授权为什么危险？",
-    desc: "spender 被攻击或作恶时，可能转走授权范围内资产。",
-  },
-  {
-    title: "相对低风险不等于推荐买入",
-    desc: "ChainVigil 只判断交易安全风险，不判断价格和收益。",
-  },
-];
+const lessons = listMockRiskEducationLessons();
 
 export default function LearnPage() {
   return (
@@ -39,9 +23,25 @@ export default function LearnPage() {
       </section>
       <section className="mt-10 space-y-4">
         {lessons.map((lesson) => (
-          <article key={lesson.title} className="border border-emerald-300/14 bg-black/20 p-5">
+          <article key={lesson.id} className="border border-emerald-300/14 bg-black/20 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300/80">
+              {lesson.category} · {lesson.difficulty}
+            </p>
             <h2 className="text-xl font-semibold text-white">{lesson.title}</h2>
-            <p className="mt-3 leading-7 text-emerald-50/70">{lesson.desc}</p>
+            <p className="mt-3 leading-7 text-emerald-50/70">{lesson.summary}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {lesson.relatedSignals.map((signal) => (
+                <span
+                  key={signal}
+                  className="border border-emerald-300/15 bg-emerald-300/8 px-2.5 py-1 text-xs text-emerald-50/70"
+                >
+                  {signal}
+                </span>
+              ))}
+            </div>
+            <p className="mt-4 border-l-2 border-emerald-300/40 pl-3 text-sm leading-6 text-emerald-50/75">
+              {lesson.recommendedAction}
+            </p>
           </article>
         ))}
       </section>

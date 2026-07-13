@@ -190,6 +190,22 @@ describe("api app", () => {
     await app.close();
   });
 
+  it("returns mock risk education lessons", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/risk/education-lessons" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.lessons[0]).toMatchObject({
+      id: "lesson-honeypot-basics",
+      difficulty: "beginner",
+    });
+    expect(body.lessons[0].recommendedAction).toContain("不要买入");
+
+    await app.close();
+  });
+
   it("returns non-secret service metadata", async () => {
     const app = await buildApiApp();
     const response = await app.inject({ method: "GET", url: "/api/v1/meta" });

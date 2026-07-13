@@ -63,6 +63,7 @@ async function main() {
         !html.includes("/api/v1/risk/database") ||
         !html.includes("/api/v1/risk/high-risk-tokens") ||
         !html.includes("/api/v1/risk/fake-token-examples") ||
+        !html.includes("/api/v1/risk/education-lessons") ||
         !html.includes("/api/v1/risk/monitor-rules") ||
         !html.includes("/api/v1/asset-cleanup/policies") ||
         !html.includes("/api/v1/wallet/watchlist") ||
@@ -107,6 +108,17 @@ async function main() {
 
       if (!html.includes("风险数据库") || !html.includes("貔貅盘 / Honeypot") || !html.includes("canSell=false")) {
         throw new Error(`${name} expected risk database glossary`);
+      }
+    }),
+  );
+
+  checks.push(
+    request("web.learn", `${webBaseUrl}/learn`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("风险百科") || !html.includes("什么是貔貅盘？") || !html.includes("sellTaxPercent&gt;=90")) {
+        throw new Error(`${name} expected risk education lessons`);
       }
     }),
   );
@@ -503,6 +515,23 @@ async function main() {
           !body.examples?.[0]?.signals?.includes("symbolImpersonation")
         ) {
           throw new Error(`${name} expected mock fake token examples`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.risk-education-lessons", `${apiBaseUrl}/api/v1/risk/education-lessons`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (
+          body.mode !== "mock" ||
+          body.lessons?.[0]?.id !== "lesson-honeypot-basics" ||
+          !body.lessons?.[0]?.relatedSignals?.includes("honeypotDetected")
+        ) {
+          throw new Error(`${name} expected mock risk education lessons`);
         }
       },
     ),

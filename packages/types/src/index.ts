@@ -205,6 +205,16 @@ export interface FakeTokenExample {
   recommendedAction: string;
 }
 
+export interface RiskEducationLesson {
+  id: string;
+  title: string;
+  category: "token" | "liquidity" | "approval" | "disclaimer";
+  difficulty: "beginner";
+  summary: string;
+  relatedSignals: string[];
+  recommendedAction: string;
+}
+
 export type AdminRiskReviewStatus = "pending" | "needs_data" | "escalated";
 
 export interface AdminRiskReviewItem {

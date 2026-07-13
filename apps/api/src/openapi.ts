@@ -104,6 +104,16 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/risk/education-lessons": {
+      get: {
+        summary: "Read mock risk education lessons",
+        responses: {
+          "200": {
+            description: "Beginner risk lessons for V0 Learn, SEO/GEO and Telegram education surfaces",
+          },
+        },
+      },
+    },
     "/api/v1/meta": {
       get: {
         summary: "Read non-secret service metadata",

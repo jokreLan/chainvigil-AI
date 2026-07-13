@@ -20,6 +20,7 @@ import {
   listMockFakeTokenExamples,
   listMockHighRiskTokens,
   listMockRiskDatabaseEntries,
+  listMockRiskEducationLessons,
   listMockRiskLabels,
   listMockRiskMonitorRules,
   listMockRiskReviewQueue,
@@ -303,6 +304,11 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
   app.get("/api/v1/risk/fake-token-examples", async () => ({
     examples: listMockFakeTokenExamples(),
+    mode: "mock",
+  }));
+
+  app.get("/api/v1/risk/education-lessons", async () => ({
+    lessons: listMockRiskEducationLessons(),
     mode: "mock",
   }));
 

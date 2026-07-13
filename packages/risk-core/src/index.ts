@@ -10,6 +10,7 @@ import type {
   FakeTokenExample,
   HighRiskTokenListItem,
   RiskDatabaseEntry,
+  RiskEducationLesson,
   RiskMonitorRule,
   RiskReason,
   TokenRiskReport,
@@ -369,6 +370,52 @@ export function listMockFakeTokenExamples(): FakeTokenExample[] {
   return examples.map((example) => ({
     ...example,
     signals: [...example.signals],
+  }));
+}
+
+export function listMockRiskEducationLessons(): RiskEducationLesson[] {
+  const lessons = [
+    {
+      id: "lesson-honeypot-basics",
+      title: "什么是貔貅盘？",
+      category: "token",
+      difficulty: "beginner",
+      summary: "能买不能卖，或卖出税接近 100%，属于买币前最需要先排除的一票否决风险。",
+      relatedSignals: ["canSell=false", "honeypotDetected", "sellTaxPercent>=90"],
+      recommendedAction: "看到禁买或卖出失败信号时，不要买入；已经持有也不要继续加仓。",
+    },
+    {
+      id: "lesson-liquidity-lock",
+      title: "为什么 LP 未锁有风险？",
+      category: "liquidity",
+      difficulty: "beginner",
+      summary: "流动性可被撤走时，用户可能无法按预期退出，价格看起来活跃也不代表安全。",
+      relatedSignals: ["lpLocked=false", "lpValueLow", "lpOwnerConcentrated"],
+      recommendedAction: "等待 LP 锁定或燃烧证据；没有证据时，把它视为需要谨慎的风险项。",
+    },
+    {
+      id: "lesson-unlimited-approval",
+      title: "无限授权为什么危险？",
+      category: "approval",
+      difficulty: "beginner",
+      summary: "授权额度过大时，spender 一旦被攻击或作恶，可能转走授权范围内资产。",
+      relatedSignals: ["allowance=infinite", "spenderUnknown", "lastUsedAt=null"],
+      recommendedAction: "定期复查授权，对长期不用或未知 spender 优先手动撤销。",
+    },
+    {
+      id: "lesson-low-risk-disclaimer",
+      title: "相对低风险不等于推荐买入",
+      category: "disclaimer",
+      difficulty: "beginner",
+      summary: "ChainVigil 只判断交易安全风险，不判断价格走势、收益空间或投资价值。",
+      relatedSignals: ["riskLevel=LOW", "notInvestmentAdvice", "manualReviewStillNeeded"],
+      recommendedAction: "把报告当作安全检查，不把低风险结果当作买入建议。",
+    },
+  ] satisfies RiskEducationLesson[];
+
+  return lessons.map((lesson) => ({
+    ...lesson,
+    relatedSignals: [...lesson.relatedSignals],
   }));
 }
 

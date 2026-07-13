@@ -68,6 +68,11 @@ const endpoints = [
   },
   {
     method: "GET",
+    path: "/api/v1/risk/education-lessons",
+    description: "读取风险百科课程、关联信号和建议动作。",
+  },
+  {
+    method: "GET",
     path: "/api/v1/risk/monitor-rules",
     description: "读取只读风险监控规则，不执行自动交易拦截或钱包操作。",
   },

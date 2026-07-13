@@ -312,6 +312,10 @@
 - 第 64 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/risk-core` typecheck/test/build、API/SDK/Web 目标 typecheck/test/build；Risk Core 测试 11 个用例、API 测试 33 个用例、SDK 测试 24 个用例、Web 测试 4 个用例通过。
 - 第 64 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；当前 shell 只有 Node 20，因此使用临时 Node 22.13.1 + pnpm 11.7.0 执行。
 - 第 64 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web 高危 CA 榜单、Web 假币数据库、API `/api/v1/risk/high-risk-tokens` 和 API `/api/v1/risk/fake-token-examples`。
+- 开始开发 loop 第 65 轮：将 Web `/learn` 风险百科从页面静态数组推进到共享风险教育课程 contract，并暴露给 API/SDK/smoke。
+- 第 65 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/risk-core` typecheck/test/build、API/SDK/Web 目标 typecheck/test/build；Risk Core 测试 12 个用例、API 测试 34 个用例、SDK 测试 25 个用例、Web 测试 4 个用例通过。
+- 第 65 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；当前 shell 只有 Node 20，因此继续使用临时 Node 22.13.1 + pnpm 11.7.0 执行。
+- 第 65 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web `/learn` 风险百科和 API `/api/v1/risk/education-lessons`。
 
 ## 下一步
 

@@ -11,6 +11,7 @@ import type {
   PointLedgerSummary,
   PointEventType,
   RiskDatabaseEntry,
+  RiskEducationLesson,
   RiskMonitorRule,
   ServiceMeta,
   TelegramCommand,
@@ -182,6 +183,11 @@ export interface FakeTokenExamplesResponse {
   mode: "mock";
 }
 
+export interface RiskEducationLessonsResponse {
+  lessons: RiskEducationLesson[];
+  mode: "mock";
+}
+
 export class ChainVigilApiError extends Error {
   constructor(
     message: string,
@@ -279,6 +285,10 @@ export class ChainVigilClient {
 
   async getFakeTokenExamples(): Promise<FakeTokenExamplesResponse> {
     return this.get<FakeTokenExamplesResponse>("/api/v1/risk/fake-token-examples");
+  }
+
+  async getRiskEducationLessons(): Promise<RiskEducationLessonsResponse> {
+    return this.get<RiskEducationLessonsResponse>("/api/v1/risk/education-lessons");
   }
 
   async getServiceMeta(): Promise<ServiceMeta> {

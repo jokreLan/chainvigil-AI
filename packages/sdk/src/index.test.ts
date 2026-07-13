@@ -219,6 +219,20 @@ describe("ChainVigilClient", () => {
     expect(response.examples[0]?.impersonates).toBe("USDT");
   });
 
+  it("reads risk education lessons", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        lessons: [{ id: "lesson-honeypot-basics", title: "什么是貔貅盘？" }],
+      }),
+    });
+
+    const response = await client.getRiskEducationLessons();
+
+    expect(response.mode).toBe("mock");
+    expect(response.lessons[0]?.id).toBe("lesson-honeypot-basics");
+  });
+
   it("reads service metadata", async () => {
     const client = new ChainVigilClient({
       fetcher: mockFetch({

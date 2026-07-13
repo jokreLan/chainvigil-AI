@@ -11,7 +11,7 @@ ChainVigil AI 是一个 Web3 交易安全工具。V0 聚焦免费 CA 安检、To
 - Web DApp 首页与 `/check`
 - `/token/[chain]/[address]` mock 风险报告页
 - 钱包体检入口 `/wallet-check` 与 `/wallet/[address]/health` mock 报告页
-- Fastify API：Token、Wallet/watchlist、risk database/high-risk tokens/fake token examples/monitor rules、asset cleanup policies、VP rules/ledger、growth channels、Telegram groups、Referral、readiness、meta、只读 Admin audit/risk review/risk labels/token reports mock 与 OpenAPI skeleton
+- Fastify API：Token、Wallet/watchlist、risk database/high-risk tokens/fake token examples/risk education lessons/monitor rules、asset cleanup policies、VP rules/ledger、growth channels、Telegram groups、Referral、readiness、meta、只读 Admin audit/risk review/risk labels/token reports mock 与 OpenAPI skeleton
 - Telegram Bot skeleton：`/telegram/webhook` 可 mock 调用
 - Admin skeleton
 - Prisma schema、VP 积分事件模型与 Admin 审计事件 contract
@@ -53,6 +53,7 @@ curl http://localhost:4000/api/v1/worker/jobs
 curl http://localhost:4000/api/v1/risk/database
 curl http://localhost:4000/api/v1/risk/high-risk-tokens
 curl http://localhost:4000/api/v1/risk/fake-token-examples
+curl http://localhost:4000/api/v1/risk/education-lessons
 curl http://localhost:4000/api/v1/risk/monitor-rules
 curl http://localhost:4000/api/v1/asset-cleanup/policies
 curl http://localhost:4000/api/v1/wallet/watchlist
