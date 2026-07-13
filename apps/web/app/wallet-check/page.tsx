@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { listMockWalletCheckCapabilities } from "@chainvigil/risk-core";
 import { WalletCheckForm } from "../ui/wallet-check-form";
 
-const checks = ["高危授权", "无限授权", "疑似垃圾 Token", "Spam NFT", "粉尘资产估算", "钱包健康分"];
+const checks = listMockWalletCheckCapabilities();
 
 export default function WalletCheckPage() {
   return (
@@ -28,8 +29,14 @@ export default function WalletCheckPage() {
 
       <section className="mt-10 grid gap-4 md:grid-cols-3">
         {checks.map((item) => (
-          <div key={item} className="border border-emerald-300/14 bg-black/20 p-5 text-emerald-50/80">
-            {item}
+          <div key={item.id} className="border border-emerald-300/14 bg-black/20 p-5 text-emerald-50/80">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300/80">
+              {item.category} · {item.v0Action}
+            </p>
+            <h2 className="mt-2 text-lg font-semibold text-white">{item.title}</h2>
+            <p className="mt-3 text-sm leading-6 text-emerald-50/68">{item.description}</p>
+            <p className="mt-4 text-xs text-emerald-50/58">无需签名：{item.requiresSignature ? "否" : "是"}</p>
+            <p className="mt-2 text-xs text-emerald-50/58">不做：{item.prohibitedActions.join(" / ")}</p>
           </div>
         ))}
       </section>

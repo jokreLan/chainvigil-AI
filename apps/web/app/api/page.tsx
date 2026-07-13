@@ -93,6 +93,11 @@ const endpoints = [
   },
   {
     method: "GET",
+    path: "/api/v1/wallet/check-capabilities",
+    description: "读取钱包体检能力清单和 V0 禁止执行边界。",
+  },
+  {
+    method: "GET",
     path: "/api/v1/points/rules",
     description: "读取哨点 VP 事件规则和积分边界说明。",
   },

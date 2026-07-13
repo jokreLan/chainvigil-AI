@@ -514,6 +514,25 @@ describe("ChainVigilClient", () => {
     expect(response.wallets[0]?.label).toBe("主钱包");
   });
 
+  it("reads wallet check capabilities", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        capabilities: [
+          {
+            id: "wallet-check-high-risk-approvals",
+            requiresSignature: false,
+          },
+        ],
+      }),
+    });
+
+    const response = await client.getWalletCheckCapabilities();
+
+    expect(response.mode).toBe("mock");
+    expect(response.capabilities[0]?.requiresSignature).toBe(false);
+  });
+
   it("preserves rate-limit errors", async () => {
     const client = new ChainVigilClient({
       fetcher: (async () =>

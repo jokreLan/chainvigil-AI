@@ -60,3 +60,4 @@
 - 买后清理策略 V0 由 `@chainvigil/risk-core` 提供只读 asset cleanup policy contract；授权清理、资产理发师和粉尘扫描只展示检查项与禁止动作，不做自动 swap、bridge、粉尘归集或授权撤销。
 - 公开风险情报 V0 由 `@chainvigil/risk-core` 提供高危 CA 榜单和假币样例 contract；Web/API/SDK 复用同一数据，真实榜单需等待可复查证据和人工审核。
 - 风险教育课程 V0 由 `@chainvigil/risk-core` 提供 beginner lesson contract；Web `/learn`、API 和 SDK 复用同一份人话解释，课程内容只做安全教育与风险提示，不构成买入建议。
+- 钱包体检能力清单 V0 由 `@chainvigil/risk-core` 提供只读 contract；Web `/wallet-check`、API 和 SDK 复用同一份能力边界，所有能力均声明不请求签名、不自动撤销授权、不自动 swap/bridge/粉尘归集。

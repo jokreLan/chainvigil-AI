@@ -14,6 +14,7 @@ import type {
   RiskMonitorRule,
   RiskReason,
   TokenRiskReport,
+  WalletCheckCapability,
   WalletHealthReport,
   WalletWatchlistItem,
 } from "@chainvigil/types";
@@ -114,6 +115,76 @@ export function listMockWalletWatchlist(appBaseUrl = "http://localhost:3000"): W
   ] satisfies WalletWatchlistItem[];
 
   return items.map((item) => ({ ...item }));
+}
+
+export function listMockWalletCheckCapabilities(): WalletCheckCapability[] {
+  const capabilities = [
+    {
+      id: "wallet-check-high-risk-approvals",
+      title: "高危授权",
+      category: "approval",
+      riskLevel: "HIGH",
+      description: "识别未知 spender、高危 spender 和长期未使用授权，只做只读提示。",
+      requiresSignature: false,
+      v0Action: "read_only_check",
+      prohibitedActions: ["自动撤销授权", "代替用户签名", "请求授权给 ChainVigil 合约"],
+    },
+    {
+      id: "wallet-check-infinite-approvals",
+      title: "无限授权",
+      category: "approval",
+      riskLevel: "MEDIUM",
+      description: "检查授权额度是否过大，帮助用户优先复查长期不用的 spender。",
+      requiresSignature: false,
+      v0Action: "read_only_check",
+      prohibitedActions: ["自动降低授权额度", "自动广播 revoke 交易"],
+    },
+    {
+      id: "wallet-check-suspicious-tokens",
+      title: "疑似垃圾 Token",
+      category: "asset",
+      riskLevel: "MEDIUM",
+      description: "标记无价格、无流动性或带钓鱼诱导的可疑资产，避免误点交互。",
+      requiresSignature: false,
+      v0Action: "read_only_check",
+      prohibitedActions: ["自动 swap", "自动隐藏资产", "点击未知 claim 链接"],
+    },
+    {
+      id: "wallet-check-spam-nfts",
+      title: "Spam NFT",
+      category: "nft",
+      riskLevel: "MEDIUM",
+      description: "识别疑似垃圾 NFT 和钓鱼空投，提醒用户不要访问未知站点。",
+      requiresSignature: false,
+      v0Action: "read_only_check",
+      prohibitedActions: ["访问 NFT 描述里的未知链接", "授权未知 marketplace"],
+    },
+    {
+      id: "wallet-check-dust-estimate",
+      title: "粉尘资产估算",
+      category: "dust",
+      riskLevel: "LOW",
+      description: "只估算粉尘资产价值和处理成本，不进行粉尘归集或跨链桥接。",
+      requiresSignature: false,
+      v0Action: "estimate_only",
+      prohibitedActions: ["粉尘归集", "自动 bridge", "自动 swap"],
+    },
+    {
+      id: "wallet-check-health-score",
+      title: "钱包健康分",
+      category: "score",
+      riskLevel: "UNKNOWN",
+      description: "用授权、可疑资产和粉尘风险生成只读健康摘要，不代表资产收益判断。",
+      requiresSignature: false,
+      v0Action: "score_only",
+      prohibitedActions: ["承诺收益", "隐藏高危授权", "替用户执行资产操作"],
+    },
+  ] satisfies WalletCheckCapability[];
+
+  return capabilities.map((capability) => ({
+    ...capability,
+    prohibitedActions: [...capability.prohibitedActions],
+  }));
 }
 
 export function listMockRiskDatabaseEntries(): RiskDatabaseEntry[] {

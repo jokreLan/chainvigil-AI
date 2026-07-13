@@ -51,6 +51,17 @@ async function main() {
   );
 
   checks.push(
+    request("web.wallet-check", `${webBaseUrl}/wallet-check`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("钱包体检") || !html.includes("高危授权") || !html.includes("read_only_check")) {
+        throw new Error(`${name} expected wallet check capabilities`);
+      }
+    }),
+  );
+
+  checks.push(
     request("web.api", `${webBaseUrl}/api`).then(async ({ name, response }) => {
       await assertStatus(name, response, 200);
       const html = await response.text();
@@ -67,6 +78,7 @@ async function main() {
         !html.includes("/api/v1/risk/monitor-rules") ||
         !html.includes("/api/v1/asset-cleanup/policies") ||
         !html.includes("/api/v1/wallet/watchlist") ||
+        !html.includes("/api/v1/wallet/check-capabilities") ||
         !html.includes("/api/v1/telegram/groups") ||
         !html.includes("/api/v1/telegram/commands")
       ) {
@@ -464,6 +476,23 @@ async function main() {
 
         if (JSON.stringify(body).includes("privateKey")) {
           throw new Error(`${name} leaked private key field`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.wallet-check-capabilities", `${apiBaseUrl}/api/v1/wallet/check-capabilities`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (
+          body.mode !== "mock" ||
+          body.capabilities?.[0]?.id !== "wallet-check-high-risk-approvals" ||
+          body.capabilities?.[0]?.requiresSignature !== false
+        ) {
+          throw new Error(`${name} expected mock wallet check capabilities`);
         }
       },
     ),

@@ -147,6 +147,17 @@ export interface WalletWatchlistItem {
   note: string;
 }
 
+export interface WalletCheckCapability {
+  id: string;
+  title: string;
+  category: "approval" | "asset" | "nft" | "dust" | "score";
+  riskLevel: ApprovalRiskLevel;
+  description: string;
+  requiresSignature: false;
+  v0Action: "read_only_check" | "estimate_only" | "score_only";
+  prohibitedActions: string[];
+}
+
 export interface RiskDatabaseEntry {
   id: string;
   title: string;

@@ -506,6 +506,25 @@ describe("api app", () => {
     await app.close();
   });
 
+  it("returns mock wallet check capabilities", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/v1/wallet/check-capabilities",
+    });
+
+    const body = response.json();
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.capabilities[0]).toMatchObject({
+      id: "wallet-check-high-risk-approvals",
+      requiresSignature: false,
+    });
+    expect(JSON.stringify(body)).toContain("自动撤销授权");
+
+    await app.close();
+  });
+
   it("rejects invalid wallet addresses", async () => {
     const app = await buildApiApp();
     const response = await app.inject({

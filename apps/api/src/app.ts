@@ -25,6 +25,7 @@ import {
   listMockRiskMonitorRules,
   listMockRiskReviewQueue,
   listMockTokenReportIndex,
+  listMockWalletCheckCapabilities,
   listMockWalletWatchlist,
 } from "@chainvigil/risk-core";
 import { listMockTelegramGroups, listTelegramCommands } from "@chainvigil/telegram";
@@ -426,6 +427,11 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
   app.get("/api/v1/wallet/watchlist", async () => ({
     wallets: listMockWalletWatchlist(readEnv("APP_BASE_URL", "http://localhost:3000")),
+    mode: "mock",
+  }));
+
+  app.get("/api/v1/wallet/check-capabilities", async () => ({
+    capabilities: listMockWalletCheckCapabilities(),
     mode: "mock",
   }));
 

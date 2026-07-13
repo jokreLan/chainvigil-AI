@@ -12,6 +12,7 @@ import {
   listMockRiskLabels,
   listMockRiskReviewQueue,
   listMockTokenReportIndex,
+  listMockWalletCheckCapabilities,
 } from "./index";
 
 describe("buildMockTokenRiskReport", () => {
@@ -48,6 +49,20 @@ describe("listMockWalletWatchlist", () => {
       reportUrl: "https://chainvigil.example/wallet/0x1111111111111111111111111111111111111110/health",
     });
     expect(listMockWalletWatchlist()[0]?.label).toBe("主钱包");
+  });
+});
+
+describe("listMockWalletCheckCapabilities", () => {
+  it("returns defensive copies of wallet check capabilities", () => {
+    const capabilities = listMockWalletCheckCapabilities();
+    capabilities[0]!.prohibitedActions.push("mutated");
+
+    expect(capabilities[0]).toMatchObject({
+      id: "wallet-check-high-risk-approvals",
+      requiresSignature: false,
+      v0Action: "read_only_check",
+    });
+    expect(listMockWalletCheckCapabilities()[0]?.prohibitedActions).not.toContain("mutated");
   });
 });
 

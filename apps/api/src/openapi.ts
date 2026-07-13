@@ -265,6 +265,16 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/wallet/check-capabilities": {
+      get: {
+        summary: "Read mock wallet check capabilities",
+        responses: {
+          "200": {
+            description: "Read-only wallet health check capabilities, prohibited actions and V0 execution boundary",
+          },
+        },
+      },
+    },
     "/api/v1/points/rules": {
       get: {
         summary: "Read Vigil Points rules",

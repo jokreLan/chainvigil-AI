@@ -316,6 +316,10 @@
 - 第 65 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/risk-core` typecheck/test/build、API/SDK/Web 目标 typecheck/test/build；Risk Core 测试 12 个用例、API 测试 34 个用例、SDK 测试 25 个用例、Web 测试 4 个用例通过。
 - 第 65 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；当前 shell 只有 Node 20，因此继续使用临时 Node 22.13.1 + pnpm 11.7.0 执行。
 - 第 65 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web `/learn` 风险百科和 API `/api/v1/risk/education-lessons`。
+- 开始开发 loop 第 66 轮：将 Web `/wallet-check` 检查项从页面静态数组推进到共享只读钱包体检能力 contract，并暴露给 API/SDK/smoke。
+- 第 66 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/risk-core` typecheck/test/build、API/SDK/Web 目标 typecheck/test/build；Risk Core 测试 13 个用例、API 测试 35 个用例、SDK 测试 26 个用例、Web 测试 4 个用例通过。
+- 第 66 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；当前 shell 只有 Node 20，因此继续使用临时 Node 22.13.1 + pnpm 11.7.0 执行。
+- 第 66 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web `/wallet-check` 和 API `/api/v1/wallet/check-capabilities`。
 
 ## 下一步
 
