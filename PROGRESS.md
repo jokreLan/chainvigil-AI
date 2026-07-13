@@ -320,6 +320,13 @@
 - 第 66 轮目标门禁已通过：`@chainvigil/types` typecheck/build、`@chainvigil/risk-core` typecheck/test/build、API/SDK/Web 目标 typecheck/test/build；Risk Core 测试 13 个用例、API 测试 35 个用例、SDK 测试 26 个用例、Web 测试 4 个用例通过。
 - 第 66 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；当前 shell 只有 Node 20，因此继续使用临时 Node 22.13.1 + pnpm 11.7.0 执行。
 - 第 66 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Web `/wallet-check` 和 API `/api/v1/wallet/check-capabilities`。
+- 开始开发 loop 第 67 轮：根据产品方向将第一版主优先链调整为 SOL 和 BNB；同时将 Web `/app/settings` 从页面静态数组推进到共享只读用户偏好设置 contract，并暴露给 API/SDK/smoke。
+- 第 67 轮目标门禁第 1 次发现旧风险种子/旧 Solana 不支持断言不再成立；已修正为跨链稳定 mock 地址、Solana 支持链地址错误断言和 `fantom` 不支持链断言。
+- 第 67 轮目标门禁第 2 次通过：`@chainvigil/types`、`@chainvigil/chain`、`@chainvigil/data-adapters`、`@chainvigil/risk-core`、API/SDK/Web 目标 typecheck/test/build；Chain 测试 4 个用例、Risk Core 测试 14 个用例、API 测试 37 个用例、SDK 测试 27 个用例、Web 测试 4 个用例通过。
+- 第 67 轮全仓门禁首次发现 Bot `/check` 测试仍断言 Base/禁买旧结果；已改为 BNB 默认链和当前稳定 mock 风险结果。
+- 第 67 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；当前 shell 只有 Node 20，因此继续使用临时 Node 22.13.1 + pnpm 11.7.0 执行。
+- 第 67 轮运行态 smoke 首次发现旧 Base 路径和旧风险标签断言；修复后又遇到 Next dev 动态路由缓存 404，清理 `apps/web/.next`、`apps/admin/.next` 并重启后恢复。
+- 第 67 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 BNB token report、Solana token check、Web `/app/settings` 和 API `/api/v1/user/settings`。
 
 ## 下一步
 

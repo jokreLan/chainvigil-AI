@@ -10,7 +10,7 @@ export default function CheckPage() {
       <section className="mt-16">
         <h1 className="text-4xl font-semibold text-white">CA 安检</h1>
         <p className="mt-4 max-w-2xl text-emerald-50/70">
-          粘贴 Token 合约地址、DexScreener 链接或 GMGN 链接。V0 会生成可分享的 mock 风险报告。
+          优先支持 SOL 和 BNB Token 合约地址，也可以粘贴 DexScreener 或 GMGN 链接。V0 会生成可分享的 mock 风险报告。
         </p>
         <div className="mt-8">
           <CheckForm compact />

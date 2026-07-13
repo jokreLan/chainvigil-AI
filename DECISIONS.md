@@ -61,3 +61,5 @@
 - 公开风险情报 V0 由 `@chainvigil/risk-core` 提供高危 CA 榜单和假币样例 contract；Web/API/SDK 复用同一数据，真实榜单需等待可复查证据和人工审核。
 - 风险教育课程 V0 由 `@chainvigil/risk-core` 提供 beginner lesson contract；Web `/learn`、API 和 SDK 复用同一份人话解释，课程内容只做安全教育与风险提示，不构成买入建议。
 - 钱包体检能力清单 V0 由 `@chainvigil/risk-core` 提供只读 contract；Web `/wallet-check`、API 和 SDK 复用同一份能力边界，所有能力均声明不请求签名、不自动撤销授权、不自动 swap/bridge/粉尘归集。
+- 第一版主优先链调整为 Solana（SOL）和 BNB Smart Chain（BNB/BSC）；BNB 沿用 EVM/viem 地址路径，Solana 先进入地址解析、mock 报告、API metadata 和 smoke contract，不假装已接入真实 Solana 风险数据源。
+- 用户偏好设置 V0 由 `@chainvigil/risk-core` 提供只读 contract；Web `/app/settings`、API 和 SDK 复用同一份语言、风险阈值、榜单昵称和分享隐私设置，账户体系稳定前不开放写入。

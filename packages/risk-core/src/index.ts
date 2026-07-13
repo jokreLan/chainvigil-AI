@@ -14,6 +14,7 @@ import type {
   RiskMonitorRule,
   RiskReason,
   TokenRiskReport,
+  UserPreferenceSetting,
   WalletCheckCapability,
   WalletHealthReport,
   WalletWatchlistItem,
@@ -185,6 +186,45 @@ export function listMockWalletCheckCapabilities(): WalletCheckCapability[] {
     ...capability,
     prohibitedActions: [...capability.prohibitedActions],
   }));
+}
+
+export function listMockUserPreferenceSettings(): UserPreferenceSetting[] {
+  const settings = [
+    {
+      id: "setting-language",
+      title: "语言",
+      category: "language",
+      valueLabel: "中文 / English",
+      description: "V0 默认中文展示，保留英文品牌、API 字段和必要技术名词。",
+      editableInV0: false,
+    },
+    {
+      id: "setting-risk-alert-threshold",
+      title: "风险提醒阈值",
+      category: "risk_alert",
+      valueLabel: "MEDIUM 及以上",
+      description: "中风险及以上展示明确提醒；BLOCK 级别继续使用禁买人话解释。",
+      editableInV0: false,
+    },
+    {
+      id: "setting-public-leaderboard-name",
+      title: "公开榜单昵称",
+      category: "profile",
+      valueLabel: "匿名访客",
+      description: "公开榜单不展示钱包地址全量信息，V0 只保留匿名展示占位。",
+      editableInV0: false,
+    },
+    {
+      id: "setting-report-share-privacy",
+      title: "报告分享隐私",
+      category: "privacy",
+      valueLabel: "隐藏内部证据字段",
+      description: "分享报告只展示公开摘要、风险等级和免责声明，不暴露内部 mock evidence。",
+      editableInV0: false,
+    },
+  ] satisfies UserPreferenceSetting[];
+
+  return settings.map((setting) => ({ ...setting }));
 }
 
 export function listMockRiskDatabaseEntries(): RiskDatabaseEntry[] {
@@ -602,11 +642,11 @@ export function buildMockTokenRiskReport({
   chain,
   appBaseUrl = "http://localhost:3000",
 }: MockRiskInput): TokenRiskReport {
-  const parsed = parseTokenInput(input, chain ?? "base");
-  const normalizedAddress = parsed.address.toLowerCase();
-  const lastNibble = Number.parseInt(normalizedAddress.slice(-1), 16);
-  const isCritical = lastNibble % 5 === 0;
-  const isHigh = !isCritical && lastNibble % 3 === 0;
+  const parsed = parseTokenInput(input, chain ?? "bsc");
+  const normalizedAddress = parsed.chain === "solana" ? parsed.address : parsed.address.toLowerCase();
+  const addressSeed = [...normalizedAddress].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  const isCritical = addressSeed % 5 === 0;
+  const isHigh = !isCritical && addressSeed % 3 === 0;
   const checkedAt = new Date().toISOString();
   const reasons: RiskReason[] = [
     {
@@ -693,7 +733,7 @@ export function buildMockWalletHealthReport(params: {
     throw new Error("请输入有效的 EVM 钱包地址。");
   }
 
-  const chain = params.chain ?? "base";
+  const chain = params.chain ?? "bsc";
   const appBaseUrl = params.appBaseUrl ?? "http://localhost:3000";
   const checkedAt = new Date().toISOString();
   const lastNibble = Number.parseInt(normalizedAddress.slice(-1), 16);

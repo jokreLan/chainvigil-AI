@@ -4,6 +4,8 @@
 
 ChainVigil AI 是一个 Web3 交易安全工具。V0 聚焦免费 CA 安检、Token 风险报告页、报告分享、Telegram Bot 骨架、Admin 骨架和哨点 VP 积分事件模型。
 
+第一版主优先链：Solana（SOL）和 BNB Smart Chain（BNB/BSC）。其它 EVM 链保留 mock contract 兼容，不作为第一版主交付重心。
+
 ## V0 范围
 
 已纳入：
@@ -11,7 +13,7 @@ ChainVigil AI 是一个 Web3 交易安全工具。V0 聚焦免费 CA 安检、To
 - Web DApp 首页与 `/check`
 - `/token/[chain]/[address]` mock 风险报告页
 - 钱包体检入口 `/wallet-check` 与 `/wallet/[address]/health` mock 报告页
-- Fastify API：Token、Wallet/check capabilities/watchlist、risk database/high-risk tokens/fake token examples/risk education lessons/monitor rules、asset cleanup policies、VP rules/ledger、growth channels、Telegram groups、Referral、readiness、meta、只读 Admin audit/risk review/risk labels/token reports mock 与 OpenAPI skeleton
+- Fastify API：Token、Wallet/check capabilities/watchlist、user settings、risk database/high-risk tokens/fake token examples/risk education lessons/monitor rules、asset cleanup policies、VP rules/ledger、growth channels、Telegram groups、Referral、readiness、meta、只读 Admin audit/risk review/risk labels/token reports mock 与 OpenAPI skeleton
 - Telegram Bot skeleton：`/telegram/webhook` 可 mock 调用
 - Admin skeleton
 - Prisma schema、VP 积分事件模型与 Admin 审计事件 contract
@@ -58,6 +60,7 @@ curl http://localhost:4000/api/v1/risk/monitor-rules
 curl http://localhost:4000/api/v1/asset-cleanup/policies
 curl http://localhost:4000/api/v1/wallet/check-capabilities
 curl http://localhost:4000/api/v1/wallet/watchlist
+curl http://localhost:4000/api/v1/user/settings
 curl http://localhost:4000/api/v1/points/ledger
 curl http://localhost:4000/api/v1/growth/channels
 curl http://localhost:4000/api/v1/telegram/groups
@@ -66,7 +69,7 @@ curl http://localhost:4000/api/v1/admin/audit/logs
 curl http://localhost:4000/api/v1/admin/risk-review/queue
 curl http://localhost:4000/api/v1/admin/risk-labels
 curl http://localhost:4000/api/v1/admin/token-reports
-curl http://localhost:3000/token/base/0x1111111111111111111111111111111111111110
+curl http://localhost:3000/token/bsc/0x1111111111111111111111111111111111111110
 ```
 
 ## 常用命令
@@ -85,15 +88,15 @@ pnpm db:validate
 pnpm smoke:v0
 ```
 
-当前 smoke 覆盖 Web `/health`、Web `/check`、Web 风险数据库、Web 高危 CA 榜单、Web 假币数据库、Web 风险监控、Web 买后清理策略、Web VP ledger、Web Bot commands、Web API 清单、Web 用户报告历史、Web 钱包 watchlist、Web 推广中心、Token 报告页 JSON-LD、Admin `/health`、Admin readiness/worker jobs、Admin data sources、Admin `/audit`、Admin reports、Admin channels、Admin risk review、Admin risk labels、Admin VP ledger、Admin Telegram groups/commands、API token check、API meta、API data sources、API worker jobs、API 风险数据库、API 高危 CA 榜单、API 假币样例、API 风险监控规则、API 买后清理策略、API 钱包 watchlist、API VP ledger、API growth channels、API Telegram groups/commands、API 只读审计日志、API 只读风险复核队列、API 只读风险标签目录、API 只读 Token 报告索引、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
+当前 smoke 覆盖 Web `/health`、Web `/check`、Web 风险数据库、Web 高危 CA 榜单、Web 假币数据库、Web 风险监控、Web 买后清理策略、Web VP ledger、Web Bot commands、Web API 清单、Web 用户报告历史、Web 钱包 watchlist、Web 推广中心、Web 设置页、Token 报告页 JSON-LD、Admin `/health`、Admin readiness/worker jobs、Admin data sources、Admin `/audit`、Admin reports、Admin channels、Admin risk review、Admin risk labels、Admin VP ledger、Admin Telegram groups/commands、API BNB/Solana token check、API meta、API data sources、API worker jobs、API 风险数据库、API 高危 CA 榜单、API 假币样例、API 风险监控规则、API 买后清理策略、API 钱包 watchlist、API 用户设置、API VP ledger、API growth channels、API Telegram groups/commands、API 只读审计日志、API 只读风险复核队列、API 只读风险标签目录、API 只读 Token 报告索引、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
 
 上线前安全边界和生产预检见 `SECURITY.md`。
 
 ## V0 mock 流程
 
 1. 打开 `http://localhost:3000`
-2. 输入任意 EVM 地址，例如 `0x1111111111111111111111111111111111111111`
-3. 提交后进入 `/token/base/0x...`
+2. 输入 SOL 或 BNB Token 地址，例如 `So11111111111111111111111111111111111111112` 或 `0x1111111111111111111111111111111111111111`
+3. 提交后进入 `/token/solana/...` 或 `/token/bsc/0x...`
 4. API 会返回 mock 风险报告，页面展示风险等级、人话解释、分享链接和免责声明
 
 钱包体检 mock：
@@ -126,8 +129,8 @@ import { ChainVigilClient } from "@chainvigil/sdk";
 
 const client = new ChainVigilClient({ baseUrl: "http://localhost:4000" });
 const result = await client.checkToken({
-  input: "0x1111111111111111111111111111111111111110",
-  chain: "base",
+  input: "So11111111111111111111111111111111111111112",
+  chain: "solana",
 });
 const meta = await client.getServiceMeta();
 const dataSources = await client.getDataSourceAdapters();

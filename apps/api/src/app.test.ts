@@ -220,7 +220,8 @@ describe("api app", () => {
       version: "v0",
       mode: "mock",
     });
-    expect(body.supportedChains).toContain("base");
+    expect(body.supportedChains).toContain("solana");
+    expect(body.supportedChains).toContain("bsc");
     expect(JSON.stringify(body)).not.toContain("postgresql://");
 
     await app.close();
@@ -338,8 +339,8 @@ describe("api app", () => {
         "content-type": "application/json",
       },
       payload: {
-        input: "0x1111111111111111111111111111111111111110",
-        chain: "base",
+        input: "0x1111111111111111111111111111111111111113",
+        chain: "bsc",
         source: "web",
       },
     });
@@ -352,6 +353,29 @@ describe("api app", () => {
       status: "pending",
       points: 20,
     });
+
+    await app.close();
+  });
+
+  it("checks a mock Solana CA", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/token/check",
+      headers: {
+        "content-type": "application/json",
+      },
+      payload: {
+        input: "So11111111111111111111111111111111111111112",
+        chain: "solana",
+        source: "web",
+      },
+    });
+
+    const body = response.json();
+    expect(response.statusCode).toBe(200);
+    expect(body.report.chain).toBe("solana");
+    expect(body.report.tokenAddress).toBe("So11111111111111111111111111111111111111112");
 
     await app.close();
   });
@@ -441,7 +465,7 @@ describe("api app", () => {
     });
 
     expect(response.statusCode).toBe(400);
-    expect(response.json().error.field).toBe("chain");
+    expect(response.json().error.field).toBe("address");
 
     await app.close();
   });
@@ -453,7 +477,7 @@ describe("api app", () => {
       url: "/api/v1/token/check",
       payload: {
         input: "0x1111111111111111111111111111111111111110",
-        chain: "solana",
+        chain: "fantom",
       },
     });
 
@@ -521,6 +545,25 @@ describe("api app", () => {
       requiresSignature: false,
     });
     expect(JSON.stringify(body)).toContain("自动撤销授权");
+
+    await app.close();
+  });
+
+  it("returns mock user preference settings", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/v1/user/settings",
+    });
+
+    const body = response.json();
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.settings[0]).toMatchObject({
+      id: "setting-language",
+      editableInV0: false,
+    });
+    expect(JSON.stringify(body)).not.toContain("privateKey");
 
     await app.close();
   });

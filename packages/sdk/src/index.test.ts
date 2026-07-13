@@ -242,7 +242,7 @@ describe("ChainVigilClient", () => {
         slogan: "买币前，先查 CA。",
         version: "v0",
         mode: "mock",
-        supportedChains: ["base"],
+        supportedChains: ["solana", "bsc"],
         generatedAt: "2026-07-08T00:00:00.000Z",
       }),
     });
@@ -250,7 +250,8 @@ describe("ChainVigilClient", () => {
     const response = await client.getServiceMeta();
 
     expect(response.version).toBe("v0");
-    expect(response.supportedChains).toContain("base");
+    expect(response.supportedChains).toContain("solana");
+    expect(response.supportedChains).toContain("bsc");
   });
 
   it("reads mock admin audit logs", async () => {
@@ -531,6 +532,25 @@ describe("ChainVigilClient", () => {
 
     expect(response.mode).toBe("mock");
     expect(response.capabilities[0]?.requiresSignature).toBe(false);
+  });
+
+  it("reads user preference settings", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        settings: [
+          {
+            id: "setting-language",
+            editableInV0: false,
+          },
+        ],
+      }),
+    });
+
+    const response = await client.getUserSettings();
+
+    expect(response.mode).toBe("mock");
+    expect(response.settings[0]?.editableInV0).toBe(false);
   });
 
   it("preserves rate-limit errors", async () => {

@@ -15,6 +15,7 @@ import type {
   RiskMonitorRule,
   ServiceMeta,
   TelegramCommand,
+  UserPreferenceSetting,
   WalletCheckCapability,
   TelegramGroupSettings,
   TokenCheckRequest,
@@ -164,6 +165,11 @@ export interface WalletCheckCapabilitiesResponse {
   mode: "mock";
 }
 
+export interface UserSettingsResponse {
+  settings: UserPreferenceSetting[];
+  mode: "mock";
+}
+
 export interface RiskDatabaseResponse {
   entries: RiskDatabaseEntry[];
   mode: "mock";
@@ -249,6 +255,10 @@ export class ChainVigilClient {
 
   async getWalletCheckCapabilities(): Promise<WalletCheckCapabilitiesResponse> {
     return this.get<WalletCheckCapabilitiesResponse>("/api/v1/wallet/check-capabilities");
+  }
+
+  async getUserSettings(): Promise<UserSettingsResponse> {
+    return this.get<UserSettingsResponse>("/api/v1/user/settings");
   }
 
   async getPointsRules(): Promise<PointsRulesResponse> {

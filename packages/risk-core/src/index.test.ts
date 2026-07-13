@@ -12,13 +12,14 @@ import {
   listMockRiskLabels,
   listMockRiskReviewQueue,
   listMockTokenReportIndex,
+  listMockUserPreferenceSettings,
   listMockWalletCheckCapabilities,
 } from "./index";
 
 describe("buildMockTokenRiskReport", () => {
   it("returns a human-readable mock report", () => {
     const report = buildMockTokenRiskReport({
-      input: "0x1111111111111111111111111111111111111110",
+      input: "0x1111111111111111111111111111111111111113",
     });
 
     expect(report.riskLevel).toBe("BLOCK");
@@ -63,6 +64,19 @@ describe("listMockWalletCheckCapabilities", () => {
       v0Action: "read_only_check",
     });
     expect(listMockWalletCheckCapabilities()[0]?.prohibitedActions).not.toContain("mutated");
+  });
+});
+
+describe("listMockUserPreferenceSettings", () => {
+  it("returns defensive copies of user preference settings", () => {
+    const settings = listMockUserPreferenceSettings();
+    settings[0]!.valueLabel = "mutated";
+
+    expect(settings[0]).toMatchObject({
+      id: "setting-language",
+      editableInV0: false,
+    });
+    expect(listMockUserPreferenceSettings()[0]?.valueLabel).toBe("中文 / English");
   });
 });
 

@@ -1,4 +1,5 @@
 export type ChainId =
+  | "solana"
   | "ethereum"
   | "bsc"
   | "base"
@@ -156,6 +157,15 @@ export interface WalletCheckCapability {
   requiresSignature: false;
   v0Action: "read_only_check" | "estimate_only" | "score_only";
   prohibitedActions: string[];
+}
+
+export interface UserPreferenceSetting {
+  id: string;
+  title: string;
+  category: "language" | "risk_alert" | "profile" | "privacy";
+  valueLabel: string;
+  description: string;
+  editableInV0: false;
 }
 
 export interface RiskDatabaseEntry {

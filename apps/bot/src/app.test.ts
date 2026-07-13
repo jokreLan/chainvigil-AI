@@ -71,8 +71,8 @@ describe("bot app", () => {
 
     const body = response.json();
     expect(response.statusCode).toBe(200);
-    expect(body.reply).toContain("ChainVigil AI｜链哨 AI 检测结果：禁买");
-    expect(body.reply).toContain("/token/base/0x1111111111111111111111111111111111111110");
+    expect(body.reply).toContain("ChainVigil AI｜链哨 AI 检测结果：高危");
+    expect(body.reply).toContain("/token/bsc/0x1111111111111111111111111111111111111110");
 
     await app.close();
   });

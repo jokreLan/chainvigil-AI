@@ -5,6 +5,11 @@ export const supportedChains: Record<
   ChainId,
   { name: string; explorerBaseUrl: string; nativeSymbol: string }
 > = {
+  solana: {
+    name: "Solana",
+    explorerBaseUrl: "https://solscan.io",
+    nativeSymbol: "SOL",
+  },
   ethereum: {
     name: "Ethereum",
     explorerBaseUrl: "https://etherscan.io",
@@ -38,6 +43,8 @@ export const supportedChains: Record<
 };
 
 const chainAliases: Record<string, ChainId> = {
+  sol: "solana",
+  solana: "solana",
   eth: "ethereum",
   ethereum: "ethereum",
   bsc: "bsc",
@@ -53,26 +60,39 @@ const chainAliases: Record<string, ChainId> = {
 
 export interface ParsedTokenInput {
   chain: ChainId;
-  address: `0x${string}`;
+  address: string;
   rawInput: string;
 }
 
-export function parseTokenInput(input: string, fallbackChain: ChainId = "base"): ParsedTokenInput {
-  const rawInput = input.trim();
-  const address = rawInput.match(/0x[a-fA-F0-9]{40}/)?.[0];
+const solanaAddressPattern = /[1-9A-HJ-NP-Za-km-z]{32,44}/;
 
-  if (!address || !isAddress(address)) {
+export function parseTokenInput(input: string, fallbackChain: ChainId = "bsc"): ParsedTokenInput {
+  const rawInput = input.trim();
+  const lowered = rawInput.toLowerCase();
+  const evmAddress = rawInput.match(/0x[a-fA-F0-9]{40}/)?.[0];
+  const solanaAddress = rawInput.match(solanaAddressPattern)?.[0];
+  const aliasChain = Object.entries(chainAliases).find(([alias]) => lowered.includes(alias))?.[1];
+  const detectedChain = aliasChain ?? (!evmAddress && solanaAddress ? "solana" : fallbackChain);
+
+  if (detectedChain === "solana") {
+    if (!solanaAddress) {
+      throw new Error("请输入有效的 Solana Token 地址。");
+    }
+
+    return {
+      chain: detectedChain,
+      address: solanaAddress,
+      rawInput,
+    };
+  }
+
+  if (!evmAddress || !isAddress(evmAddress)) {
     throw new Error("请输入有效的 EVM 合约地址。");
   }
 
-  const lowered = rawInput.toLowerCase();
-  const detectedChain =
-    Object.entries(chainAliases).find(([alias]) => lowered.includes(alias))?.[1] ??
-    fallbackChain;
-
   return {
     chain: detectedChain,
-    address: address as `0x${string}`,
+    address: evmAddress,
     rawInput,
   };
 }

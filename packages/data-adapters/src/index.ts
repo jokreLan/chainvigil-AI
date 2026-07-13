@@ -59,10 +59,11 @@ export function getAdapterHealth(env: Record<string, string | undefined> = proce
 }
 
 export async function lookupTokenSecurity(_input: TokenSecurityLookupInput) {
+  const normalizedAddress = _input.chain === "solana" ? _input.address : _input.address.toLowerCase();
   const snapshot: TokenSecuritySnapshot = {
     source: "mock",
     chain: _input.chain,
-    address: _input.address.toLowerCase(),
+    address: normalizedAddress,
     fetchedAt: new Date().toISOString(),
     freshForSeconds: 60,
     data: {
@@ -77,7 +78,7 @@ export async function collectTokenRiskData(
   input: TokenSecurityLookupInput,
   env: Record<string, string | undefined> = process.env,
 ): Promise<TokenRiskDataBundle> {
-  const normalizedAddress = input.address.toLowerCase();
+  const normalizedAddress = input.chain === "solana" ? input.address : input.address.toLowerCase();
   const fetchedAt = new Date().toISOString();
   const missingLiveConfig = providerConfig
     .filter(hasRequiredEnv)

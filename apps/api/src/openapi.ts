@@ -275,6 +275,16 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/user/settings": {
+      get: {
+        summary: "Read mock user preference settings",
+        responses: {
+          "200": {
+            description: "Read-only V0 user preference settings without account persistence or wallet signature",
+          },
+        },
+      },
+    },
     "/api/v1/points/rules": {
       get: {
         summary: "Read Vigil Points rules",

@@ -5,6 +5,8 @@ import { FormEvent, useState } from "react";
 import type { TokenCheckResponse } from "@chainvigil/types";
 import { readApiErrorMessage } from "../lib/api-error";
 
+const tokenAddressPattern = /(0x[a-fA-F0-9]{40}|[1-9A-HJ-NP-Za-km-z]{32,44})/;
+
 export function CheckForm({ compact }: { compact: boolean }) {
   const router = useRouter();
   const [input, setInput] = useState("");
@@ -14,8 +16,8 @@ export function CheckForm({ compact }: { compact: boolean }) {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!input.match(/0x[a-fA-F0-9]{40}/)) {
-      setError("请输入有效的 EVM 合约地址。");
+    if (!input.match(tokenAddressPattern)) {
+      setError("请输入有效的 SOL 或 BNB Token 合约地址。");
       return;
     }
 
@@ -31,7 +33,6 @@ export function CheckForm({ compact }: { compact: boolean }) {
         },
         body: JSON.stringify({
           input,
-          chain: "base",
           source: "web",
         }),
       });
@@ -56,7 +57,7 @@ export function CheckForm({ compact }: { compact: boolean }) {
           aria-label="Token 合约地址"
           value={input}
           onChange={(event) => setInput(event.target.value)}
-          placeholder="粘贴 Token 合约地址 / DexScreener 链接 / GMGN 链接"
+          placeholder="粘贴 SOL / BNB Token 合约地址或链接"
           className="min-h-14 flex-1 border border-emerald-300/20 bg-white/9 px-4 text-white outline-none transition focus:border-emerald-300/70"
         />
         <button

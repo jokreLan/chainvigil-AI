@@ -98,6 +98,11 @@ const endpoints = [
   },
   {
     method: "GET",
+    path: "/api/v1/user/settings",
+    description: "读取 V0 只读用户偏好设置，不写入账户状态。",
+  },
+  {
+    method: "GET",
     path: "/api/v1/points/rules",
     description: "读取哨点 VP 事件规则和积分边界说明。",
   },

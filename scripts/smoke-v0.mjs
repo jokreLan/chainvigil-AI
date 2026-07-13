@@ -4,6 +4,7 @@ const apiBaseUrl = process.env.SMOKE_API_BASE_URL ?? "http://localhost:4000";
 const botBaseUrl = process.env.SMOKE_BOT_BASE_URL ?? "http://localhost:4001";
 
 const tokenAddress = "0x1111111111111111111111111111111111111110";
+const solanaTokenAddress = "So11111111111111111111111111111111111111112";
 
 async function request(name, url, init = {}) {
   const response = await fetch(url, {
@@ -79,6 +80,7 @@ async function main() {
         !html.includes("/api/v1/asset-cleanup/policies") ||
         !html.includes("/api/v1/wallet/watchlist") ||
         !html.includes("/api/v1/wallet/check-capabilities") ||
+        !html.includes("/api/v1/user/settings") ||
         !html.includes("/api/v1/telegram/groups") ||
         !html.includes("/api/v1/telegram/commands")
       ) {
@@ -99,7 +101,7 @@ async function main() {
   );
 
   checks.push(
-    request("web.token", `${webBaseUrl}/token/base/${tokenAddress}`).then(async ({ name, response }) => {
+    request("web.token", `${webBaseUrl}/token/bsc/${tokenAddress}`).then(async ({ name, response }) => {
       await assertStatus(name, response, 200);
       const html = await response.text();
 
@@ -188,6 +190,17 @@ async function main() {
 
       if (!html.includes("我的钱包") || !html.includes("主钱包") || !html.includes("只读钱包 watchlist")) {
         throw new Error(`${name} expected wallet watchlist`);
+      }
+    }),
+  );
+
+  checks.push(
+    request("web.settings", `${webBaseUrl}/app/settings`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("设置") || !html.includes("语言") || !html.includes("read only")) {
+        throw new Error(`${name} expected user preference settings`);
       }
     }),
   );
@@ -363,14 +376,29 @@ async function main() {
     request("api.token-check", `${apiBaseUrl}/api/v1/token/check`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ input: tokenAddress, chain: "base" }),
+      body: JSON.stringify({ input: tokenAddress, chain: "bsc" }),
     }).then(async ({ name, response }) => {
       await assertStatus(name, response, 200);
       await assertHeader(name, response, "x-content-type-options", "nosniff");
       const body = await response.json();
 
-      if (body.report?.label !== "禁买") {
-        throw new Error(`${name} expected mock report label 禁买`);
+      if (body.report?.chain !== "bsc" || !body.report?.label) {
+        throw new Error(`${name} expected mock BNB report`);
+      }
+    }),
+  );
+
+  checks.push(
+    request("api.solana-token-check", `${apiBaseUrl}/api/v1/token/check`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ input: solanaTokenAddress, chain: "solana" }),
+    }).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const body = await response.json();
+
+      if (body.report?.chain !== "solana" || body.report?.tokenAddress !== solanaTokenAddress) {
+        throw new Error(`${name} expected mock Solana report`);
       }
     }),
   );
@@ -380,7 +408,12 @@ async function main() {
       await assertStatus(name, response, 200);
       const body = await response.json();
 
-      if (body.brand !== "ChainVigil AI" || body.version !== "v0" || !body.supportedChains?.includes("base")) {
+      if (
+        body.brand !== "ChainVigil AI" ||
+        body.version !== "v0" ||
+        !body.supportedChains?.includes("solana") ||
+        !body.supportedChains?.includes("bsc")
+      ) {
         throw new Error(`${name} expected V0 service metadata`);
       }
     }),
@@ -496,6 +529,17 @@ async function main() {
         }
       },
     ),
+  );
+
+  checks.push(
+    request("api.user-settings", `${apiBaseUrl}/api/v1/user/settings`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const body = await response.json();
+
+      if (body.mode !== "mock" || body.settings?.[0]?.id !== "setting-language" || body.settings?.[0]?.editableInV0 !== false) {
+        throw new Error(`${name} expected mock user preference settings`);
+      }
+    }),
   );
 
   checks.push(

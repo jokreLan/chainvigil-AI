@@ -31,7 +31,7 @@ export function WalletCheckForm() {
         },
         body: JSON.stringify({
           address,
-          chain: "base",
+          chain: "bsc",
           source: "web",
         }),
       });

@@ -25,6 +25,7 @@ import {
   listMockRiskMonitorRules,
   listMockRiskReviewQueue,
   listMockTokenReportIndex,
+  listMockUserPreferenceSettings,
   listMockWalletCheckCapabilities,
   listMockWalletWatchlist,
 } from "@chainvigil/risk-core";
@@ -108,9 +109,9 @@ function parseTokenCheckBody(body: unknown): TokenCheckRequest {
   const chain = optionalChain(record.chain);
 
   try {
-    parseTokenInput(input, chain ?? "base");
+    parseTokenInput(input, chain ?? "bsc");
   } catch {
-    throw new ApiInputError("请输入有效的 EVM 合约地址。", "input");
+    throw new ApiInputError("请输入有效的 SOL 或 BNB Token 合约地址。", "input");
   }
 
   const parsed: TokenCheckRequest = {
@@ -136,7 +137,7 @@ function parseTokenPathParams(
   try {
     parseTokenInput(params.address, chain);
   } catch {
-    throw new ApiInputError("请输入有效的 EVM 合约地址。", "address");
+    throw new ApiInputError("请输入有效的 SOL 或 BNB Token 合约地址。", "address");
   }
 
   return {
@@ -151,9 +152,9 @@ function parseWalletHealthBody(body: unknown): WalletHealthRequest {
   const chain = optionalChain(record.chain);
 
   try {
-    parseTokenInput(address, chain ?? "base");
+    parseTokenInput(address, chain ?? "bsc");
   } catch {
-    throw new ApiInputError("请输入有效的 EVM 钱包地址。", "address");
+    throw new ApiInputError("请输入有效的钱包地址。", "address");
   }
 
   const parsed: WalletHealthRequest = {
@@ -411,7 +412,7 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
   app.get<{ Params: { address: string } }>("/api/v1/wallet/:address/health", async (request) => {
     try {
-      parseTokenInput(request.params.address, "base");
+      parseTokenInput(request.params.address, "bsc");
     } catch {
       throw new ApiInputError("请输入有效的 EVM 钱包地址。", "address");
     }
@@ -432,6 +433,11 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
   app.get("/api/v1/wallet/check-capabilities", async () => ({
     capabilities: listMockWalletCheckCapabilities(),
+    mode: "mock",
+  }));
+
+  app.get("/api/v1/user/settings", async () => ({
+    settings: listMockUserPreferenceSettings(),
     mode: "mock",
   }));
 
