@@ -58,19 +58,19 @@ export function CheckForm({ compact }: { compact: boolean }) {
           value={input}
           onChange={(event) => setInput(event.target.value)}
           placeholder="粘贴 SOL / BNB Token 合约地址或链接"
-          className="min-h-14 flex-1 border border-emerald-300/20 bg-white/9 px-4 text-white outline-none transition focus:border-emerald-300/70"
+          className="min-h-14 flex-1 rounded-md border border-[#464554] bg-[#0d0d15] px-4 font-mono text-sm text-[#f9fafb] outline-none transition placeholder:text-[#6b7280] focus:border-[#8083ff] focus:ring-2 focus:ring-[#8083ff]/20"
         />
         <button
           type="submit"
           disabled={isChecking}
-          className="min-h-14 bg-emerald-300 px-6 font-semibold text-emerald-950 transition hover:bg-emerald-200"
+          className="min-h-14 rounded-md bg-[#8083ff] px-6 font-semibold text-[#0d0096] transition hover:bg-[#c0c1ff] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isChecking ? "检测中..." : "立即安检"}
         </button>
       </div>
-      {error ? <p className="text-sm text-red-200">{error}</p> : null}
+      {error ? <p className="text-sm text-[#fca5a5]">{error}</p> : null}
       {!compact ? (
-        <p className="text-xs text-emerald-100/55">免费检测｜无需连接钱包｜无需签名｜不执行交易</p>
+        <p className="text-xs text-[#9ca3af]">免费检测｜无需连接钱包｜无需签名｜不执行交易</p>
       ) : null}
     </form>
   );

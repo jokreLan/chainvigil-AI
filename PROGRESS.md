@@ -350,6 +350,11 @@
 - 完成开发 loop 第 71 轮：生产环境变量 contract 改为显式要求 `RPC_SOLANA_URL` 与 `RPC_BSC_URL`；mock 模式仍只要求公开运行地址，旧 `RPC_BASE_URL` 保留给非主优先 EVM mock 兼容。
 - 第 71 轮目标门禁通过：`@chainvigil/config` typecheck/test/build（5 个用例）与 API typecheck/test/build（38 个用例）通过。
 - 第 71 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 开始开发 loop 第 72 轮：根据 Stitch 项目 `Comprehensive App Design Suite` 的设计系统，落实 V0 CA 安检与 Token 风险报告的深色安全情报界面。
+- 完成开发 loop 第 72 轮：Web 全局主题、首页、`/check`、Token 报告页和分享控件统一为 `#0A0B0F` 深色底、紧凑 `8px` 圆角、Vigil Points 状态入口和风险语义色；原有 API、SEO、JSON-LD、分享归因和 mock 报告行为保持不变。
+- 第 72 轮修复：Token 报告的结论与风险原因改为按 `BLOCK/HIGH/MEDIUM/LOW/UNKNOWN` 和 `critical/high/medium/low` 语义着色，避免把中低风险报告错误呈现为阻断级红色。
+- 第 72 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过；`pnpm dev` 配合 `pnpm smoke:v0` 返回 `V0 smoke passed`。
+- 第 72 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
 
 ## 下一步
 

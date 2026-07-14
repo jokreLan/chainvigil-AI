@@ -68,3 +68,5 @@
 - SOL/BNB 真实风险接入前，`@chainvigil/data-adapters` 必须以链级风险证据 Provider contract 声明支持链、证据类型、所需环境变量和降级策略；BNB 与 Solana 不共用未经验证的 provider 覆盖范围。
 - 环境变量“已配置”只能标记为 `live-ready`，不能表示真实数据已经拉取；V0 的原始证据 bundle 必须保持 `UNASSESSED`、`confidenceScore=0` 和 `fallbackActive=true`，直到 provider client、证据校验和误报治理真正接入。
 - 生产 readiness 对主优先链显式要求 `RPC_SOLANA_URL` 与 `RPC_BSC_URL`；旧 `RPC_BASE_URL` 仅保留给非主优先 EVM 的 V0 mock 兼容，不作为生产真实扫描就绪依据。
+- Stitch 项目 `Comprehensive App Design Suite` 的深色设计系统作为 Web V0 的视觉实现依据；页面只迁移视觉语言与信息层级，不以设计稿替换既有 API、SEO、分享归因或安全边界。
+- Token 报告的颜色必须表达真实风险语义：`BLOCK` 红、`HIGH` 橙、`MEDIUM` 黄、`LOW` 绿、`UNKNOWN` 灰；风险理由沿用同一语义，禁止固定使用单一高危颜色。

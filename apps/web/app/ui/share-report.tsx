@@ -43,14 +43,14 @@ export function ShareReport({ reportUrl, shareText, subjectId, referralCode }: S
       <button
         type="button"
         onClick={() => copy(reportUrl, "link")}
-        className="min-h-11 w-full border border-emerald-300/30 px-4 text-sm font-semibold text-emerald-100 transition hover:border-emerald-200 hover:bg-emerald-300/10"
+        className="min-h-11 w-full rounded-md border border-[#464554] px-4 text-sm font-semibold text-[#f9fafb] transition hover:border-[#8083ff] hover:bg-[#8083ff]/10"
       >
         {copied === "link" ? "已复制链接" : "复制报告链接"}
       </button>
       <button
         type="button"
         onClick={() => copy(shareText, "text")}
-        className="min-h-11 w-full border border-emerald-300/30 px-4 text-sm font-semibold text-emerald-100 transition hover:border-emerald-200 hover:bg-emerald-300/10"
+        className="min-h-11 w-full rounded-md border border-[#464554] px-4 text-sm font-semibold text-[#f9fafb] transition hover:border-[#8083ff] hover:bg-[#8083ff]/10"
       >
         {copied === "text" ? "已复制文案" : "复制分享文案"}
       </button>
@@ -60,7 +60,7 @@ export function ShareReport({ reportUrl, shareText, subjectId, referralCode }: S
           target="_blank"
           rel="noreferrer"
           onClick={() => recordShareEvent("share_telegram")}
-          className="flex min-h-11 items-center justify-center bg-emerald-300 px-4 text-sm font-semibold text-emerald-950 transition hover:bg-emerald-200"
+          className="flex min-h-11 items-center justify-center rounded-md bg-[#8083ff] px-4 text-sm font-semibold text-[#0d0096] transition hover:bg-[#c0c1ff]"
         >
           Telegram
         </a>
@@ -69,7 +69,7 @@ export function ShareReport({ reportUrl, shareText, subjectId, referralCode }: S
           target="_blank"
           rel="noreferrer"
           onClick={() => recordShareEvent("share_x")}
-          className="flex min-h-11 items-center justify-center bg-white px-4 text-sm font-semibold text-slate-950 transition hover:bg-emerald-100"
+          className="flex min-h-11 items-center justify-center rounded-md border border-[#464554] bg-[#292932] px-4 text-sm font-semibold text-[#f9fafb] transition hover:bg-[#34343d]"
         >
           X
         </a>
