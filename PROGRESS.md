@@ -427,6 +427,11 @@
 - 开始开发 loop 第 92 轮：按统一深色安全情报规范补齐 `/app/reports`，复用 Token 报告索引 contract。
 - 完成开发 loop 第 92 轮：报告历史新增数据范围摘要、风险等级标签、CA、来源、分数和报告跳转；明确当前只是共享 mock 索引，不伪造个人钱包历史。
 - 第 92 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 已创建 `TASKS.md`，将无需外部凭证的剩余 V0 UI、Admin skeleton、页面测试与最终 release gate 纳入连续开发-测试-修复-提交循环；当前从 Web App 总览页开始。
+- 开始开发 loop 第 93 轮：按统一深色安全情报规范重构 `/app` 总览，聚合现有只读钱包、监控和 VP summary contract。
+- 第 93 轮目标门禁第 1 次发现页面引用了不存在的 `PointLedgerSummary.confirmedVp/pendingVp`；已改为共享 contract 的 `totalConfirmed/totalPending`。
+- 完成开发 loop 第 93 轮：安全工作台新增只读钱包、监控规则和 VP 摘要，按风险流程组织模块入口与 V0 安全边界；不要求连接钱包、不引入执行型交易能力。
+- 第 93 轮目标门禁第 2 次通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 
 ## 下一步
 
