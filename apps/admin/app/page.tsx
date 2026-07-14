@@ -14,18 +14,19 @@ const modules = [
 
 export default function AdminHomePage() {
   return (
-    <main className="min-h-screen px-6 py-10">
-      <h1 className="text-3xl font-semibold">ChainVigil AI Admin skeleton</h1>
-      <p className="mt-3 max-w-2xl text-slate-300">
+    <main className="min-h-screen px-5 py-8 md:px-8 md:py-10">
+      <p className="text-sm font-semibold text-[#c0c1ff]">CONTROL ROOM</p>
+      <h1 className="mt-2 text-3xl font-semibold text-white">ChainVigil AI Admin</h1>
+      <p className="mt-3 max-w-2xl text-[#c7c4d7]">
         V0 先提供后台信息架构骨架。后续所有人工修正必须记录操作人、对象和理由。
       </p>
       <div className="mt-8 grid gap-4 md:grid-cols-3">
         {modules.map((module) => (
-          <section key={module.title} className="border border-slate-700 bg-slate-900 p-4">
+          <section key={module.title} className="rounded-lg border border-[#262932] bg-[#16181d] p-5">
             <h2 className="font-semibold">{module.title}</h2>
-            <p className="mt-2 text-sm text-slate-400">待接入权限、审计日志和数据表。</p>
+            <p className="mt-2 text-sm text-[#8f8b9e]">待接入权限、审计日志和数据表。</p>
             {module.href ? (
-              <Link href={module.href} className="mt-4 inline-block text-sm text-emerald-200">
+              <Link href={module.href} className="mt-4 inline-block text-sm font-semibold text-[#c0c1ff] hover:text-white">
                 打开
               </Link>
             ) : null}

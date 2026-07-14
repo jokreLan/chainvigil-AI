@@ -5,30 +5,31 @@ export default function AdminTelegramPage() {
   const commands = listTelegramCommands();
 
   return (
-    <main className="min-h-screen px-6 py-10">
-      <h1 className="text-3xl font-semibold">Telegram 群组管理</h1>
-      <p className="mt-3 text-slate-300">管理群检测额度、自动提醒和群主设置。</p>
+    <main className="min-h-screen px-5 py-8 md:px-8 md:py-10">
+      <p className="text-sm font-semibold text-[#c0c1ff]">TELEGRAM OPERATIONS</p>
+      <h1 className="mt-2 text-3xl font-semibold text-white">Telegram 群组管理</h1>
+      <p className="mt-3 text-[#c7c4d7]">管理群检测额度、自动提醒和群主设置。</p>
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         {groups.map((group) => (
-          <article key={group.id} className="border border-slate-700 bg-slate-900 p-4">
+          <article key={group.id} className="rounded-lg border border-[#262932] bg-[#16181d] p-5">
             <h2 className="font-semibold">{group.title}</h2>
-            <p className="mt-2 text-sm text-slate-400">
+            <p className="mt-2 text-sm text-[#8f8b9e]">
               检测 {group.checksToday} / 高危提醒 {group.highRiskAlertsToday}
             </p>
-            <p className="mt-2 text-sm text-slate-400">
+            <p className="mt-2 text-sm text-[#8f8b9e]">
               自动检测 {group.autoDetectEnabled ? "开启" : "关闭"} / 每日上限 {group.dailyCheckLimit}
             </p>
           </article>
         ))}
       </div>
       <section className="mt-10">
-        <h2 className="text-2xl font-semibold">Bot 命令清单</h2>
-        <p className="mt-2 text-sm text-slate-400">只读展示当前 Bot skeleton 支持的命令，文案来自共享 contract。</p>
+        <h2 className="text-2xl font-semibold text-white">Bot 命令清单</h2>
+        <p className="mt-2 text-sm text-[#8f8b9e]">只读展示当前 Bot skeleton 支持的命令，文案来自共享 contract。</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {commands.map((item) => (
-            <article key={item.command} className="border border-slate-700 bg-slate-950 p-4">
-              <p className="font-mono text-sm text-emerald-200">{item.command}</p>
-              <p className="mt-2 text-sm text-slate-400">{item.description}</p>
+            <article key={item.command} className="rounded-lg border border-[#262932] bg-[#16181d] p-5">
+              <p className="font-mono text-sm text-[#c0c1ff]">{item.command}</p>
+              <p className="mt-2 text-sm text-[#8f8b9e]">{item.description}</p>
             </article>
           ))}
         </div>

@@ -57,6 +57,7 @@
 - 第 94 轮无新增阻塞；真实 watchlist 需要账户或匿名本地存储策略、地址归属和报告落库。
 - 第 95 轮无新增阻塞；真实偏好设置需要账户/匿名身份、持久化、隐私告知与同步策略。
 - 第 96 轮无新增阻塞；生产 API 商业化需要真实数据源、鉴权、配额、审计、账户和计费基础设施。
+- 第 97 轮无新增阻塞；Admin 页面继续仅消费共享只读 contract，真实审核、检索和配置写入仍需权限、审计落库与 PostgreSQL 接入。
 - Prisma schema 校验需要 `DATABASE_URL`；已在 db package 校验脚本中提供本地默认连接串，仅用于 schema validate。
 - 严格 TypeScript 可选字段导致 VP 事件和 API mock 输入报错；已修复。
 - Token 报告 OG 图片在本地边缘运行器中因中文动态字体加载和 `fit-content` 布局限制返回 500；已改为英文 ASCII 分享图文案和显式 flex 布局。

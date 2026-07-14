@@ -1,44 +1,25 @@
-import Link from "next/link";
 import { listMockTokenReportIndex } from "@chainvigil/risk-core";
 
 export default function AdminReportsPage() {
   const reports = listMockTokenReportIndex();
 
   return (
-    <main className="min-h-screen px-6 py-10">
-      <nav className="flex items-center justify-between text-sm text-slate-400">
-        <Link href="/" className="font-semibold text-white">
-          ChainVigil Admin
-        </Link>
-        <span>Token 报告查询 skeleton</span>
-      </nav>
-
-      <section className="mt-10">
-        <h1 className="text-3xl font-semibold">Token 报告查询</h1>
-        <p className="mt-3 max-w-2xl text-slate-300">
+    <main className="min-h-screen px-5 py-8 md:px-8 md:py-10">
+      <p className="text-sm font-semibold text-[#c0c1ff]">REPORT INDEX</p>
+      <section className="mt-2">
+        <h1 className="text-3xl font-semibold text-white">Token 报告查询</h1>
+        <p className="mt-3 max-w-2xl text-[#c7c4d7]">
           V0 后台先展示只读查询结构。后续接入数据库后，这里会支持风险标签人工修正、误报记录和操作审计。
         </p>
       </section>
 
-      <section className="mt-8 border border-slate-700 bg-slate-900 p-4">
-        <label className="text-sm text-slate-300" htmlFor="token-query">
-          CA / Chain / Symbol
-        </label>
-        <div className="mt-2 flex flex-col gap-3 sm:flex-row">
-          <input
-            id="token-query"
-            placeholder="0x..."
-            className="min-h-11 flex-1 border border-slate-700 bg-slate-950 px-3 text-white outline-none"
-          />
-          <button className="min-h-11 bg-emerald-300 px-5 font-semibold text-emerald-950">
-            查询
-          </button>
-        </div>
+      <section className="mt-8 rounded-lg border border-[#262932] bg-[#16181d] p-4 text-sm text-[#c7c4d7]">
+        V0 展示固定 mock 报告索引。生产查询与人工修正会在数据库、权限和审计链路就绪后开放。
       </section>
 
-      <section className="mt-6 overflow-hidden border border-slate-700">
-        <table className="w-full border-collapse text-left text-sm">
-          <thead className="bg-slate-900 text-slate-300">
+      <section className="mt-6 overflow-x-auto rounded-lg border border-[#262932] bg-[#16181d]">
+        <table className="min-w-[52rem] w-full border-collapse text-left text-sm">
+          <thead className="bg-[#1d2027] text-[#e4e1ed]">
             <tr>
               <th className="p-3">Chain</th>
               <th className="p-3">Token</th>
@@ -50,17 +31,17 @@ export default function AdminReportsPage() {
           </thead>
           <tbody>
             {reports.map((report) => (
-              <tr key={report.id} className="border-t border-slate-800">
-                <td className="p-3 text-slate-300">{report.chain}</td>
-                <td className="p-3 text-slate-300">
+              <tr key={report.id} className="border-t border-[#262932]">
+                <td className="p-3 text-[#c7c4d7]">{report.chain}</td>
+                <td className="p-3 text-[#c7c4d7]">
                   {report.tokenSymbol} / {report.tokenName}
                 </td>
-                <td className="p-3 font-mono text-slate-300">{report.tokenAddress}</td>
-                <td className="p-3 text-emerald-200">{report.label}</td>
-                <td className="p-3 text-slate-400">{report.summary}</td>
+                <td className="p-3 font-mono text-[#c7c4d7]">{report.tokenAddress}</td>
+                <td className="p-3 text-[#c0c1ff]">{report.label}</td>
+                <td className="p-3 text-[#8f8b9e]">{report.summary}</td>
                 <td className="p-3">
                   <a
-                    className="text-emerald-200"
+                    className="text-[#c0c1ff] hover:text-white"
                     href={report.reportUrl}
                     target="_blank"
                     rel="noreferrer"

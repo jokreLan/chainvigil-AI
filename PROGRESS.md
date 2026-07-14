@@ -441,6 +441,11 @@
 - 开始开发 loop 第 96 轮：统一 `/api` 和 `/pricing` 的深色安全情报视觉，并避免价格页作出 V0 之外的商业能力承诺。
 - 完成开发 loop 第 96 轮：API 文档页统一 endpoint 卡片、方法标签和 OpenAPI 入口；定价页明确仅为 V0 可用性说明，不承诺支付、配额、会员权益或未来 API 商业化能力。
 - 第 96 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 第 96 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
+- 开始开发 loop 第 97 轮：统一 Admin 风险复核、数据源、审计、Telegram、报告索引和总览的后台工作台视觉与移动端布局。
+- 完成开发 loop 第 97 轮：Admin 增加固定导航和统一深色工作台表面；五个目标页面与总览页使用相同的语义色、卡片层级、响应式留白和可横向阅读的报告表格。报告索引移除未实现的查询控件，明确展示 V0 只读 mock 状态。
+- 第 97 轮目标门禁通过：`@chainvigil/admin` typecheck/test/build（5 个用例）通过。
+- 第 97 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
 
 ## 下一步
 
