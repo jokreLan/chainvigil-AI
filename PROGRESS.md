@@ -435,6 +435,9 @@
 - 开始开发 loop 第 94 轮：按统一深色安全情报规范重构 `/app/wallets`，复用只读钱包 watchlist contract。
 - 完成开发 loop 第 94 轮：钱包页新增 watchlist 摘要、链/状态、风险授权信息和只读体检跳转；明确不连接钱包、不请求签名、不读取私钥或助记词。
 - 第 94 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 开始开发 loop 第 95 轮：按统一安全情报规范重构 `/app/settings`，复用只读用户偏好 contract。
+- 完成开发 loop 第 95 轮：设置页新增偏好分类、当前值和只读状态，明确 V0 不保存 mock 配置或伪造设置成功。
+- 第 95 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 
 ## 下一步
 
