@@ -85,3 +85,4 @@
 - 授权清理原稿中“连接钱包”“立即撤销”和“一键清理”均不进入 V0；页面仅以 `AssetCleanupPolicy` 展示人工确认所需检查项及禁止动作，防止 UI 暗示链哨 AI 会替用户签名或广播交易。
 - 开发者中心只展示仓库中已存在且可验证的 SDK/API contract；设计原稿中自动交易阻断、签名请求识别、Webhook、SLA 和商业计费不进入 V0，对外样例不得鼓励应用无条件执行交易。
 - 高危榜单的筛选结构在 V0 只表明数据范围，不伪造实时筛选能力；榜单卡必须来自 `HighRiskTokenListItem` contract，并保留 mock、证据复查和非投资建议提示。
+- 推广中心只读取 `@chainvigil/points` 的渠道归因 mock contract；设计原稿中的推荐链接、二维码、排行榜、结算和提现不进入 V0，confirmed/pending VP 也不得暗示未来 token 权益。

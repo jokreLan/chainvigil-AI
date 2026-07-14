@@ -410,6 +410,10 @@
 - 完成开发 loop 第 87 轮：高危榜单新增数据库导航、范围提示、响应式榜单行、风险证据标签和免责声明；所有 CA、等级、分数、证据和报告链接均来自共享 mock contract，未伪造实时筛选或高危部署者数据。
 - 第 87 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 - 第 87 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
+- 开始开发 loop 第 88 轮：根据 Stitch 推广中心原稿重构 `/app/growth`，以现有 VP 渠道归因 contract 替换虚构推荐链接、排行榜和结算数字。
+- 完成开发 loop 第 88 轮：推广中心新增 VP 汇总、有效访问/CA 指标和渠道明细；confirmed/pending 语义来自共享渠道数据，明确 V0 不提供创建链接、结算、提现或 claim，VP 不等于未来 token。
+- 第 88 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 第 88 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
 
 ## 下一步
 

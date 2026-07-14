@@ -1,32 +1,12 @@
 import { listMockGrowthChannels } from "@chainvigil/points";
+import { MobileNav } from "../../ui/mobile-nav";
 
 export default function GrowthPage() {
   const channels = listMockGrowthChannels();
+  const confirmedVp = channels.reduce((sum, channel) => sum + channel.confirmedVp, 0);
+  const pendingVp = channels.reduce((sum, channel) => sum + channel.pendingVp, 0);
+  const visits = channels.reduce((sum, channel) => sum + channel.effectiveVisits, 0);
+  const checks = channels.reduce((sum, channel) => sum + channel.effectiveCaChecks, 0);
 
-  return (
-    <main className="mx-auto min-h-screen max-w-5xl px-5 py-12">
-      <h1 className="text-4xl font-semibold text-white">推广中心</h1>
-      <p className="mt-4 max-w-3xl text-emerald-50/72">
-        推广奖励只记录真实转化，不奖励空动作。所有高价值 VP 默认先进入 pending 状态。
-      </p>
-      <section className="mt-8 grid gap-4 md:grid-cols-3">
-        {channels.map((channel) => (
-          <article key={channel.id} className="border border-emerald-300/14 bg-black/20 p-5">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-xl font-semibold text-white">{channel.name}</h2>
-              <span className="text-sm text-emerald-200">{channel.referralCode}</span>
-            </div>
-            <p className="mt-3 text-sm text-emerald-100/65">{channel.type}</p>
-            <div className="mt-5 grid grid-cols-2 gap-3 text-sm text-emerald-50/70">
-              <p>有效访问 {channel.effectiveVisits}</p>
-              <p>有效 CA {channel.effectiveCaChecks}</p>
-              <p>待确认 VP {channel.pendingVp}</p>
-              <p>已确认 VP {channel.confirmedVp}</p>
-            </div>
-            <p className="mt-4 leading-7 text-emerald-50/68">{channel.note}</p>
-          </article>
-        ))}
-      </section>
-    </main>
-  );
+  return <main className="min-h-screen bg-[#0a0b0f] pb-24 text-[#e4e1ed] md:pb-10"><header className="sticky top-0 z-30 flex h-16 items-center border-b border-[#262932] bg-[#0a0b0f]/95 px-5 font-semibold text-[#f9fafb] backdrop-blur md:px-8">ChainVigil AI</header><div className="mx-auto max-w-7xl px-5 py-9 md:px-8"><section><p className="text-sm font-semibold text-[#eab308]">Vigil Points</p><h1 className="mt-3 text-3xl font-semibold text-[#f9fafb] md:text-5xl">推广中心</h1><p className="mt-4 max-w-2xl leading-7 text-[#9ca3af]">仅记录有效访问和有效 CA 检查。高价值 VP 默认进入待确认状态，VP 不等于未来 token。</p></section><section className="mt-8 rounded-xl border border-[#262932] bg-[#16181d] p-6"><h2 className="text-xl font-semibold text-[#f9fafb]">渠道归因摘要</h2><p className="mt-2 text-sm text-[#9ca3af]">V0 为只读 mock 数据，不提供创建链接、结算、提现或 claim。</p></section><section className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-4">{[["已确认 VP", confirmedVp, "#eab308"],["待确认 VP", pendingVp, "#f59e0b"],["有效访问", visits, "#c0c1ff"],["有效 CA", checks, "#10b981"]].map(([label, value, color]) => <article key={String(label)} className="rounded-xl border border-[#262932] bg-[#16181d] p-5"><p className="text-sm text-[#9ca3af]">{label}</p><p className="mt-3 text-2xl font-semibold" style={{ color: String(color) }}>{value}</p></article>)}</section><section className="mt-10"><h2 className="text-2xl font-semibold text-[#f9fafb]">渠道明细</h2><div className="mt-5 grid gap-4 md:grid-cols-2">{channels.map((channel) => <article key={channel.id} className="rounded-xl border border-[#262932] bg-[#16181d] p-5"><div className="flex items-center justify-between gap-3"><h3 className="text-xl font-semibold text-[#f9fafb]">{channel.name}</h3><span className="rounded bg-[#292932] px-2 py-1 font-mono text-xs text-[#c7c4d7]">{channel.referralCode}</span></div><p className="mt-2 text-sm text-[#9ca3af]">{channel.type}</p><div className="mt-5 grid grid-cols-2 gap-3 text-sm text-[#c7c4d7]"><p>有效访问 {channel.effectiveVisits}</p><p>有效 CA {channel.effectiveCaChecks}</p><p className="text-[#f59e0b]">待确认 VP {channel.pendingVp}</p><p className="text-[#eab308]">已确认 VP {channel.confirmedVp}</p></div><p className="mt-5 border-t border-[#262932] pt-4 text-sm leading-6 text-[#9ca3af]">{channel.note}</p></article>)}</div></section></div><MobileNav active="points" /></main>;
 }
