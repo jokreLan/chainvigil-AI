@@ -64,6 +64,7 @@
 - 第 101 轮浏览器截图自动化仍受宿主运行时阻塞：官方 Browser 连接器在初始与重置后的会话均抛出 `Cannot redefine property: process`，无法打开受支持浏览器并生成桌面/移动端截图。未改用非受支持的浏览器自动化以规避该限制；待运行时修复后，需要逐页对照 Stitch 设计进行截图和像素检查。
 - 第 102 轮无新增阻塞；其余 Admin 页面只使用现有 shared contract，生产写入能力继续受权限、审计和 PostgreSQL 基础设施约束。
 - 第 103 轮已解除 smoke 文案漂移：新的运行态循环完成剩余 watchlist 与授权扫描断言迁移，`pnpm smoke:v0` 已通过。浏览器截图自动化的宿主运行时阻塞仍未解除。
+- 第 104 轮无新增阻塞；Admin 异常页面只使用本地 UI，不依赖外部服务。
 - Prisma schema 校验需要 `DATABASE_URL`；已在 db package 校验脚本中提供本地默认连接串，仅用于 schema validate。
 - 严格 TypeScript 可选字段导致 VP 事件和 API mock 输入报错；已修复。
 - Token 报告 OG 图片在本地边缘运行器中因中文动态字体加载和 `fit-content` 布局限制返回 500；已改为英文 ASCII 分享图文案和显式 flex 布局。

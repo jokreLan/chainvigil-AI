@@ -473,6 +473,10 @@
 
 - 可交付：pnpm workspace、Web CA 安检与 mock 风险报告、SOL/BNB 专题与 SEO/GEO、VP ledger contract、Telegram mock、Admin 只读工作台、Prisma schema、API/SDK 与完整 V0 smoke。
 - 外部依赖：真实 SOL/BNB 风险证据仍需要 RPC 与 provider 凭证；生产 Bot 需要 Telegram token/webhook；账户与写入需要 PostgreSQL/Redis/权限审计；浏览器视觉像素回归需等待当前宿主 Browser 运行时修复。
+- 开始开发 loop 第 104 轮：发布后质量扫描，补齐 Admin 异常与空路径的工作台视觉。
+- 完成开发 loop 第 104 轮：Admin `error` 与 `not-found` 状态统一为深色工作台可恢复界面，保留重试与返回控制台链接。
+- 第 104 轮目标门禁通过：`@chainvigil/admin` typecheck/test/build（5 个用例）通过。
+- 第 104 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
 
 ## 下一步
 
