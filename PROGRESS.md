@@ -398,6 +398,10 @@
 - 完成开发 loop 第 84 轮：资产理发师新增钱包整洁度概览、策略推荐和三类资产分类区；当前扫描结果统一显示为等待只读扫描，策略、检查项和禁止动作全部来自共享 contract，明确不连接钱包、不签名、不自动 swap/bridge/归集。
 - 第 84 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 - 第 84 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
+- 开始开发 loop 第 85 轮：根据 Stitch 授权清理原稿重构 `/app/approval-cleaner`，用现有执行保护策略 contract 取代设计稿的虚构授权列表和一键撤销操作。
+- 完成开发 loop 第 85 轮：授权清理新增只读扫描摘要、BNB 范围、撤销前检查项、禁止动作和人工确认说明；没有钱包连接、虚构授权记录、撤销按钮或自动链上操作。
+- 第 85 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 第 85 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
 
 ## 下一步
 
