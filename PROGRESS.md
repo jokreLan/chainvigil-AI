@@ -370,6 +370,9 @@
 - 开始开发 loop 第 76 轮：切换至 Stitch 原稿逐屏还原流程，优先重构移动端首页，并在保留可运行 V0 交互的前提下对齐原稿的信息架构。
 - 完成开发 loop 第 76 轮：首页对齐 Stitch 原稿的固定顶栏、居中 Hero、CA 与钱包双入口、高风险预警、核心防御模块、VP 卡及移动底部导航；原稿的背景光晕按项目视觉规范不采用，真实 `/check` 表单与既有路由保持不变。
 - 第 76 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过；`pnpm dev` 配合 `pnpm smoke:v0` 返回 `V0 smoke passed`。
+- 开始开发 loop 第 77 轮：将 Stitch CA 安检“扫描中”原稿接入现有真实 CA 提交流程。
+- 完成开发 loop 第 77 轮：`CheckForm` 在请求期间切换为扫描圆环、深度安全分析和六步进度状态；成功继续跳转 Token 报告，失败回到原输入并保留错误处理。
+- 第 77 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 
 ## 下一步
 

@@ -50,6 +50,30 @@ export function CheckForm({ compact }: { compact: boolean }) {
     }
   }
 
+  if (isChecking) {
+    return (
+      <section aria-live="polite" className="mx-auto max-w-md space-y-8 py-2 text-center">
+        <div className="relative mx-auto flex h-48 w-48 items-center justify-center rounded-full border-2 border-[#c0c1ff]/25 bg-[#0d0d15]">
+          <div className="absolute inset-4 rounded-full border border-[#c0c1ff]/40" />
+          <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#c0c1ff] motion-safe:animate-spin" />
+          <div className="relative"><p className="text-3xl font-semibold text-[#c0c1ff]">CA</p><p className="mt-1 text-sm font-semibold text-[#c0c1ff]">扫描中</p></div>
+        </div>
+        <div className="rounded-xl border border-[#262932] bg-[#16181d] p-5 text-left">
+          <div className="mb-5 text-center"><h2 className="text-xl font-semibold text-[#f9fafb]">深度安全分析</h2><p className="mt-2 text-sm text-[#c7c4d7]">正在深度扫描智能合约，请稍候...</p></div>
+          <div className="space-y-3">
+            <ScanStep label="识别合约" state="done" />
+            <ScanStep label="检测买卖" state="active" />
+            <ScanStep label="扫描权限" state="pending" />
+            <ScanStep label="检查流动性" state="pending" />
+            <ScanStep label="分析持仓" state="pending" />
+            <ScanStep label="生成 AI 报告" state="pending" />
+          </div>
+          <p className="mt-6 rounded-full bg-[#292932] px-4 py-3 text-center text-sm text-[#c7c4d7]">无需连接钱包，安全只读扫描。</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <form onSubmit={onSubmit} className="space-y-3">
       <div className="flex flex-col gap-3 sm:flex-row">
@@ -74,4 +98,10 @@ export function CheckForm({ compact }: { compact: boolean }) {
       ) : null}
     </form>
   );
+}
+
+function ScanStep({ label, state }: { label: string; state: "done" | "active" | "pending" }) {
+  const styles = state === "done" ? "bg-[#1b1b23] text-[#6ee7b7]" : state === "active" ? "border border-[#c0c1ff]/30 bg-[#8083ff]/10 text-[#c0c1ff]" : "bg-[#1b1b23]/60 text-[#9ca3af]";
+  const status = state === "done" ? "完成" : state === "active" ? "运行中" : "等待中";
+  return <div className={`flex items-center justify-between rounded-lg p-3 text-sm ${styles}`}><span>{label}</span><span className="text-xs font-semibold">{status}</span></div>;
 }
