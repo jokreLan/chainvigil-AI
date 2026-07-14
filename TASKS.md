@@ -4,8 +4,9 @@ This list covers the remaining V0 work that can be completed without external cr
 
 - [completed] Rebuild the Web App workspace overview (`/app`) with the unified security-intelligence layout.
 - [completed] Rebuild the read-only wallet watchlist (`/app/wallets`).
-- [in_progress] Rebuild read-only user preferences (`/app/settings`).
-- [pending] Rebuild the public API reference page (`/api`) and V0 pricing/status page (`/pricing`).
+- [completed] Rebuild read-only user preferences (`/app/settings`).
+- [completed] Rebuild the public API reference page (`/api`) and V0 pricing/status page (`/pricing`).
+- [in_progress] Standardize remaining public utility pages, empty/loading/error states, mobile layout, CA copy and share feedback.
 - [pending] Standardize remaining public utility pages, empty/loading/error states, mobile layout, CA copy and share feedback.
 - [pending] Add Solana/BNB SEO/GEO topic pages, structured data, sitemap and internal links.
 - [pending] Apply the UI system to Admin risk review, data sources, audit, Telegram and report-index screens.

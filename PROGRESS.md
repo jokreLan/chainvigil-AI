@@ -438,6 +438,9 @@
 - 开始开发 loop 第 95 轮：按统一安全情报规范重构 `/app/settings`，复用只读用户偏好 contract。
 - 完成开发 loop 第 95 轮：设置页新增偏好分类、当前值和只读状态，明确 V0 不保存 mock 配置或伪造设置成功。
 - 第 95 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 开始开发 loop 第 96 轮：统一 `/api` 和 `/pricing` 的深色安全情报视觉，并避免价格页作出 V0 之外的商业能力承诺。
+- 完成开发 loop 第 96 轮：API 文档页统一 endpoint 卡片、方法标签和 OpenAPI 入口；定价页明确仅为 V0 可用性说明，不承诺支付、配额、会员权益或未来 API 商业化能力。
+- 第 96 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 
 ## 下一步
 

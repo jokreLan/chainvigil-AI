@@ -94,3 +94,4 @@
 - 安全工作台总览仅聚合已存在的只读 mock summary contract；数字必须来自共享数据，不能用静态示例冒充钱包连接或个人资产状态。
 - 钱包列表在 V0 只展示 `WalletWatchlistItem` mock contract；没有账户体系前，不允许把它命名或呈现为用户真实已添加的钱包。
 - 设置页在账户、隐私和持久化策略未接入前只展示 `UserPreferenceSetting` contract；所有标记为 V0 只读的设置不得呈现可保存控件。
+- API 文档和价格页在 V0 必须明确内部/mock contract 范围；不能用视觉或文字承诺生产配额、付费计划、SLA、Webhook 或未实现的自动化能力。

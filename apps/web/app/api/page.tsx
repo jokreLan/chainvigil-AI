@@ -145,25 +145,21 @@ const endpoints = [
 
 export default function ApiPage() {
   return (
-    <main className="mx-auto min-h-screen max-w-5xl px-5 py-12">
-      <nav className="flex items-center justify-between text-sm text-emerald-100/70">
-        <Link href="/" className="font-semibold text-emerald-100">
-          ChainVigil AI｜链哨 AI
-        </Link>
+    <main className="min-h-screen bg-[#0a0b0f] pb-16 text-[#e4e1ed]">
+      <nav className="flex h-16 items-center justify-between border-b border-[#262932] px-5 text-sm md:px-8">
+        <Link href="/" className="font-semibold text-[#f9fafb]">ChainVigil AI</Link>
         <Link href="/risk-database">风险数据库</Link>
       </nav>
 
-      <section className="mt-16">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-300">
-          Developer API
-        </p>
-        <h1 className="mt-4 text-5xl font-semibold text-white">API 文档入口</h1>
-        <p className="mt-5 max-w-3xl text-lg leading-8 text-emerald-50/72">
+      <div className="mx-auto max-w-5xl px-5 py-12 md:px-8"><section>
+        <p className="text-sm font-semibold text-[#c0c1ff]">Developer API</p>
+        <h1 className="mt-3 text-3xl font-semibold text-[#f9fafb] md:text-5xl">API 文档入口</h1>
+        <p className="mt-4 max-w-3xl text-lg leading-8 text-[#9ca3af]">
           V0 API 先服务 Web、Bot 和 Admin 内部调用。公开商业 API 会在风险准确率、限流、审计和计费模型稳定后开放。
         </p>
         <a
           href="http://localhost:4000/openapi.json"
-          className="mt-6 inline-block border border-emerald-300/30 px-4 py-3 text-sm font-semibold text-emerald-100"
+          className="mt-6 inline-block rounded-lg border border-[#464554] bg-[#16181d] px-4 py-3 text-sm font-semibold text-[#f9fafb]"
         >
           打开 OpenAPI JSON
         </a>
@@ -173,18 +169,18 @@ export default function ApiPage() {
         {endpoints.map((endpoint) => (
           <article
             key={`${endpoint.method}-${endpoint.path}`}
-            className="border border-emerald-300/14 bg-black/20 p-5"
+            className="rounded-xl border border-[#262932] bg-[#16181d] p-5"
           >
             <div className="flex flex-wrap items-center gap-3">
-              <span className="bg-emerald-300 px-3 py-1 text-xs font-semibold text-emerald-950">
+              <span className="rounded bg-[#c0c1ff] px-3 py-1 text-xs font-semibold text-[#1000a9]">
                 {endpoint.method}
               </span>
-              <code className="break-all text-emerald-100">{endpoint.path}</code>
+              <code className="break-all text-[#f9fafb]">{endpoint.path}</code>
             </div>
-            <p className="mt-3 leading-7 text-emerald-50/70">{endpoint.description}</p>
+            <p className="mt-3 leading-7 text-[#9ca3af]">{endpoint.description}</p>
           </article>
         ))}
-      </section>
+      </section></div>
     </main>
   );
 }
