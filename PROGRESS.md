@@ -376,6 +376,7 @@
 - 开始开发 loop 第 78 轮：根据 Stitch 风险报告原稿重构动态 Token 报告页，保留 SOL/BNB mock 数据、SEO、JSON-LD 与分享归因。
 - 完成开发 loop 第 78 轮：报告页新增动态 Token 头部、风险结论卡、买卖仿真、权限、流动性和技术证据区块；修复迁移中遗留的重复结论结构，移动端预留底部空间以承接导航。
 - 第 78 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 第 78 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；`pnpm dev` 配合 `pnpm smoke:v0` 返回 `V0 smoke passed`，动态 BSC 报告页返回 200。
 
 ## 下一步
 
