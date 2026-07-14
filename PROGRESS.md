@@ -414,6 +414,10 @@
 - 完成开发 loop 第 88 轮：推广中心新增 VP 汇总、有效访问/CA 指标和渠道明细；confirmed/pending 语义来自共享渠道数据，明确 V0 不提供创建链接、结算、提现或 claim，VP 不等于未来 token。
 - 第 88 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 - 第 88 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
+- 开始开发 loop 第 89 轮：重构 `/app/dust` 的旧占位界面，复用资产清理 policy contract 并落实 V0 不做粉尘归集的产品边界。
+- 完成开发 loop 第 89 轮：粉尘扫描新增只读状态概览、候选检查项、禁止动作和风险教育区，接入 Wallet 活动态导航；不展示可执行的归集、swap 或 bridge 控件。
+- 第 89 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 第 89 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
 
 ## 下一步
 
