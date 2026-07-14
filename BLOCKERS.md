@@ -34,6 +34,7 @@
 - 第 72 轮无新增阻塞；Stitch 设计系统已落地到 V0 核心 Web 路径，视觉实现不依赖额外外部运行时服务。
 - 第 73 轮无新增阻塞；钱包体检与 VP 的界面升级复用既有只读 mock contract，未引入钱包连接或新的外部依赖。
 - 第 74 轮无新增阻塞；公开风险情报页只复用既有 mock contract 和报告链接，真实实时榜单仍受数据源证据与人工复核前置条件约束。
+- 第 75 轮无新增阻塞；公开 Telegram Bot 链接仍需后续提供正式 Bot 用户名和生产 webhook 配置，当前 Web 入口准确保留为 mock 状态。
 - Prisma schema 校验需要 `DATABASE_URL`；已在 db package 校验脚本中提供本地默认连接串，仅用于 schema validate。
 - 严格 TypeScript 可选字段导致 VP 事件和 API mock 输入报错；已修复。
 - Token 报告 OG 图片在本地边缘运行器中因中文动态字体加载和 `fit-content` 布局限制返回 500；已改为英文 ASCII 分享图文案和显式 flex 布局。

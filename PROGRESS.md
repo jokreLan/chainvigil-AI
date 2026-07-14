@@ -363,6 +363,9 @@
 - 完成开发 loop 第 74 轮：新增共享 `RiskBadge`，`/risk-database`、`/leaderboard/high-risk-tokens` 和 `/fake-token-database` 统一使用深色安全情报布局、可换行 CA 文本、证据标签及等级语义色，不改变 mock 数据、SEO 页面路径或报告跳转。
 - 第 74 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 - 第 74 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；`pnpm dev` 配合 `pnpm smoke:v0` 返回 `V0 smoke passed`，三个公开风险情报页额外 HTTP 校验均返回 200。
+- 开始开发 loop 第 75 轮：统一 Telegram Bot Web 入口与风险百科的 V0 阅读体验，补齐从 CA 检测到群内查询和风险解释的公开路径。
+- 完成开发 loop 第 75 轮：`/bot` 明确展示 SOL/BNB mock 命令、Webhook mock 状态和安全边界；`/learn` 使用统一深色风险教育阅读布局，保留既有课程 contract、风险解释和建议动作。
+- 第 75 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 
 ## 下一步
 
