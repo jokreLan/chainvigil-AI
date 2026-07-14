@@ -73,3 +73,4 @@
 - 第 47 轮运行态 smoke 曾遇到 Next/Turbopack dev cache 缺失 `.sst` 文件，导致 Web `/app/points` 返回 500；清理 `apps/web/.next`、`apps/admin/.next` 后重启 dev，`pnpm smoke:v0` 恢复通过。
 - 第 50 轮目标门禁曾遇到 Web 未声明 `@chainvigil/telegram` workspace 依赖，导致 `/bot` 页面无法解析共享命令 contract；补齐依赖并重新 `pnpm install` 后通过目标门禁、全仓门禁和运行态 smoke。
 - 第 105 轮无新增阻塞；首页工作台入口只复用已存在的路由与只读 contract。
+- 第 106 轮无新增阻塞；首页响应式布局只复用 Tailwind 既有能力，不引入新的运行时依赖。

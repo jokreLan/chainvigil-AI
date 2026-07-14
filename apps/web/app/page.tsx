@@ -25,8 +25,8 @@ export default function HomePage() {
         </nav>
       </header>
 
-      <div className="mx-auto max-w-md space-y-8 px-4 pt-10 md:max-w-7xl md:px-8">
-        <section className="text-center">
+      <div className="mx-auto max-w-md space-y-8 px-4 pt-10 md:grid md:max-w-7xl md:grid-cols-2 md:items-start md:gap-6 md:space-y-0 md:px-8">
+        <section className="text-center md:col-span-2 md:max-w-3xl md:text-left">
           <h1 className="text-4xl font-semibold leading-tight text-[#f9fafb] sm:text-5xl">买币前，<br /><span className="text-[#c0c1ff]">先查 CA。</span></h1>
           <p className="mt-4 leading-7 text-[#c7c4d7]">AI 检测貔貅盘、高税、黑名单、LP 未锁、Owner 后门、假币与授权风险。</p>
         </section>
@@ -55,9 +55,9 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section><h2 className="mb-4 text-lg font-semibold text-[#f9fafb]">核心防御模块</h2><div className="grid grid-cols-2 gap-3">{defenseModules.map((module) => <Link key={module.title} href={module.href} className="rounded-xl border border-[#262932] bg-[#16181d] p-4"><p className="font-semibold text-[#f9fafb]">{module.title}</p><p className="mt-2 text-xs leading-5 text-[#9ca3af]">{module.description}</p></Link>)}</div></section>
+        <section><h2 className="mb-4 text-lg font-semibold text-[#f9fafb]">核心防御模块</h2><div className="grid grid-cols-2 gap-3">{defenseModules.map((module) => <Link key={module.title} href={module.href} className="rounded-xl border border-[#262932] bg-[#16181d] p-4 transition-colors hover:border-[#464554]"><p className="font-semibold text-[#f9fafb]">{module.title}</p><p className="mt-2 text-xs leading-5 text-[#9ca3af]">{module.description}</p></Link>)}</div></section>
 
-        <Link href="/app/points" className="flex items-center justify-between rounded-xl border border-[#eab308]/25 bg-[#16181d] p-4"><div><p className="font-semibold text-[#eab308]">Vigil Points (VP)</p><p className="mt-1 text-xs text-[#9ca3af]">完成安检，记录安全贡献点数</p></div><span className="text-[#eab308]">VP</span></Link>
+        <Link href="/app/points" className="flex items-center justify-between rounded-xl border border-[#eab308]/25 bg-[#16181d] p-4 md:col-span-2"><div><p className="font-semibold text-[#eab308]">Vigil Points (VP)</p><p className="mt-1 text-xs text-[#9ca3af]">完成安检，记录安全贡献点数</p></div><span className="text-[#eab308]">VP</span></Link>
       </div>
 
       <MobileNav active="home" />
