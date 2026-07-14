@@ -6,6 +6,7 @@ import type { ChainId, RiskLevel, RiskReasonSeverity } from "@chainvigil/types";
 import { appendReferralParam, buildTrackedShareText } from "../../../lib/share";
 import { ShareReport } from "../../../ui/share-report";
 import { MobileNav } from "../../../ui/mobile-nav";
+import { CopyValueButton } from "../../../ui/copy-value-button";
 
 interface TokenReportPageProps {
   params: Promise<{
@@ -109,7 +110,7 @@ export default async function TokenReportPage({ params, searchParams }: TokenRep
 
       <section className="mx-auto mt-8 max-w-7xl">
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-          <div className="flex items-center gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#262932] bg-[#16181d] font-semibold text-[#c0c1ff]">{report.tokenSymbol.slice(0, 2)}</div><div><h1 className="text-2xl font-semibold text-[#f9fafb]">{report.tokenSymbol}</h1><p className="mt-1 break-all font-mono text-xs text-[#9ca3af]">{report.chain} · {report.tokenAddress}</p></div></div>
+          <div className="flex items-center gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#262932] bg-[#16181d] font-semibold text-[#c0c1ff]">{report.tokenSymbol.slice(0, 2)}</div><div><h1 className="text-2xl font-semibold text-[#f9fafb]">{report.tokenSymbol}</h1><div className="mt-1 flex flex-wrap items-center gap-2"><p className="break-all font-mono text-xs text-[#9ca3af]">{report.chain} · {report.tokenAddress}</p><CopyValueButton value={report.tokenAddress} label="复制 CA" /></div></div></div>
           <div className="w-full md:w-auto"><ShareReport reportUrl={trackedReportUrl} shareText={trackedShareText} subjectId={`${report.chain}:${report.tokenAddress}`} referralCode={referralCode} /></div>
         </div>
 

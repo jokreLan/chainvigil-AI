@@ -446,6 +446,10 @@
 - 完成开发 loop 第 97 轮：Admin 增加固定导航和统一深色工作台表面；五个目标页面与总览页使用相同的语义色、卡片层级、响应式留白和可横向阅读的报告表格。报告索引移除未实现的查询控件，明确展示 V0 只读 mock 状态。
 - 第 97 轮目标门禁通过：`@chainvigil/admin` typecheck/test/build（5 个用例）通过。
 - 第 97 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
+- 开始开发 loop 第 98 轮：补齐公开路径的加载、错误、复制和分享反馈，确保 CA 深链在移动端也有一致的可恢复状态。
+- 完成开发 loop 第 98 轮：新增全局加载骨架，统一错误与 404 空路径状态；Token CA 和钱包地址提供复制反馈，分享控件在剪贴板拒绝时保留人话错误提示，避免将失败静默吞掉。
+- 第 98 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 第 98 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
 
 ## 下一步
 

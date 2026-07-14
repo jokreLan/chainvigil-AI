@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { buildMockWalletHealthReport } from "@chainvigil/risk-core";
 import type { ApprovalRiskLevel } from "@chainvigil/types";
+import { CopyValueButton } from "../../../ui/copy-value-button";
 
 interface WalletHealthPageProps {
   params: Promise<{
@@ -44,7 +45,7 @@ export default async function WalletHealthPage({ params }: WalletHealthPageProps
           <p className="text-sm text-[#fdba74]">钱包健康分</p>
           <p className="mt-3 text-6xl font-semibold text-[#f9fafb]">{report.summary.score}</p>
           <p className="mt-3 text-xl text-[#fed7aa]">{report.summary.label}</p>
-          <p className="mt-5 break-all font-mono text-sm leading-6 text-[#c7c4d7]">{report.address}</p>
+          <div className="mt-5 flex flex-wrap items-center gap-2"><p className="break-all font-mono text-sm leading-6 text-[#c7c4d7]">{report.address}</p><CopyValueButton value={report.address} label="复制地址" /></div>
           <p className="mt-6 border-t border-[#f97316]/25 pt-5 text-xs leading-5 text-[#c7c4d7]">
             {report.disclaimer}
           </p>

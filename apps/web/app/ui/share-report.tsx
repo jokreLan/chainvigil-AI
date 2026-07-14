@@ -11,6 +11,7 @@ interface ShareReportProps {
 
 export function ShareReport({ reportUrl, shareText, subjectId, referralCode }: ShareReportProps) {
   const [copied, setCopied] = useState<"link" | "text" | null>(null);
+  const [copyError, setCopyError] = useState(false);
   const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(reportUrl)}&text=${encodeURIComponent(shareText)}`;
   const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
 
@@ -32,10 +33,20 @@ export function ShareReport({ reportUrl, shareText, subjectId, referralCode }: S
   }
 
   async function copy(value: string, type: "link" | "text") {
-    await navigator.clipboard.writeText(value);
-    recordShareEvent(type === "link" ? "copy_report_link" : "copy_share_text");
-    setCopied(type);
-    window.setTimeout(() => setCopied(null), 1800);
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+      } else {
+        throw new Error("clipboard_unavailable");
+      }
+      recordShareEvent(type === "link" ? "copy_report_link" : "copy_share_text");
+      setCopyError(false);
+      setCopied(type);
+      window.setTimeout(() => setCopied(null), 1800);
+    } catch {
+      setCopyError(true);
+      window.setTimeout(() => setCopyError(false), 2400);
+    }
   }
 
   return (
@@ -74,6 +85,7 @@ export function ShareReport({ reportUrl, shareText, subjectId, referralCode }: S
           X
         </a>
       </div>
+      {copyError ? <p aria-live="polite" className="text-xs text-[#fca5a5]">浏览器未允许剪贴板访问，请手动复制报告地址。</p> : null}
     </div>
   );
 }
