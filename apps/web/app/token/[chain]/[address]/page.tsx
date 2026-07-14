@@ -5,6 +5,7 @@ import { buildMockTokenRiskReport } from "@chainvigil/risk-core";
 import type { ChainId, RiskLevel, RiskReasonSeverity } from "@chainvigil/types";
 import { appendReferralParam, buildTrackedShareText } from "../../../lib/share";
 import { ShareReport } from "../../../ui/share-report";
+import { MobileNav } from "../../../ui/mobile-nav";
 
 interface TokenReportPageProps {
   params: Promise<{
@@ -148,6 +149,7 @@ export default async function TokenReportPage({ params, searchParams }: TokenRep
             <Metric label="可卖出" value={report.evidence.canSell ? "是" : "否"} />
         </section>
       </section>
+      <MobileNav active="database" />
     </main>
   );
 }

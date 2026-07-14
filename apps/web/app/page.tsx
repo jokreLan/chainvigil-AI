@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CheckForm } from "./ui/check-form";
+import { MobileNav } from "./ui/mobile-nav";
 
 const defenseModules = [
   { title: "貔貅检测", description: "识别只能买不能卖的陷阱", href: "/risk-database" },
@@ -50,9 +51,7 @@ export default function HomePage() {
         <Link href="/app/points" className="flex items-center justify-between rounded-xl border border-[#eab308]/25 bg-[#16181d] p-4"><div><p className="font-semibold text-[#eab308]">Vigil Points (VP)</p><p className="mt-1 text-xs text-[#9ca3af]">完成安检，记录安全贡献点数</p></div><span className="text-[#eab308]">VP</span></Link>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-20 flex justify-around border-t border-[#262932] bg-[#16181d] px-4 py-3 text-xs text-[#9ca3af] md:hidden">
-        <Link href="/" className="font-semibold text-[#c0c1ff]">首页</Link><Link href="/wallet-check">钱包</Link><Link href="/risk-database">风险库</Link><Link href="/app/points">VP</Link>
-      </nav>
+      <MobileNav active="home" />
     </main>
   );
 }

@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { CheckForm } from "../ui/check-form";
+import { MobileNav } from "../ui/mobile-nav";
 
 export default function CheckPage() {
   return (
-    <main className="min-h-screen bg-[#0a0b0f] px-5 py-6 md:px-8">
+    <main className="min-h-screen bg-[#0a0b0f] px-5 py-6 pb-28 md:px-8">
       <div className="mx-auto max-w-4xl">
         <Link href="/" className="text-sm text-[#c0c1ff]">
           ChainVigil AI｜链哨 AI
@@ -19,6 +20,7 @@ export default function CheckPage() {
           </div>
         </section>
       </div>
+      <MobileNav active="home" />
     </main>
   );
 }
