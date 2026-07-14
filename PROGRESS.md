@@ -402,6 +402,10 @@
 - 完成开发 loop 第 85 轮：授权清理新增只读扫描摘要、BNB 范围、撤销前检查项、禁止动作和人工确认说明；没有钱包连接、虚构授权记录、撤销按钮或自动链上操作。
 - 第 85 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 - 第 85 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
+- 开始开发 loop 第 86 轮：根据 Stitch 开发者中心原稿重构 `/developers`，用现有 SDK/API contract 替代超出 V0 范围的自动交易、签名拦截和商业额度宣称。
+- 完成开发 loop 第 86 轮：开发者中心新增可用引擎、可运行 `ChainVigilClient.checkToken` 样例和 V0 接入边界；文档只陈述 Token 风险、公开情报和只读钱包体检能力，不承诺生产 SLA、额度、Webhook 或付费方案。
+- 第 86 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 第 86 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
 
 ## 下一步
 
