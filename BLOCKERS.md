@@ -60,6 +60,7 @@
 - 第 97 轮无新增阻塞；Admin 页面继续仅消费共享只读 contract，真实审核、检索和配置写入仍需权限、审计落库与 PostgreSQL 接入。
 - 第 98 轮无新增阻塞；复制功能依赖用户浏览器的剪贴板权限，拒绝权限时页面已提供可见提示，不影响报告阅读或外链分享。
 - 第 99 轮无新增阻塞；SOL/BNB 专题页使用公开风险教育与 mock contract，真实链上数据源仍遵循现有 RPC/provider blocker。
+- 第 100 轮运行态 `pnpm smoke:v0` 连续三次因旧页面固定文案断言漂移失败：`/app/settings` 与 `/app/points` 已改为当前稳定的只读/VP contract，第三次仍在 `/app/wallets` 命中旧 "我的钱包" 文案。按约定停止本轮 smoke 重试；Web、API、SDK 的目标 typecheck/test/build 已全部通过。后续需将剩余 smoke 断言批量迁移到稳定 contract 后再跑完整运行态 smoke。
 - Prisma schema 校验需要 `DATABASE_URL`；已在 db package 校验脚本中提供本地默认连接串，仅用于 schema validate。
 - 严格 TypeScript 可选字段导致 VP 事件和 API mock 输入报错；已修复。
 - Token 报告 OG 图片在本地边缘运行器中因中文动态字体加载和 `fit-content` 布局限制返回 500；已改为英文 ASCII 分享图文案和显式 flex 布局。

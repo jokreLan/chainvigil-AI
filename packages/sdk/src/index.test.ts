@@ -62,6 +62,20 @@ describe("ChainVigilClient", () => {
     expect(response.data.missingLiveConfig).toContain("HONEYPOT_API_KEY");
   });
 
+  it("encodes token report paths against the configured API base URL", async () => {
+    const calls: string[] = [];
+    const client = new ChainVigilClient({
+      baseUrl: "https://api.example.test",
+      fetcher: recordingFetch({ report: { label: "观察" } }, calls),
+    });
+
+    await client.getTokenReport("solana", "So11111111111111111111111111111111111111112");
+
+    expect(calls).toEqual([
+      "https://api.example.test/api/v1/token/solana/So11111111111111111111111111111111111111112",
+    ]);
+  });
+
   it("reads non-secret system readiness", async () => {
     const client = new ChainVigilClient({
       fetcher: mockFetch({

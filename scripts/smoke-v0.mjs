@@ -128,6 +128,39 @@ async function main() {
   );
 
   checks.push(
+    request("web.solana-topic", `${webBaseUrl}/solana`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("Solana Token 安全检查") || !html.includes('"@type":"FAQPage"') || !html.includes("Mint / Freeze Authority")) {
+        throw new Error(`${name} expected Solana topic structured data`);
+      }
+    }),
+  );
+
+  checks.push(
+    request("web.bnb-topic", `${webBaseUrl}/bnb`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const html = await response.text();
+
+      if (!html.includes("BNB Smart Chain Token 安全检查") || !html.includes('"@type":"FAQPage"') || !html.includes("买卖与高税风险")) {
+        throw new Error(`${name} expected BNB topic structured data`);
+      }
+    }),
+  );
+
+  checks.push(
+    request("web.sitemap", `${webBaseUrl}/sitemap.xml`).then(async ({ name, response }) => {
+      await assertStatus(name, response, 200);
+      const xml = await response.text();
+
+      if (!xml.includes("/solana") || !xml.includes("/bnb")) {
+        throw new Error(`${name} expected SOL and BNB topic routes`);
+      }
+    }),
+  );
+
+  checks.push(
     request("web.learn", `${webBaseUrl}/learn`).then(async ({ name, response }) => {
       await assertStatus(name, response, 200);
       const html = await response.text();
@@ -167,7 +200,7 @@ async function main() {
       await assertStatus(name, response, 200);
       const html = await response.text();
 
-      if (!html.includes("我的哨点摘要") || !html.includes("待确认")) {
+      if (!html.includes("哨点 VP") || !html.includes("待确认") || !html.includes("VP 不等于未来 token")) {
         throw new Error(`${name} expected VP ledger summary`);
       }
     }),
@@ -200,7 +233,7 @@ async function main() {
       await assertStatus(name, response, 200);
       const html = await response.text();
 
-      if (!html.includes("设置") || !html.includes("语言") || !html.includes("read only")) {
+      if (!html.includes("设置") || !html.includes("语言") || !html.includes("V0 只读")) {
         throw new Error(`${name} expected user preference settings`);
       }
     }),

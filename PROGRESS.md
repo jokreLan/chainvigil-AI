@@ -454,6 +454,11 @@
 - 完成开发 loop 第 99 轮：新增 `/solana` 与 `/bnb`，按 V0 mock 与非投资建议边界解释链特有风险检查点，并输出 WebPage、FAQPage 和 BreadcrumbList JSON-LD；主页、风险库、robots 与 sitemap 已链接并索引这两个专题页。
 - 第 99 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 - 第 99 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
+- 开始开发 loop 第 100 轮：扩展页面 discovery contract、API URL 输入边界、SDK URL 构造与运行态 smoke 覆盖。
+- 完成开发 loop 第 100 轮：Web 增加 sitemap/robots 的 SOL/BNB 页面 contract；API 验证 DexScreener BSC 链接可解析为 CA；SDK 验证自定义 API base URL 下的报告请求路径；smoke 新增 SOL/BNB 专题、FAQ JSON-LD 与 sitemap 检查。
+- 第 100 轮目标门禁通过：Web typecheck/test/build（6 个用例）、API typecheck/test/build（39 个用例）、SDK typecheck/test/build（29 个用例）通过。
+- 第 100 轮运行态 smoke 第 1、2、3 次分别发现 `/app/settings`、`/app/points`、`/app/wallets` 的旧固定文案断言与重构后页面漂移；前两项已修正，第三次达到约定修复上限，详见 `BLOCKERS.md`。
+- 第 100 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。`scripts/smoke-v0.mjs` 已通过 Node 语法检查。
 
 ## 下一步
 

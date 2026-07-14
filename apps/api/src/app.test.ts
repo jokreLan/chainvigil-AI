@@ -402,6 +402,24 @@ describe("api app", () => {
     await app.close();
   });
 
+  it("accepts a BNB explorer URL and preserves the parsed CA contract", async () => {
+    const app = await buildApiApp();
+    const tokenAddress = "0x1111111111111111111111111111111111111113";
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/token/check",
+      payload: {
+        input: `https://dexscreener.com/bsc/${tokenAddress}`,
+        source: "web",
+      },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().report).toMatchObject({ chain: "bsc", tokenAddress });
+
+    await app.close();
+  });
+
   it("rate-limits write endpoints with a stable 429 shape", async () => {
     const app = await buildApiApp({
       rateLimit: {
