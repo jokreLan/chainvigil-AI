@@ -459,6 +459,12 @@
 - 第 100 轮目标门禁通过：Web typecheck/test/build（6 个用例）、API typecheck/test/build（39 个用例）、SDK typecheck/test/build（29 个用例）通过。
 - 第 100 轮运行态 smoke 第 1、2、3 次分别发现 `/app/settings`、`/app/points`、`/app/wallets` 的旧固定文案断言与重构后页面漂移；前两项已修正，第三次达到约定修复上限，详见 `BLOCKERS.md`。
 - 第 100 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。`scripts/smoke-v0.mjs` 已通过 Node 语法检查。
+- 开始开发 loop 第 101 轮：修复浏览器截图自动化并执行 Stitch 桌面/移动端视觉回归。
+- 第 101 轮浏览器自动化：按官方 Browser 控制通道在原会话与干净会话各尝试一次，连接器初始化均因宿主 `process` 属性不可重定义而终止；无法建立受支持浏览器控制通道，未伪造截图或视觉回归结论，详见 `BLOCKERS.md`。
+- 开始开发 loop 第 102 轮：统一尚未迁移的 Admin 标签、VP、系统就绪与渠道工作台页面。
+- 完成开发 loop 第 102 轮：`/risk-labels`、`/points`、`/system-readiness`、`/channels` 使用同一深色工作台、语义色、紧凑卡片和移动端留白；页面仍只读展示 shared contract，不伪造审核、结算或生产配置写入。
+- 第 102 轮目标门禁通过：`@chainvigil/admin` typecheck/test/build（5 个用例）通过。
+- 第 102 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
 
 ## 下一步
 

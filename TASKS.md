@@ -11,5 +11,6 @@ This list covers the remaining V0 work that can be completed without external cr
 - [completed] Expand page-level contracts, API/SDK boundary tests and V0 smoke coverage.
 - [in_progress] Repair the residual V0 smoke assertion drift recorded in `BLOCKERS.md`.
 - [completed] Apply the UI system to Admin risk review, data sources, audit, Telegram and report-index screens.
-- [pending] Repair browser screenshot automation and complete desktop/mobile visual regression against Stitch screens.
+- [completed] Standardize the remaining Admin label, VP, readiness and channel screens with the same control-room UI system.
+- [blocked] Repair browser screenshot automation and complete desktop/mobile visual regression against Stitch screens. See `BLOCKERS.md`.
 - [pending] Run an end-to-end repository release gate and document residual external dependencies.
