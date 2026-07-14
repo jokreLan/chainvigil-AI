@@ -1,42 +1,41 @@
 import Link from "next/link";
 import { listMockFakeTokenExamples } from "@chainvigil/risk-core";
+import { RiskBadge } from "../ui/risk-badge";
 
 export default function FakeTokenDatabasePage() {
   const examples = listMockFakeTokenExamples();
 
   return (
-    <main className="mx-auto min-h-screen max-w-5xl px-5 py-12">
-      <nav className="flex items-center justify-between text-sm text-emerald-100/70">
-        <Link href="/" className="font-semibold text-emerald-100">
+    <main className="min-h-screen bg-[#0a0b0f] px-5 py-6 md:px-8">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between border-b border-[#262932] pb-5 text-sm text-[#9ca3af]">
+        <Link href="/" className="font-semibold text-[#f9fafb]">
           ChainVigil AI｜链哨 AI
         </Link>
         <Link href="/check">查 CA</Link>
       </nav>
-      <section className="mt-16">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-300">
-          Fake token database
-        </p>
-        <h1 className="mt-4 text-5xl font-semibold text-white">假币数据库</h1>
-        <p className="mt-5 max-w-3xl text-lg leading-8 text-emerald-50/72">
+      <section className="mx-auto mt-12 max-w-7xl">
+        <p className="text-sm font-semibold text-[#c0c1ff]">Fake token database</p>
+        <h1 className="mt-4 text-4xl font-semibold text-[#f9fafb] sm:text-5xl">假币数据库</h1>
+        <p className="mt-5 max-w-3xl text-lg leading-8 text-[#c7c4d7]">
           收录假冒主流资产、假空投和社群热传仿盘的识别规则。V0 先提供解释入口，后续接数据库和举报审核。
         </p>
       </section>
-      <section className="mt-10 grid gap-4 md:grid-cols-3">
+      <section className="mx-auto mt-10 grid max-w-7xl gap-4 md:grid-cols-3">
         {examples.map((example) => (
-          <article key={example.id} className="border border-emerald-300/14 bg-black/20 p-5">
+          <article key={example.id} className="rounded-lg border border-[#262932] bg-[#16181d] p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-xl font-semibold text-white">{example.title}</h2>
-              <span className="text-sm text-emerald-200">{example.impersonates}</span>
+              <h2 className="text-xl font-semibold text-[#f9fafb]">{example.title}</h2>
+              <RiskBadge level={example.riskLevel} label={example.impersonates} />
             </div>
-            <p className="mt-3 leading-7 text-emerald-50/75">{example.description}</p>
+            <p className="mt-3 leading-7 text-[#c7c4d7]">{example.description}</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {example.signals.map((signal) => (
-                <span key={signal} className="border border-emerald-300/20 px-2 py-1 text-xs text-emerald-100/70">
+                <span key={signal} className="rounded-md bg-[#292932] px-2 py-1 font-mono text-xs text-[#c7c4d7]">
                   {signal}
                 </span>
               ))}
             </div>
-            <p className="mt-4 leading-7 text-emerald-100/72">{example.recommendedAction}</p>
+            <p className="mt-4 border-t border-[#262932] pt-4 leading-7 text-[#c0c1ff]">{example.recommendedAction}</p>
           </article>
         ))}
       </section>

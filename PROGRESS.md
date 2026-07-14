@@ -359,6 +359,10 @@
 - 完成开发 loop 第 73 轮：`/wallet-check`、`/wallet/[address]/health`、钱包体检表单与 `/app/points` 使用统一深色表面、风险语义色、BNB Smart Chain 范围提示和 VP pending 状态；所有 API 请求、路由、只读检测与“不连接钱包/不签名/不执行清理”边界保持不变。
 - 第 73 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 - 第 73 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；`pnpm dev` 配合 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 `/wallet-check` 与 `/app/points`。
+- 开始开发 loop 第 74 轮：统一 V0 公开风险情报页面的视觉与风险等级表达，优先覆盖风险数据库、高危 CA 榜单和假币数据库。
+- 完成开发 loop 第 74 轮：新增共享 `RiskBadge`，`/risk-database`、`/leaderboard/high-risk-tokens` 和 `/fake-token-database` 统一使用深色安全情报布局、可换行 CA 文本、证据标签及等级语义色，不改变 mock 数据、SEO 页面路径或报告跳转。
+- 第 74 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 第 74 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；`pnpm dev` 配合 `pnpm smoke:v0` 返回 `V0 smoke passed`，三个公开风险情报页额外 HTTP 校验均返回 200。
 
 ## 下一步
 
