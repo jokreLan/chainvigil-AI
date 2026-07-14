@@ -67,3 +67,4 @@
 - 公开风险情报、Admin 复核队列和报告索引 mock 数据优先展示 Solana 与 BNB 示例；Base/Ethereum 示例保留在底层链兼容能力中，不作为第一版主要内容展示。
 - SOL/BNB 真实风险接入前，`@chainvigil/data-adapters` 必须以链级风险证据 Provider contract 声明支持链、证据类型、所需环境变量和降级策略；BNB 与 Solana 不共用未经验证的 provider 覆盖范围。
 - 环境变量“已配置”只能标记为 `live-ready`，不能表示真实数据已经拉取；V0 的原始证据 bundle 必须保持 `UNASSESSED`、`confidenceScore=0` 和 `fallbackActive=true`，直到 provider client、证据校验和误报治理真正接入。
+- 生产 readiness 对主优先链显式要求 `RPC_SOLANA_URL` 与 `RPC_BSC_URL`；旧 `RPC_BASE_URL` 仅保留给非主优先 EVM 的 V0 mock 兼容，不作为生产真实扫描就绪依据。

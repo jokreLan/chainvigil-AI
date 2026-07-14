@@ -75,9 +75,14 @@ export const envVarSpecs: EnvVarSpec[] = [
     description: "Honeypot 或等价仿真数据源凭证。",
   },
   {
-    name: "RPC_BASE_URL",
+    name: "RPC_SOLANA_URL",
     requiredIn: ["production"],
-    description: "BNB/Solana 主优先链 RPC endpoint。",
+    description: "Solana 主优先链 RPC endpoint。",
+  },
+  {
+    name: "RPC_BSC_URL",
+    requiredIn: ["production"],
+    description: "BNB Smart Chain 主优先链 RPC endpoint。",
   },
 ];
 

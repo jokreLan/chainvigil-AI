@@ -36,7 +36,8 @@ describe("validateEnv", () => {
     expect(result.missing).toContain("DATABASE_URL");
     expect(result.missing).toContain("ADMIN_BASIC_AUTH_PASSWORD");
     expect(result.missing).toContain("GOPLUS_API_KEY");
-    expect(result.missing).toContain("RPC_BASE_URL");
+    expect(result.missing).toContain("RPC_SOLANA_URL");
+    expect(result.missing).toContain("RPC_BSC_URL");
   });
 
   it("summarizes current mock and production readiness without exposing values", () => {

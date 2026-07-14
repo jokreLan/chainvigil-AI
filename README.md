@@ -192,7 +192,7 @@ NEXT_PUBLIC_APP_BASE_URL=http://localhost:3000
 NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
 ```
 
-进入生产或真实风险检测时，需要补齐 `.env.example` 中的 PostgreSQL、Redis、Telegram、RPC、GoPlus/Honeypot 或等价数据源配置。当前契约由 `@chainvigil/config` 的 `validateEnv` 测试固定。
+进入生产或真实风险检测时，需要补齐 `.env.example` 中的 PostgreSQL、Redis、Telegram、`RPC_SOLANA_URL`、`RPC_BSC_URL`、GoPlus/Honeypot 或等价数据源配置。当前契约由 `@chainvigil/config` 的 `validateEnv` 测试固定。
 
 `/api/v1/risk/evidence-providers` 会列出 SOL/BNB 所需的证据 Provider、环境变量和降级策略。即使环境变量已配置，V0 仍明确返回 `UNASSESSED` 置信度并使用 mock 快照，直到真实 provider client 与证据校验完成。
 

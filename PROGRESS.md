@@ -346,6 +346,10 @@
 - 第 70 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；当前 shell 只有 Node 20，因此继续使用临时 Node 22.13.1 + pnpm 11.7.0 执行。
 - 第 70 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin SOL/BNB 证据 Provider 页面、Web API 清单和 API `/api/v1/risk/evidence-providers`。
 - 第 70 轮代码已提交为 `f70d9ff`，并已成功执行 `git push origin main`。
+- 开始开发 loop 第 71 轮：将生产 readiness 从泛化 `RPC_BASE_URL` 改为与第一版主优先链一致的 `RPC_SOLANA_URL` 和 `RPC_BSC_URL` 双链配置检查。
+- 完成开发 loop 第 71 轮：生产环境变量 contract 改为显式要求 `RPC_SOLANA_URL` 与 `RPC_BSC_URL`；mock 模式仍只要求公开运行地址，旧 `RPC_BASE_URL` 保留给非主优先 EVM mock 兼容。
+- 第 71 轮目标门禁通过：`@chainvigil/config` typecheck/test/build（5 个用例）与 API typecheck/test/build（38 个用例）通过。
+- 第 71 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
 
 ## 下一步
 
