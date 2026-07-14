@@ -486,6 +486,7 @@
 - 开始开发 loop 第 107 轮：修复移动端进入 Web DApp 后仍展示公开站点导航的上下文断层。
 - 完成开发 loop 第 107 轮：共享移动导航按当前路径自动切换；所有 `/app` 及其子页展示工作台、钱包、报告和 VP 的内部入口，公开页面保留首页、钱包、风险库和 VP 导航。
 - 第 107 轮目标门禁通过：`@chainvigil/web` lint/typecheck、test（6 个用例）和 production build 通过；`/app` 运行态 HTTP 200 且确认输出工作台内部导航链接。
+- 第 108 轮质量门禁通过：全仓 `pnpm lint/typecheck/test/build/db:validate` 全部通过；覆盖 17 个 workspace 的 lint/build、28 个 typecheck/test 任务与 Prisma schema 校验。
 
 ## 下一步
 
