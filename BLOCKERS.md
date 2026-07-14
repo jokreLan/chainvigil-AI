@@ -76,3 +76,4 @@
 - 第 106 轮无新增阻塞；首页响应式布局只复用 Tailwind 既有能力，不引入新的运行时依赖。
 - 第 107 轮无新增阻塞；移动导航只使用 Next 路由状态，不引入账户、钱包或链上依赖。
 - 第 108 轮无新增阻塞；全仓 lint、typecheck、test、build 与 Prisma schema validate 全部通过。
+- 第 109 轮已处理：Web 缺少 Tailwind v4 PostCSS 编译配置导致 CSS 只输出全局变量、浏览器显示裸 HTML；补齐插件和配置并重启服务后已恢复，无新增外部阻塞。

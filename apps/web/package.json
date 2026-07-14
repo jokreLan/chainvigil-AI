@@ -12,9 +12,9 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@chainvigil/points": "workspace:*",
     "@chainvigil/report": "workspace:*",
     "@chainvigil/risk-core": "workspace:*",
-    "@chainvigil/points": "workspace:*",
     "@chainvigil/telegram": "workspace:*",
     "@chainvigil/types": "workspace:*",
     "next": "^16.2.10",
@@ -22,6 +22,7 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.2",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "tailwindcss": "^4.1.11",
