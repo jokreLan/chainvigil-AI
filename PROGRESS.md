@@ -406,6 +406,10 @@
 - 完成开发 loop 第 86 轮：开发者中心新增可用引擎、可运行 `ChainVigilClient.checkToken` 样例和 V0 接入边界；文档只陈述 Token 风险、公开情报和只读钱包体检能力，不承诺生产 SLA、额度、Webhook 或付费方案。
 - 第 86 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 - 第 86 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
+- 开始开发 loop 第 87 轮：根据 Stitch 高危榜单原稿重构 `/leaderboard/high-risk-tokens`，使用共享 SOL/BNB 高危 CA contract 填充榜单卡和报告跳转。
+- 完成开发 loop 第 87 轮：高危榜单新增数据库导航、范围提示、响应式榜单行、风险证据标签和免责声明；所有 CA、等级、分数、证据和报告链接均来自共享 mock contract，未伪造实时筛选或高危部署者数据。
+- 第 87 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 第 87 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
 
 ## 下一步
 
