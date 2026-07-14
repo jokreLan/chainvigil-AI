@@ -394,6 +394,10 @@
 - 完成开发 loop 第 83 轮：风险百科新增原稿的分类标签、主推课程、近期分析和底部 CA 安检 CTA；课程摘要、信号和建议动作仍完全来自共享 mock contract，不伪造完整文章或投资结论。
 - 第 83 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 - 第 83 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
+- 开始开发 loop 第 84 轮：根据 Stitch 资产理发师原稿重构 `/app/asset-barber`，以现有只读资产清理策略 contract 替换设计稿的虚构钱包数据。
+- 完成开发 loop 第 84 轮：资产理发师新增钱包整洁度概览、策略推荐和三类资产分类区；当前扫描结果统一显示为等待只读扫描，策略、检查项和禁止动作全部来自共享 contract，明确不连接钱包、不签名、不自动 swap/bridge/归集。
+- 第 84 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 第 84 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
 
 ## 下一步
 
