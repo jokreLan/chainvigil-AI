@@ -4,7 +4,11 @@ import { listMockAdminAuditLogs } from "@chainvigil/audit";
 import { parseTokenInput, supportedChains } from "@chainvigil/chain";
 import { getCacheHealth } from "@chainvigil/cache";
 import { getSystemReadiness, readEnv } from "@chainvigil/config";
-import { collectTokenRiskData, getAdapterHealth } from "@chainvigil/data-adapters";
+import {
+  collectTokenRiskData,
+  getAdapterHealth,
+  getRiskEvidenceProviderStatus,
+} from "@chainvigil/data-adapters";
 import { getWorkerHealth } from "@chainvigil/worker";
 import {
   createPendingPointEvent,
@@ -276,6 +280,12 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
   app.get("/api/v1/data-sources/adapters", async () => ({
     adapters: getAdapterHealth(),
+    mode: "mock",
+  }));
+
+  app.get("/api/v1/risk/evidence-providers", async () => ({
+    primaryChains: ["solana", "bsc"],
+    providers: getRiskEvidenceProviderStatus(),
     mode: "mock",
   }));
 

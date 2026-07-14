@@ -41,11 +41,35 @@ export interface PointsRulesResponse {
 
 export interface TokenRiskDataSnapshot {
   source: "mock" | "goplus" | "honeypot" | "rpc" | "dex" | "internal";
+  providerId?: string;
   chain: string;
   address: string;
   fetchedAt: string;
   freshForSeconds: number;
+  executionMode?: "mock" | "live";
+  evidenceTypes?: RiskEvidenceType[];
+  fallbackReason?: string;
   data: Record<string, unknown>;
+}
+
+export type RiskEvidenceType =
+  | "token_authority"
+  | "token_metadata"
+  | "contract_privileges"
+  | "holder_concentration"
+  | "trading_simulation"
+  | "tax_analysis"
+  | "liquidity"
+  | "label_intelligence";
+
+export interface RiskEvidenceCoverage {
+  chain: string;
+  status: "mock_only" | "live_configured";
+  confidence: "UNASSESSED";
+  confidenceScore: 0;
+  fallbackActive: true;
+  missingLiveConfig: string[];
+  plainLanguage: string;
 }
 
 export interface TokenRiskDataResponse {
@@ -55,6 +79,7 @@ export interface TokenRiskDataResponse {
     fetchedAt: string;
     snapshots: TokenRiskDataSnapshot[];
     missingLiveConfig: string[];
+    coverage: RiskEvidenceCoverage;
   };
 }
 
@@ -67,6 +92,25 @@ export interface DataSourceAdapter {
 
 export interface DataSourceAdaptersResponse {
   adapters: DataSourceAdapter[];
+  mode: "mock";
+}
+
+export interface RiskEvidenceProvider {
+  id: string;
+  name: string;
+  source: "goplus" | "honeypot" | "rpc" | "dex" | "internal";
+  chains: string[];
+  evidenceTypes: RiskEvidenceType[];
+  mode: "mock" | "live-ready";
+  ready: boolean;
+  requiredEnv?: string;
+  fallback: "mock_snapshot";
+  note: string;
+}
+
+export interface RiskEvidenceProvidersResponse {
+  primaryChains: ["solana", "bsc"];
+  providers: RiskEvidenceProvider[];
   mode: "mock";
 }
 
@@ -281,6 +325,10 @@ export class ChainVigilClient {
 
   async getDataSourceAdapters(): Promise<DataSourceAdaptersResponse> {
     return this.get<DataSourceAdaptersResponse>("/api/v1/data-sources/adapters");
+  }
+
+  async getRiskEvidenceProviders(): Promise<RiskEvidenceProvidersResponse> {
+    return this.get<RiskEvidenceProvidersResponse>("/api/v1/risk/evidence-providers");
   }
 
   async getWorkerJobs(): Promise<WorkerJobsResponse> {

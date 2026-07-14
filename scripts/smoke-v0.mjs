@@ -71,6 +71,7 @@ async function main() {
         !html.includes("/api/v1/points/ledger") ||
         !html.includes("/api/v1/system/readiness") ||
         !html.includes("/api/v1/data-sources/adapters") ||
+        !html.includes("/api/v1/risk/evidence-providers") ||
         !html.includes("/api/v1/worker/jobs") ||
         !html.includes("/api/v1/risk/database") ||
         !html.includes("/api/v1/risk/high-risk-tokens") ||
@@ -289,7 +290,14 @@ async function main() {
       await assertStatus(name, response, 200);
       const html = await response.text();
 
-      if (!html.includes("数据源状态") || !html.includes("GoPlus") || !html.includes("InternalRiskDB")) {
+      if (
+        !html.includes("数据源状态") ||
+        !html.includes("GoPlus") ||
+        !html.includes("InternalRiskDB") ||
+        !html.includes("SOL / BNB 风险证据 Provider") ||
+        !html.includes("Solana RPC") ||
+        !html.includes("BNB Smart Chain RPC")
+      ) {
         throw new Error(`${name} expected data source adapter readiness`);
       }
     }),
@@ -449,6 +457,28 @@ async function main() {
           !body.adapters?.some((adapter) => adapter.name === "InternalRiskDB" && adapter.ready === true)
         ) {
           throw new Error(`${name} expected data source adapter readiness`);
+        }
+
+        if (JSON.stringify(body).includes("postgresql://")) {
+          throw new Error(`${name} leaked connection string`);
+        }
+      },
+    ),
+  );
+
+  checks.push(
+    request("api.risk-evidence-providers", `${apiBaseUrl}/api/v1/risk/evidence-providers`).then(
+      async ({ name, response }) => {
+        await assertStatus(name, response, 200);
+        const body = await response.json();
+
+        if (
+          body.mode !== "mock" ||
+          body.primaryChains?.join(",") !== "solana,bsc" ||
+          !body.providers?.some((provider) => provider.id === "solana-rpc" && provider.requiredEnv === "RPC_SOLANA_URL") ||
+          !body.providers?.some((provider) => provider.id === "honeypot-bsc" && provider.fallback === "mock_snapshot")
+        ) {
+          throw new Error(`${name} expected SOL and BNB evidence provider contracts`);
         }
 
         if (JSON.stringify(body).includes("postgresql://")) {

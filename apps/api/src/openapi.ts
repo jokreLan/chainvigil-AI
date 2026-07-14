@@ -44,6 +44,17 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/risk/evidence-providers": {
+      get: {
+        summary: "Read SOL and BNB risk evidence provider contracts",
+        responses: {
+          "200": {
+            description:
+              "Chain-scoped evidence types, non-secret configuration readiness and explicit V0 mock fallback policy",
+          },
+        },
+      },
+    },
     "/api/v1/worker/jobs": {
       get: {
         summary: "Read mock worker job contract and health",

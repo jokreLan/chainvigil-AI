@@ -337,6 +337,14 @@
 - 第 69 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；当前 shell 只有 Node 20，因此继续使用临时 Node 22.13.1 + pnpm 11.7.0 执行。
 - 第 69 轮运行态 smoke 首次发现 API admin token reports 仍断言旧 `MVP`；已改为 `BNB-MVP`。
 - 第 69 轮运行态 smoke check 第 2 次通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 SOL/BNB 优先的高危榜单、Admin 复核队列和 Token 报告索引。
+- 开始开发 loop 第 70 轮：为 SOL/BNB 真实风险数据接入建立可运行的风险证据 Provider contract，固定链级证据范围、配置状态、mock 降级策略和置信度边界。
+- 第 70 轮目标门禁首次发现 Provider 配置被 TypeScript 收窄为互斥字面量联合，无法安全读取可选 `requiredEnv`；已改为统一内部配置类型后修复。
+- 完成开发 loop 第 70 轮：`@chainvigil/data-adapters` 新增 Solana RPC、BNB Smart Chain RPC、GoPlus (BNB)、Honeypot.is (BNB)、DEX、InternalRiskDB 的链级证据 Provider contract；Token 原始数据 bundle 明确返回 `UNASSESSED`、`confidenceScore=0` 和 `fallbackActive=true`，不把已配置环境变量误报为真实扫描。
+- 第 70 轮新增 API `GET /api/v1/risk/evidence-providers`、SDK `getRiskEvidenceProviders()`；Admin `/data-sources`、Web `/api`、OpenAPI、README、`.env.example` 与 smoke 同步展示 SOL/BNB 证据范围和 `RPC_SOLANA_URL` 配置项。
+- 第 70 轮复核补齐非主优先 EVM 的 legacy mock 兼容分支，避免 Base 等保留兼容链的原始数据端点退化为空快照；不将其混入 SOL/BNB 真实接入 Provider contract。
+- 第 70 轮目标门禁第 2 次通过：Data Adapters、API、SDK、Web、Admin 的 typecheck/test/build；Data Adapters 测试 7 个、API 测试 38 个、SDK 测试 28 个、Web 测试 4 个、Admin 测试 5 个用例通过。
+- 第 70 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；当前 shell 只有 Node 20，因此继续使用临时 Node 22.13.1 + pnpm 11.7.0 执行。
+- 第 70 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin SOL/BNB 证据 Provider 页面、Web API 清单和 API `/api/v1/risk/evidence-providers`。
 
 ## 下一步
 

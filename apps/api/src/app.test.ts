@@ -88,6 +88,28 @@ describe("api app", () => {
     await app.close();
   });
 
+  it("returns SOL and BNB risk evidence provider contracts without secrets", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({ method: "GET", url: "/api/v1/risk/evidence-providers" });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body).toMatchObject({
+      primaryChains: ["solana", "bsc"],
+      mode: "mock",
+    });
+    expect(body.providers).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: "solana-rpc", requiredEnv: "RPC_SOLANA_URL" }),
+        expect.objectContaining({ id: "bsc-rpc", requiredEnv: "RPC_BSC_URL" }),
+        expect.objectContaining({ id: "honeypot-bsc", fallback: "mock_snapshot" }),
+      ]),
+    );
+    expect(JSON.stringify(body)).not.toContain("postgresql://");
+
+    await app.close();
+  });
+
   it("returns worker job contract", async () => {
     const app = await buildApiApp();
     const response = await app.inject({ method: "GET", url: "/api/v1/worker/jobs" });
@@ -421,14 +443,15 @@ describe("api app", () => {
     const app = await buildApiApp();
     const response = await app.inject({
       method: "GET",
-      url: "/api/v1/token/base/0x1111111111111111111111111111111111111110/data",
+      url: "/api/v1/token/bsc/0x1111111111111111111111111111111111111110/data",
     });
 
     expect(response.statusCode).toBe(200);
     expect(response.json().data).toMatchObject({
-      chain: "base",
+      chain: "bsc",
       address: "0x1111111111111111111111111111111111111110",
-      missingLiveConfig: expect.arrayContaining(["GOPLUS_API_KEY", "HONEYPOT_API_KEY"]),
+      missingLiveConfig: expect.arrayContaining(["RPC_BSC_URL", "GOPLUS_API_KEY", "HONEYPOT_API_KEY"]),
+      coverage: expect.objectContaining({ confidence: "UNASSESSED", fallbackActive: true }),
     });
     expect(response.json().data.snapshots.length).toBeGreaterThanOrEqual(5);
 

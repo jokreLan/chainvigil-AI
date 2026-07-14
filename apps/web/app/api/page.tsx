@@ -48,6 +48,11 @@ const endpoints = [
   },
   {
     method: "GET",
+    path: "/api/v1/risk/evidence-providers",
+    description: "读取 SOL/BNB 风险证据 Provider、链级证据范围和 V0 mock 降级策略。",
+  },
+  {
+    method: "GET",
     path: "/api/v1/worker/jobs",
     description: "读取 Worker 健康状态和 V0 后台任务 contract。",
   },

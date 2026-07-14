@@ -51,6 +51,7 @@ curl http://localhost:4000/health
 curl http://localhost:4001/health
 curl http://localhost:4000/api/v1/meta
 curl http://localhost:4000/api/v1/data-sources/adapters
+curl http://localhost:4000/api/v1/risk/evidence-providers
 curl http://localhost:4000/api/v1/worker/jobs
 curl http://localhost:4000/api/v1/risk/database
 curl http://localhost:4000/api/v1/risk/high-risk-tokens
@@ -88,7 +89,7 @@ pnpm db:validate
 pnpm smoke:v0
 ```
 
-当前 smoke 覆盖 Web `/health`、Web `/check`、Web 风险数据库、Web 高危 CA 榜单、Web 假币数据库、Web 风险监控、Web 买后清理策略、Web VP ledger、Web Bot commands、Web API 清单、Web 用户报告历史、Web 钱包 watchlist、Web 推广中心、Web 设置页、Token 报告页 JSON-LD、Admin `/health`、Admin readiness/worker jobs、Admin data sources、Admin `/audit`、Admin reports、Admin channels、Admin risk review、Admin risk labels、Admin VP ledger、Admin Telegram groups/commands、API BNB/Solana token check、API meta、API data sources、API worker jobs、API 风险数据库、API 高危 CA 榜单、API 假币样例、API 风险监控规则、API 买后清理策略、API 钱包 watchlist、API 用户设置、API VP ledger、API growth channels、API Telegram groups/commands、API 只读审计日志、API 只读风险复核队列、API 只读风险标签目录、API 只读 Token 报告索引、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
+当前 smoke 覆盖 Web `/health`、Web `/check`、Web 风险数据库、Web 高危 CA 榜单、Web 假币数据库、Web 风险监控、Web 买后清理策略、Web VP ledger、Web Bot commands、Web API 清单、Web 用户报告历史、Web 钱包 watchlist、Web 推广中心、Web 设置页、Token 报告页 JSON-LD、Admin `/health`、Admin readiness/worker jobs、Admin data sources（含 SOL/BNB 证据 Provider）、Admin `/audit`、Admin reports、Admin channels、Admin risk review、Admin risk labels、Admin VP ledger、Admin Telegram groups/commands、API BNB/Solana token check、API meta、API data sources、API SOL/BNB 风险证据 Provider、API worker jobs、API 风险数据库、API 高危 CA 榜单、API 假币样例、API 风险监控规则、API 买后清理策略、API 钱包 watchlist、API 用户设置、API VP ledger、API growth channels、API Telegram groups/commands、API 只读审计日志、API 只读风险复核队列、API 只读风险标签目录、API 只读 Token 报告索引、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
 
 上线前安全边界和生产预检见 `SECURITY.md`。
 
@@ -134,6 +135,7 @@ const result = await client.checkToken({
 });
 const meta = await client.getServiceMeta();
 const dataSources = await client.getDataSourceAdapters();
+const evidenceProviders = await client.getRiskEvidenceProviders();
 const workerJobs = await client.getWorkerJobs();
 const ledger = await client.getPointLedger();
 const growthChannels = await client.getGrowthChannels();
@@ -191,6 +193,8 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
 ```
 
 进入生产或真实风险检测时，需要补齐 `.env.example` 中的 PostgreSQL、Redis、Telegram、RPC、GoPlus/Honeypot 或等价数据源配置。当前契约由 `@chainvigil/config` 的 `validateEnv` 测试固定。
+
+`/api/v1/risk/evidence-providers` 会列出 SOL/BNB 所需的证据 Provider、环境变量和降级策略。即使环境变量已配置，V0 仍明确返回 `UNASSESSED` 置信度并使用 mock 快照，直到真实 provider client 与证据校验完成。
 
 API 提供只读 readiness 端点：
 

@@ -101,6 +101,38 @@ describe("ChainVigilClient", () => {
     expect(response.adapters[1]?.ready).toBe(true);
   });
 
+  it("reads SOL and BNB risk evidence provider contracts", async () => {
+    const client = new ChainVigilClient({
+      fetcher: mockFetch({
+        mode: "mock",
+        primaryChains: ["solana", "bsc"],
+        providers: [
+          {
+            id: "solana-rpc",
+            name: "Solana RPC",
+            source: "rpc",
+            chains: ["solana"],
+            evidenceTypes: ["token_authority"],
+            mode: "mock",
+            ready: false,
+            requiredEnv: "RPC_SOLANA_URL",
+            fallback: "mock_snapshot",
+            note: "mock",
+          },
+        ],
+      }),
+    });
+
+    const response = await client.getRiskEvidenceProviders();
+
+    expect(response.primaryChains).toEqual(["solana", "bsc"]);
+    expect(response.providers[0]).toMatchObject({
+      id: "solana-rpc",
+      requiredEnv: "RPC_SOLANA_URL",
+      fallback: "mock_snapshot",
+    });
+  });
+
   it("reads worker job contract", async () => {
     const client = new ChainVigilClient({
       fetcher: mockFetch({

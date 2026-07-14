@@ -1,7 +1,8 @@
-import { getAdapterHealth } from "@chainvigil/data-adapters";
+import { getAdapterHealth, getRiskEvidenceProviderStatus } from "@chainvigil/data-adapters";
 
 export default function AdminDataSourcesPage() {
   const adapters = getAdapterHealth();
+  const evidenceProviders = getRiskEvidenceProviderStatus();
 
   return (
     <main className="min-h-screen px-6 py-10">
@@ -43,6 +44,42 @@ export default function AdminDataSourcesPage() {
           </section>
         ))}
       </div>
+
+      <section className="mt-10">
+        <h2 className="text-2xl font-semibold">SOL / BNB 风险证据 Provider</h2>
+        <p className="mt-2 text-sm text-slate-400">
+          只声明链级证据范围、配置状态与 mock 降级策略；V0 不会因为配置存在就宣称已经完成真实扫描。
+        </p>
+        <div className="mt-5 grid gap-4 lg:grid-cols-2">
+          {evidenceProviders.map((provider) => (
+            <section key={provider.id} className="border border-slate-700 bg-slate-900 p-5">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-lg font-semibold">{provider.name}</h3>
+                  <p className="mt-2 text-sm text-slate-400">{provider.note}</p>
+                </div>
+                <span className="border border-amber-400/40 px-3 py-1 text-sm text-amber-200">
+                  {provider.mode}
+                </span>
+              </div>
+              <dl className="mt-5 grid gap-3 text-sm sm:grid-cols-2">
+                <div className="border border-slate-700 p-3">
+                  <dt className="text-slate-500">支持链</dt>
+                  <dd className="mt-1 font-semibold">{provider.chains.join(", ")}</dd>
+                </div>
+                <div className="border border-slate-700 p-3">
+                  <dt className="text-slate-500">降级策略</dt>
+                  <dd className="mt-1 font-semibold">{provider.fallback}</dd>
+                </div>
+              </dl>
+              <p className="mt-4 break-words text-sm text-slate-400">
+                证据：{provider.evidenceTypes.join(", ")}
+                {provider.requiredEnv ? `；环境变量：${provider.requiredEnv}` : "；无需外部凭证"}
+              </p>
+            </section>
+          ))}
+        </div>
+      </section>
     </main>
   );
 }
