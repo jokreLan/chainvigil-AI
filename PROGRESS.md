@@ -379,6 +379,9 @@
 - 第 78 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；`pnpm dev` 配合 `pnpm smoke:v0` 返回 `V0 smoke passed`，动态 BSC 报告页返回 200。
 - 开始开发 loop 第 79 轮：复用 Stitch 移动端四入口底部导航，消除首页、CA 扫描和报告页的重复实现。
 - 完成开发 loop 第 79 轮：新增 `MobileNav` 并接入首页、`/check` 与 Token 报告，活动态准确对应 Home 或 Database；三页保留移动端底部安全空间。
+- 开始开发 loop 第 80 轮：根据 Stitch 钱包体检原稿重构 `/wallet-check` 的移动端信息层级。
+- 完成开发 loop 第 80 轮：钱包体检页面新增居中 Hero、BNB Smart Chain 只读检测卡、三项风险解释、VP 提示与 Wallet 活动态导航；删除旧版重复布局，不增加钱包连接或多链承诺。
+- 第 80 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 
 ## 下一步
 

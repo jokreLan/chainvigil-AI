@@ -39,6 +39,7 @@
 - 第 77 轮无新增阻塞；扫描状态复用现有 Token check 请求，不依赖外部动画或链上服务。
 - 第 78 轮无新增阻塞；风险报告 UI 复用现有 mock evidence，真实链上证据仍需后续 provider client 与可复查来源接入。
 - 第 79 轮无新增阻塞；移动导航仅复用既有可用路径，不新增钱包连接或账户状态。
+- 第 80 轮无新增阻塞；钱包体检 UI 复用现有 BNB 只读 mock contract，真实多链钱包分析仍需 RPC/索引器与地址资产解析接入。
 - Prisma schema 校验需要 `DATABASE_URL`；已在 db package 校验脚本中提供本地默认连接串，仅用于 schema validate。
 - 严格 TypeScript 可选字段导致 VP 事件和 API mock 输入报错；已修复。
 - Token 报告 OG 图片在本地边缘运行器中因中文动态字体加载和 `fit-content` 布局限制返回 500；已改为英文 ASCII 分享图文案和显式 flex 布局。
