@@ -373,6 +373,9 @@
 - 开始开发 loop 第 77 轮：将 Stitch CA 安检“扫描中”原稿接入现有真实 CA 提交流程。
 - 完成开发 loop 第 77 轮：`CheckForm` 在请求期间切换为扫描圆环、深度安全分析和六步进度状态；成功继续跳转 Token 报告，失败回到原输入并保留错误处理。
 - 第 77 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 开始开发 loop 第 78 轮：根据 Stitch 风险报告原稿重构动态 Token 报告页，保留 SOL/BNB mock 数据、SEO、JSON-LD 与分享归因。
+- 完成开发 loop 第 78 轮：报告页新增动态 Token 头部、风险结论卡、买卖仿真、权限、流动性和技术证据区块；修复迁移中遗留的重复结论结构，移动端预留底部空间以承接导航。
+- 第 78 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 
 ## 下一步
 
