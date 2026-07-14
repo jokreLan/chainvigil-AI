@@ -87,3 +87,4 @@
 - 高危榜单的筛选结构在 V0 只表明数据范围，不伪造实时筛选能力；榜单卡必须来自 `HighRiskTokenListItem` contract，并保留 mock、证据复查和非投资建议提示。
 - 推广中心只读取 `@chainvigil/points` 的渠道归因 mock contract；设计原稿中的推荐链接、二维码、排行榜、结算和提现不进入 V0，confirmed/pending VP 也不得暗示未来 token 权益。
 - 粉尘扫描在 V0 仅提供成本和风险评估的只读信息结构；`AssetCleanupPolicy` 的禁止动作必须在页面可见，不能通过按钮、暗示性文案或默认操作引导用户执行归集、swap 或 bridge。
+- 授权扫描的 V0 mock 结果可以展示 spender、资产、额度、风险理由和建议动作，但不可出现撤销、调整额度等执行按钮；真实操作必须始终由用户在钱包中核对并签名确认。

@@ -418,6 +418,9 @@
 - 完成开发 loop 第 89 轮：粉尘扫描新增只读状态概览、候选检查项、禁止动作和风险教育区，接入 Wallet 活动态导航；不展示可执行的归集、swap 或 bridge 控件。
 - 第 89 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 - 第 89 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
+- 开始开发 loop 第 90 轮：重构 `/app/approvals` 的旧授权列表，复用钱包体检 mock 授权项并消除可能暗示自动撤销的交互。
+- 完成开发 loop 第 90 轮：授权扫描新增体检摘要、spender/资产/额度、风险理由和建议动作；明确数据为 mock 只读扫描，真实撤销必须用户在钱包中自行确认。
+- 第 90 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 
 ## 下一步
 
