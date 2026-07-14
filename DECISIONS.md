@@ -78,3 +78,4 @@
 - 风险报告原稿中的静态 token、LP 数值和代码片段必须由动态 `TokenRiskReport` evidence 替换或明确标记为 V0 mock 摘要，禁止将设计稿示例误展示为用户检测结果。
 - Stitch 移动端四入口导航由共享 `MobileNav` 提供，首页、钱包、风险库和 VP 路由不得各自复制底栏结构或活动色。
 - 钱包体检原稿中的多链选择不进入 V0 交互，因为当前只读钱包体检 API 固定 BNB Smart Chain；页面必须明确该范围，不能呈现不可用网络为可选择状态。
+- 哨点中心的任务和状态只读取现有 ledger/rule mock contract；不伪造登录钱包、全球排名、治理权重、可兑换余额或未来 token 权益。

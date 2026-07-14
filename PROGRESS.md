@@ -382,6 +382,9 @@
 - 开始开发 loop 第 80 轮：根据 Stitch 钱包体检原稿重构 `/wallet-check` 的移动端信息层级。
 - 完成开发 loop 第 80 轮：钱包体检页面新增居中 Hero、BNB Smart Chain 只读检测卡、三项风险解释、VP 提示与 Wallet 活动态导航；删除旧版重复布局，不增加钱包连接或多链承诺。
 - 第 80 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 开始开发 loop 第 81 轮：根据 Stitch 哨点中心原稿重构 `/app/points`，用现有 VP ledger 和规则 contract 填充页面。
+- 完成开发 loop 第 81 轮：VP 页面新增总哨点摘要、confirmed/pending/rejected breakdown、任务规则和状态说明，并接入 Points 活动态移动导航；继续明确 VP 不等于未来 token。
+- 第 81 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 
 ## 下一步
 
