@@ -390,6 +390,10 @@
 - 完成开发 loop 第 82 轮：假币数据库对齐原稿的检索入口、官方/仿盘对照、近期仿盘列表和 CA 验证教育区；每个样例保留共享风险等级、链和信号，并回链 `/check`，移动端使用 Database 活动态导航。
 - 第 82 轮目标门禁第 2 次通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 - 第 82 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
+- 开始开发 loop 第 83 轮：根据 Stitch 风险百科原稿重构 `/learn`，将现有风险教育课程 contract 迁入主推、近期解读和 CA 安检 CTA。
+- 完成开发 loop 第 83 轮：风险百科新增原稿的分类标签、主推课程、近期分析和底部 CA 安检 CTA；课程摘要、信号和建议动作仍完全来自共享 mock contract，不伪造完整文章或投资结论。
+- 第 83 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 第 83 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
 
 ## 下一步
 
