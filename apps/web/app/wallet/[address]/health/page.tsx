@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buildMockWalletHealthReport } from "@chainvigil/risk-core";
+import type { ApprovalRiskLevel } from "@chainvigil/types";
 
 interface WalletHealthPageProps {
   params: Promise<{
     address: string;
   }>;
 }
+
+const approvalRiskStyles: Record<ApprovalRiskLevel, string> = {
+  HIGH: "border-[#ef4444]/40 bg-[#ef4444]/10 text-[#fca5a5]",
+  MEDIUM: "border-[#f59e0b]/40 bg-[#f59e0b]/10 text-[#fde68a]",
+  LOW: "border-[#10b981]/40 bg-[#10b981]/10 text-[#6ee7b7]",
+  UNKNOWN: "border-[#6b7280]/40 bg-[#6b7280]/10 text-[#d1d5db]",
+};
 
 export async function generateMetadata({ params }: WalletHealthPageProps): Promise<Metadata> {
   const { address } = await params;
@@ -23,28 +31,29 @@ export default async function WalletHealthPage({ params }: WalletHealthPageProps
   const report = buildMockWalletHealthReport({ address });
 
   return (
-    <main className="mx-auto min-h-screen max-w-6xl px-5 py-10">
-      <nav className="flex items-center justify-between text-sm text-emerald-100/70">
-        <Link href="/" className="font-semibold text-emerald-100">
+    <main className="min-h-screen bg-[#0a0b0f] px-5 py-6 md:px-8">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between border-b border-[#262932] pb-5 text-sm text-[#9ca3af]">
+        <Link href="/" className="font-semibold text-[#f9fafb]">
           ChainVigil AI｜链哨 AI
         </Link>
         <Link href="/wallet-check">重新体检</Link>
       </nav>
 
-      <section className="mt-12 grid gap-8 lg:grid-cols-[22rem_1fr]">
-        <aside className="h-fit border border-emerald-300/16 bg-black/24 p-5">
-          <p className="text-sm text-emerald-200/70">钱包健康分</p>
-          <p className="mt-3 text-6xl font-semibold text-white">{report.summary.score}</p>
-          <p className="mt-3 text-xl text-emerald-100">{report.summary.label}</p>
-          <p className="mt-5 break-all text-sm leading-6 text-emerald-50/60">{report.address}</p>
-          <p className="mt-6 border-t border-emerald-300/12 pt-5 text-xs leading-5 text-emerald-100/55">
+      <section className="mx-auto mt-12 grid max-w-7xl gap-8 lg:grid-cols-[22rem_1fr]">
+        <aside className="h-fit rounded-lg border border-[#f97316]/40 bg-[#f97316]/10 p-5">
+          <p className="text-sm text-[#fdba74]">钱包健康分</p>
+          <p className="mt-3 text-6xl font-semibold text-[#f9fafb]">{report.summary.score}</p>
+          <p className="mt-3 text-xl text-[#fed7aa]">{report.summary.label}</p>
+          <p className="mt-5 break-all font-mono text-sm leading-6 text-[#c7c4d7]">{report.address}</p>
+          <p className="mt-6 border-t border-[#f97316]/25 pt-5 text-xs leading-5 text-[#c7c4d7]">
             {report.disclaimer}
           </p>
         </aside>
 
         <div>
-          <h1 className="text-4xl font-semibold text-white">钱包体检报告</h1>
-          <p className="mt-4 text-emerald-50/72">
+          <p className="text-sm font-semibold text-[#c0c1ff]">BNB Smart Chain · Read-only</p>
+          <h1 className="mt-3 text-4xl font-semibold text-[#f9fafb]">钱包体检报告</h1>
+          <p className="mt-4 text-[#9ca3af]">
             检测时间：{new Date(report.checkedAt).toLocaleString("zh-CN")}
           </p>
 
@@ -57,30 +66,30 @@ export default async function WalletHealthPage({ params }: WalletHealthPageProps
           </section>
 
           <section className="mt-10">
-            <h2 className="text-2xl font-semibold text-white">授权风险</h2>
+            <h2 className="text-2xl font-semibold text-[#f9fafb]">授权风险</h2>
             <div className="mt-4 space-y-4">
               {report.approvals.map((approval) => (
-                <article key={approval.id} className="border border-emerald-300/14 bg-black/20 p-5">
+                <article key={approval.id} className="rounded-lg border border-[#262932] bg-[#16181d] p-5">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <p className="text-sm text-emerald-200/70">
+                      <p className="text-sm text-[#9ca3af]">
                         {approval.assetSymbol} / {approval.assetType}
                       </p>
-                      <h3 className="mt-2 text-lg font-semibold text-white">
+                      <h3 className="mt-2 text-lg font-semibold text-[#f9fafb]">
                         {approval.spenderLabel}
                       </h3>
                     </div>
-                    <span className="border border-emerald-300/20 px-3 py-1 text-sm text-emerald-100">
+                    <span className={`rounded-full border px-3 py-1 text-sm ${approvalRiskStyles[approval.riskLevel]}`}>
                       {approval.riskLevel}
                     </span>
                   </div>
-                  <p className="mt-3 break-all text-sm text-emerald-50/60">
+                  <p className="mt-3 break-all font-mono text-sm text-[#9ca3af]">
                     {approval.spenderAddress}
                   </p>
-                  <p className="mt-3 text-emerald-50/72">{approval.recommendedAction}</p>
+                  <p className="mt-3 text-[#c7c4d7]">{approval.recommendedAction}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     {approval.riskReasons.map((reason) => (
-                      <span key={reason} className="bg-white/8 px-3 py-1 text-xs text-emerald-100/80">
+                      <span key={reason} className="rounded-md bg-[#292932] px-3 py-1 text-xs text-[#c7c4d7]">
                         {reason}
                       </span>
                     ))}
@@ -97,9 +106,9 @@ export default async function WalletHealthPage({ params }: WalletHealthPageProps
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="border border-emerald-300/14 bg-black/18 p-4">
-      <p className="text-xs text-emerald-200/60">{label}</p>
-      <p className="mt-2 text-2xl font-semibold text-white">{value}</p>
+    <div className="rounded-lg border border-[#262932] bg-[#16181d] p-4">
+      <p className="text-xs text-[#9ca3af]">{label}</p>
+      <p className="mt-2 text-2xl font-semibold text-[#f9fafb]">{value}</p>
     </div>
   );
 }

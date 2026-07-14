@@ -355,6 +355,10 @@
 - 第 72 轮修复：Token 报告的结论与风险原因改为按 `BLOCK/HIGH/MEDIUM/LOW/UNKNOWN` 和 `critical/high/medium/low` 语义着色，避免把中低风险报告错误呈现为阻断级红色。
 - 第 72 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过；`pnpm dev` 配合 `pnpm smoke:v0` 返回 `V0 smoke passed`。
 - 第 72 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`。
+- 开始开发 loop 第 73 轮：将只读钱包体检和哨点 VP 工作区迁移到 V0 统一的安全情报视觉系统，并明确 BNB Smart Chain 的当前检测范围。
+- 完成开发 loop 第 73 轮：`/wallet-check`、`/wallet/[address]/health`、钱包体检表单与 `/app/points` 使用统一深色表面、风险语义色、BNB Smart Chain 范围提示和 VP pending 状态；所有 API 请求、路由、只读检测与“不连接钱包/不签名/不执行清理”边界保持不变。
+- 第 73 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 第 73 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；`pnpm dev` 配合 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 `/wallet-check` 与 `/app/points`。
 
 ## 下一步
 

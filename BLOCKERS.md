@@ -32,6 +32,7 @@
 - 第 70 轮 `git push origin main` 已恢复并成功推送至 GitHub；第 64 至 69 轮的 SSH 连接关闭记录不再是当前阻塞。
 - 第 71 轮无新增阻塞；生产 readiness 已显式列出 SOL/BNB 两条主优先链 RPC，但真实可用性仍需对应 RPC 端点、provider client 和健康探测接入后验证。
 - 第 72 轮无新增阻塞；Stitch 设计系统已落地到 V0 核心 Web 路径，视觉实现不依赖额外外部运行时服务。
+- 第 73 轮无新增阻塞；钱包体检与 VP 的界面升级复用既有只读 mock contract，未引入钱包连接或新的外部依赖。
 - Prisma schema 校验需要 `DATABASE_URL`；已在 db package 校验脚本中提供本地默认连接串，仅用于 schema validate。
 - 严格 TypeScript 可选字段导致 VP 事件和 API mock 输入报错；已修复。
 - Token 报告 OG 图片在本地边缘运行器中因中文动态字体加载和 `fit-content` 布局限制返回 500；已改为英文 ASCII 分享图文案和显式 flex 布局。

@@ -56,19 +56,19 @@ export function WalletCheckForm() {
           aria-label="钱包地址"
           value={address}
           onChange={(event) => setAddress(event.target.value)}
-          placeholder="粘贴钱包地址，进行只读体检"
-          className="min-h-14 flex-1 border border-emerald-300/20 bg-white/9 px-4 text-white outline-none transition focus:border-emerald-300/70"
+          placeholder="粘贴 BNB Smart Chain 钱包地址"
+          className="min-h-14 flex-1 rounded-md border border-[#464554] bg-[#0d0d15] px-4 font-mono text-sm text-[#f9fafb] outline-none transition placeholder:text-[#6b7280] focus:border-[#8083ff] focus:ring-2 focus:ring-[#8083ff]/20"
         />
         <button
           type="submit"
           disabled={isChecking}
-          className="min-h-14 bg-emerald-300 px-6 font-semibold text-emerald-950 transition hover:bg-emerald-200"
+          className="min-h-14 rounded-md bg-[#8083ff] px-6 font-semibold text-[#0d0096] transition hover:bg-[#c0c1ff] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isChecking ? "体检中..." : "开始体检"}
         </button>
       </div>
-      {error ? <p className="text-sm text-red-200">{error}</p> : null}
-      <p className="text-xs text-emerald-100/55">只读检测｜无需连接钱包｜不会请求签名</p>
+      {error ? <p className="text-sm text-[#fca5a5]">{error}</p> : null}
+      <p className="text-xs text-[#9ca3af]">只读检测｜无需连接钱包｜不会请求签名｜不执行清理</p>
     </form>
   );
 }

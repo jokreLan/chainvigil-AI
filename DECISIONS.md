@@ -70,3 +70,4 @@
 - 生产 readiness 对主优先链显式要求 `RPC_SOLANA_URL` 与 `RPC_BSC_URL`；旧 `RPC_BASE_URL` 仅保留给非主优先 EVM 的 V0 mock 兼容，不作为生产真实扫描就绪依据。
 - Stitch 项目 `Comprehensive App Design Suite` 的深色设计系统作为 Web V0 的视觉实现依据；页面只迁移视觉语言与信息层级，不以设计稿替换既有 API、SEO、分享归因或安全边界。
 - Token 报告的颜色必须表达真实风险语义：`BLOCK` 红、`HIGH` 橙、`MEDIUM` 黄、`LOW` 绿、`UNKNOWN` 灰；风险理由沿用同一语义，禁止固定使用单一高危颜色。
+- 钱包体检 V0 对外明确为 BNB Smart Chain 的只读地址分析；界面不得暗示钱包已连接、授权会被撤销或资产会被自动处理。VP 的 `pending` 状态使用黄色，仅用于表达待确认，不展示为可用余额。
