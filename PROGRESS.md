@@ -385,6 +385,11 @@
 - 开始开发 loop 第 81 轮：根据 Stitch 哨点中心原稿重构 `/app/points`，用现有 VP ledger 和规则 contract 填充页面。
 - 完成开发 loop 第 81 轮：VP 页面新增总哨点摘要、confirmed/pending/rejected breakdown、任务规则和状态说明，并接入 Points 活动态移动导航；继续明确 VP 不等于未来 token。
 - 第 81 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 开始开发 loop 第 82 轮：根据 Stitch 假币数据库原稿重构 `/fake-token-database`，保持共享 SOL/BNB mock 仿盘数据和 CA 安检入口。
+- 第 82 轮目标门禁第 1 次发现链显示映射只覆盖 SOL/BNB，而共享 `ChainId` 类型保留兼容链；已增加安全兜底名称映射。
+- 完成开发 loop 第 82 轮：假币数据库对齐原稿的检索入口、官方/仿盘对照、近期仿盘列表和 CA 验证教育区；每个样例保留共享风险等级、链和信号，并回链 `/check`，移动端使用 Database 活动态导航。
+- 第 82 轮目标门禁第 2 次通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 第 82 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
 
 ## 下一步
 
