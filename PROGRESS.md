@@ -366,6 +366,7 @@
 - 开始开发 loop 第 75 轮：统一 Telegram Bot Web 入口与风险百科的 V0 阅读体验，补齐从 CA 检测到群内查询和风险解释的公开路径。
 - 完成开发 loop 第 75 轮：`/bot` 明确展示 SOL/BNB mock 命令、Webhook mock 状态和安全边界；`/learn` 使用统一深色风险教育阅读布局，保留既有课程 contract、风险解释和建议动作。
 - 第 75 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 第 75 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；开发态 smoke 将在下一轮启动服务时再次覆盖。
 
 ## 下一步
 
