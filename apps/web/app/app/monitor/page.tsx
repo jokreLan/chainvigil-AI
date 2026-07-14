@@ -1,37 +1,11 @@
+import Link from "next/link";
 import { listMockRiskMonitorRules } from "@chainvigil/risk-core";
+import { MobileNav } from "../../ui/mobile-nav";
+
+const severityColor = { BLOCK: "#ef4444", HIGH: "#f97316", MEDIUM: "#f59e0b", LOW: "#10b981", UNKNOWN: "#9ca3af" } as const;
+const statusLabel = { watching: "监控中", needs_review: "待复查", paused: "已暂停" } as const;
 
 export default function MonitorPage() {
   const monitors = listMockRiskMonitorRules();
-
-  return (
-    <main className="mx-auto min-h-screen max-w-5xl px-5 py-12">
-      <h1 className="text-4xl font-semibold text-white">风险监控</h1>
-      <p className="mt-4 max-w-3xl text-emerald-50/72">
-        监控用于提醒风险变化，不做自动交易拦截，不替用户执行资产操作。
-      </p>
-      <section className="mt-8 grid gap-4 md:grid-cols-2">
-        {monitors.map((monitor) => (
-          <article key={monitor.id} className="border border-emerald-300/14 bg-black/20 p-5">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-xl font-semibold text-white">{monitor.title}</h2>
-              <span className="text-sm text-emerald-200">{monitor.status}</span>
-            </div>
-            <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-emerald-100/68">
-              <span>{monitor.targetType}</span>
-              <span>{monitor.severity}</span>
-              <span>{monitor.cadenceLabel}</span>
-            </div>
-            <p className="mt-4 leading-7 text-emerald-50/70">{monitor.explanation}</p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {monitor.signals.map((signal) => (
-                <span key={signal} className="border border-emerald-300/20 px-2 py-1 text-xs text-emerald-100/70">
-                  {signal}
-                </span>
-              ))}
-            </div>
-          </article>
-        ))}
-      </section>
-    </main>
-  );
+  return <main className="min-h-screen bg-[#0a0b0f] pb-24 text-[#e4e1ed] md:pb-10"><header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[#262932] bg-[#0a0b0f]/95 px-5 backdrop-blur md:px-8"><Link href="/" className="font-semibold text-[#f9fafb]">ChainVigil AI</Link><span className="text-sm text-[#c7c4d7]">只读提醒策略</span></header><div className="mx-auto max-w-6xl px-5 py-9 md:px-8"><section><p className="text-sm font-semibold text-[#c0c1ff]">Risk awareness</p><h1 className="mt-3 text-3xl font-semibold text-[#f9fafb] md:text-5xl">风险监控</h1><p className="mt-4 max-w-2xl leading-7 text-[#9ca3af]">把风险变化整理成可复查的提醒规则。V0 只展示策略，不推送通知、不自动拦截交易，也不操作资产。</p></section><section className="mt-8 grid gap-4 md:grid-cols-3">{[["已定义规则", monitors.length, "#c0c1ff"],["监控中", monitors.filter((item) => item.status === "watching").length, "#10b981"],["待复查", monitors.filter((item) => item.status === "needs_review").length, "#f59e0b"]].map(([label, value, color]) => <article key={String(label)} className="rounded-xl border border-[#262932] bg-[#16181d] p-5"><p className="text-sm text-[#9ca3af]">{label}</p><p className="mt-3 text-2xl font-semibold" style={{ color: String(color) }}>{value}</p></article>)}</section><section className="mt-8 space-y-4">{monitors.map((monitor) => <article key={monitor.id} className="rounded-xl border border-[#262932] bg-[#16181d] p-5"><div className="flex flex-wrap items-start justify-between gap-4"><div><div className="flex flex-wrap items-center gap-2"><h2 className="text-xl font-semibold text-[#f9fafb]">{monitor.title}</h2><span className="rounded px-2 py-1 text-xs font-semibold" style={{ backgroundColor: `${severityColor[monitor.severity]}1a`, color: severityColor[monitor.severity] }}>{monitor.severity}</span></div><p className="mt-2 text-sm text-[#9ca3af]">目标：{monitor.targetType} · 频率：{monitor.cadenceLabel}</p></div><span className="rounded-lg border border-[#464554] px-3 py-2 text-sm text-[#c7c4d7]">{statusLabel[monitor.status]}</span></div><p className="mt-5 leading-7 text-[#c7c4d7]">{monitor.explanation}</p><div className="mt-4 flex flex-wrap gap-2">{monitor.signals.map((signal) => <span key={signal} className="rounded bg-[#292932] px-2 py-1 font-mono text-xs text-[#9ca3af]">{signal}</span>)}</div><p className="mt-4 text-xs text-[#9ca3af]">最近信号：{monitor.lastSignalAt ? new Date(monitor.lastSignalAt).toLocaleString("zh-CN") : "尚无真实数据"}</p></article>)}</section><section className="mt-8 rounded-xl border border-[#262932] bg-[#1b1b23] p-5 text-sm leading-7 text-[#9ca3af]">真实监控需要 RPC、索引器、通知通道和用户订阅模型；在这些条件具备前，页面不会制造“已拦截”或“已提醒”的虚假状态。</section></div><MobileNav active="wallet" /></main>;
 }
