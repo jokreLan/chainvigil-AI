@@ -12,6 +12,8 @@ export default function RiskDatabasePage() {
           ChainVigil AI｜链哨 AI
         </Link>
         <div className="flex gap-5">
+          <Link href="/solana">Solana 专题</Link>
+          <Link href="/bnb">BNB 专题</Link>
           <Link href="/leaderboard/high-risk-tokens">高危榜</Link>
           <Link href="/fake-token-database">假币库</Link>
           <Link href="/check">CA 安检</Link>

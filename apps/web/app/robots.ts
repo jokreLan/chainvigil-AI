@@ -10,6 +10,8 @@ export default function robots(): MetadataRoute.Robots {
         allow: [
           "/",
           "/check",
+          "/solana",
+          "/bnb",
           "/token/",
           "/wallet-check",
           "/risk-database",

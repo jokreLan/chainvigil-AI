@@ -450,6 +450,10 @@
 - 完成开发 loop 第 98 轮：新增全局加载骨架，统一错误与 404 空路径状态；Token CA 和钱包地址提供复制反馈，分享控件在剪贴板拒绝时保留人话错误提示，避免将失败静默吞掉。
 - 第 98 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 - 第 98 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
+- 开始开发 loop 第 99 轮：建设 Solana 和 BNB Smart Chain 的公开专题页，补齐可索引的 FAQ、结构化数据、站点地图和内部链接。
+- 完成开发 loop 第 99 轮：新增 `/solana` 与 `/bnb`，按 V0 mock 与非投资建议边界解释链特有风险检查点，并输出 WebPage、FAQPage 和 BreadcrumbList JSON-LD；主页、风险库、robots 与 sitemap 已链接并索引这两个专题页。
+- 第 99 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 第 99 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
 
 ## 下一步
 

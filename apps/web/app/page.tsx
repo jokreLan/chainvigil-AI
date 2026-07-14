@@ -19,7 +19,7 @@ export default function HomePage() {
             ChainVigil AI
           </Link>
           <div className="hidden items-center gap-5 text-sm text-[#9ca3af] md:flex">
-            <Link href="/check">CA 安检</Link><Link href="/wallet-check">钱包体检</Link><Link href="/risk-database">风险库</Link>
+            <Link href="/check">CA 安检</Link><Link href="/wallet-check">钱包体检</Link><Link href="/solana">Solana</Link><Link href="/bnb">BNB</Link><Link href="/risk-database">风险库</Link>
           </div>
           <Link href="/app/points" className="text-sm font-semibold text-[#eab308]">VP</Link>
         </nav>

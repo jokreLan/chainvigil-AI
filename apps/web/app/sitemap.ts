@@ -3,6 +3,8 @@ import type { MetadataRoute } from "next";
 const staticRoutes = [
   "",
   "/check",
+  "/solana",
+  "/bnb",
   "/wallet-check",
   "/risk-database",
   "/leaderboard/high-risk-tokens",
