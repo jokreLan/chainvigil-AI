@@ -465,6 +465,14 @@
 - 完成开发 loop 第 102 轮：`/risk-labels`、`/points`、`/system-readiness`、`/channels` 使用同一深色工作台、语义色、紧凑卡片和移动端留白；页面仍只读展示 shared contract，不伪造审核、结算或生产配置写入。
 - 第 102 轮目标门禁通过：`@chainvigil/admin` typecheck/test/build（5 个用例）通过。
 - 第 102 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
+- 开始开发 loop 第 103 轮：在新的运行态循环中继续迁移 smoke 的旧页面文案断言到稳定 shared contract。
+- 完成开发 loop 第 103 轮：钱包 watchlist 与授权扫描的断言改为检查当前只读工作台的稳定标题、范围和禁止动作；`pnpm dev` 启动 Web/Admin/API/Bot 后，`pnpm smoke:v0` 全量通过。
+- 第 103 轮通过最终 release gate：`pnpm lint/typecheck/test/build/db:validate` 及 `pnpm smoke:v0` 全部通过。
+
+## V0 Release Status
+
+- 可交付：pnpm workspace、Web CA 安检与 mock 风险报告、SOL/BNB 专题与 SEO/GEO、VP ledger contract、Telegram mock、Admin 只读工作台、Prisma schema、API/SDK 与完整 V0 smoke。
+- 外部依赖：真实 SOL/BNB 风险证据仍需要 RPC 与 provider 凭证；生产 Bot 需要 Telegram token/webhook；账户与写入需要 PostgreSQL/Redis/权限审计；浏览器视觉像素回归需等待当前宿主 Browser 运行时修复。
 
 ## 下一步
 

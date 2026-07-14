@@ -100,3 +100,4 @@
 - Solana 与 BNB 的 SEO/GEO 专题页只讲述 V0 已公开的风险教育和 mock 检查范围；FAQ、JSON-LD 和内链不得将静态说明包装为实时链上扫描、投资意见或交易能力。
 - V0 smoke 应优先验证稳定的产品 contract、风险边界和结构化数据，避免依赖容易随页面重构改变的装饰性标题；既有断言漂移按三次修复上限独立记录，不覆盖已通过的 package 级门禁。
 - Admin 的剩余标签、VP、就绪和渠道页面与核心审核页面采用同一控制台视觉，但继续只展示共享 mock contract；对 VP、渠道和环境变量的操作型控件必须等待权限、审计和持久化链路。
+- V0 release gate 以全仓 lint/typecheck/test/build、Prisma schema validate 与启动四服务后的 smoke 为准；浏览器截图像素回归受宿主运行时阻塞单独保留，不将其误报为已完成。

@@ -266,7 +266,7 @@ async function main() {
       await assertStatus(name, response, 200);
       const html = await response.text();
 
-      if (!html.includes("授权清理") || !html.includes("授权撤销必须用户确认") || !html.includes("自动撤销授权")) {
+      if (!html.includes("授权扫描") || !html.includes("撤销前必须人工确认") || !html.includes("自动撤销授权")) {
         throw new Error(`${name} expected approval cleanup policy`);
       }
     }),

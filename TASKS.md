@@ -9,8 +9,8 @@ This list covers the remaining V0 work that can be completed without external cr
 - [completed] Standardize remaining public utility pages, empty/loading/error states, mobile layout, CA copy and share feedback.
 - [completed] Add Solana/BNB SEO/GEO topic pages, structured data, sitemap and internal links.
 - [completed] Expand page-level contracts, API/SDK boundary tests and V0 smoke coverage.
-- [in_progress] Repair the residual V0 smoke assertion drift recorded in `BLOCKERS.md`.
+- [completed] Repair the residual V0 smoke assertion drift recorded in `BLOCKERS.md`.
 - [completed] Apply the UI system to Admin risk review, data sources, audit, Telegram and report-index screens.
 - [completed] Standardize the remaining Admin label, VP, readiness and channel screens with the same control-room UI system.
 - [blocked] Repair browser screenshot automation and complete desktop/mobile visual regression against Stitch screens. See `BLOCKERS.md`.
-- [pending] Run an end-to-end repository release gate and document residual external dependencies.
+- [completed] Run an end-to-end repository release gate and document residual external dependencies.
