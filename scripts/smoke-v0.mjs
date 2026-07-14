@@ -222,7 +222,7 @@ async function main() {
       await assertStatus(name, response, 200);
       const html = await response.text();
 
-      if (!html.includes("我的钱包") || !html.includes("主钱包") || !html.includes("只读钱包 watchlist")) {
+      if (!html.includes("我的钱包") || !html.includes("主钱包") || !html.includes("Read-only watchlist")) {
         throw new Error(`${name} expected wallet watchlist`);
       }
     }),
