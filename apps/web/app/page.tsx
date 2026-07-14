@@ -19,7 +19,7 @@ export default function HomePage() {
             ChainVigil AI
           </Link>
           <div className="hidden items-center gap-5 text-sm text-[#9ca3af] md:flex">
-            <Link href="/check">CA 安检</Link><Link href="/wallet-check">钱包体检</Link><Link href="/solana">Solana</Link><Link href="/bnb">BNB</Link><Link href="/risk-database">风险库</Link>
+            <Link href="/app" className="font-semibold text-[#c0c1ff]">安全工作台</Link><Link href="/check">CA 安检</Link><Link href="/wallet-check">钱包体检</Link><Link href="/risk-database">风险库</Link>
           </div>
           <Link href="/app/points" className="text-sm font-semibold text-[#eab308]">VP</Link>
         </nav>
@@ -36,6 +36,15 @@ export default function HomePage() {
           <Link href="/wallet-check" className="flex h-12 items-center justify-center rounded-xl border border-[#464554] text-sm font-semibold text-[#f9fafb]">检查我的钱包</Link>
           <p className="text-center text-xs text-[#9ca3af]">免费检测 · 无需连接钱包 · 优先支持 SOL 与 BNB</p>
         </section>
+
+        <Link href="/app" className="flex items-center justify-between gap-4 rounded-xl border border-[#8083ff]/40 bg-[#16181d] p-5 transition-colors hover:border-[#c0c1ff]">
+          <div>
+            <p className="text-xs font-semibold uppercase text-[#c0c1ff]">Security workspace</p>
+            <h2 className="mt-2 text-xl font-semibold text-[#f9fafb]">打开安全工作台</h2>
+            <p className="mt-2 text-sm leading-6 text-[#9ca3af]">钱包体检、报告历史、风险监控和哨点 VP 都在这里。</p>
+          </div>
+          <span aria-hidden="true" className="shrink-0 text-2xl font-semibold text-[#c0c1ff]">&rarr;</span>
+        </Link>
 
         <section>
           <div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-semibold text-[#f9fafb]">高风险预警示例</h2><span className="text-xs font-semibold text-[#c0c1ff]">LIVE SCAN</span></div>

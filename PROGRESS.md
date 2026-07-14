@@ -477,6 +477,9 @@
 - 完成开发 loop 第 104 轮：Admin `error` 与 `not-found` 状态统一为深色工作台可恢复界面，保留重试与返回控制台链接。
 - 第 104 轮目标门禁通过：`@chainvigil/admin` typecheck/test/build（5 个用例）通过。
 - 第 104 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；Prisma schema 校验通过。
+- 开始开发 loop 第 105 轮：修复公开首页与已完成安全工作台之间缺少显性产品入口的问题，确保 Web DApp 能被直接发现。
+- 完成开发 loop 第 105 轮：首页桌面导航新增“安全工作台”，CA 安检首屏新增可见工作台入口，直接导向钱包体检、报告、监控和 VP 模块；未改变 V0 的只读安全边界。
+- 第 105 轮目标门禁通过：`@chainvigil/web` lint/typecheck、test（6 个用例）和 production build 通过；运行中首页 HTTP 200 且确认输出工作台入口。
 
 ## 下一步
 
