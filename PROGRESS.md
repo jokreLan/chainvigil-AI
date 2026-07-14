@@ -367,6 +367,9 @@
 - 完成开发 loop 第 75 轮：`/bot` 明确展示 SOL/BNB mock 命令、Webhook mock 状态和安全边界；`/learn` 使用统一深色风险教育阅读布局，保留既有课程 contract、风险解释和建议动作。
 - 第 75 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 - 第 75 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；开发态 smoke 将在下一轮启动服务时再次覆盖。
+- 开始开发 loop 第 76 轮：切换至 Stitch 原稿逐屏还原流程，优先重构移动端首页，并在保留可运行 V0 交互的前提下对齐原稿的信息架构。
+- 完成开发 loop 第 76 轮：首页对齐 Stitch 原稿的固定顶栏、居中 Hero、CA 与钱包双入口、高风险预警、核心防御模块、VP 卡及移动底部导航；原稿的背景光晕按项目视觉规范不采用，真实 `/check` 表单与既有路由保持不变。
+- 第 76 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过；`pnpm dev` 配合 `pnpm smoke:v0` 返回 `V0 smoke passed`。
 
 ## 下一步
 

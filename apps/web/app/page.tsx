@@ -1,60 +1,58 @@
 import Link from "next/link";
 import { CheckForm } from "./ui/check-form";
 
+const defenseModules = [
+  { title: "貔貅检测", description: "识别只能买不能卖的陷阱", href: "/risk-database" },
+  { title: "黑名单风险", description: "检测 Owner 是否可冻结账户", href: "/risk-database" },
+  { title: "LP 锁仓分析", description: "查看流动性池是否已锁定", href: "/risk-database" },
+  { title: "权限后门", description: "扫描隐藏的高危治理权限", href: "/risk-database" },
+];
+
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[#0a0b0f]">
-      <section className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-5 py-6 md:px-8">
-        <nav className="flex items-center justify-between border-b border-[#262932] pb-5 text-sm text-[#9ca3af]">
-          <Link href="/" className="font-semibold text-[#f9fafb]">
-            <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-md bg-[#8083ff] text-xs text-[#0a0b0f]">CV</span>
-            ChainVigil AI <span className="hidden text-[#9ca3af] sm:inline">｜链哨 AI</span>
+    <main className="min-h-screen bg-[#0a0b0f] pb-28">
+      <header className="sticky top-0 z-20 border-b border-[#262932] bg-[#0a0b0f]">
+        <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 md:px-8">
+          <Link href="/" className="flex items-center gap-2 font-semibold text-[#f9fafb]">
+            <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-[#8083ff] text-xs text-[#0d0096]">CV</span>
+            ChainVigil AI
           </Link>
-          <div className="hidden gap-5 md:flex">
-            <Link href="/check">CA 安检</Link>
-            <Link href="/wallet-check">钱包体检</Link>
-            <Link href="/risk-database">风险库</Link>
+          <div className="hidden items-center gap-5 text-sm text-[#9ca3af] md:flex">
+            <Link href="/check">CA 安检</Link><Link href="/wallet-check">钱包体检</Link><Link href="/risk-database">风险库</Link>
           </div>
-          <Link href="/app/points" className="rounded-md border border-[#464554] px-3 py-2 text-[#eab308]">VP</Link>
+          <Link href="/app/points" className="text-sm font-semibold text-[#eab308]">VP</Link>
         </nav>
+      </header>
 
-        <div className="grid flex-1 gap-10 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:py-24">
-          <div>
-            <p className="mb-5 text-xs font-semibold uppercase tracking-[0.12em] text-[#c0c1ff]">
-              Web3 Security Intelligence
-            </p>
-            <h1 className="max-w-3xl text-5xl font-semibold leading-tight text-[#f9fafb] md:text-7xl">
-              买币前，先查 CA。
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-[#c7c4d7]">
-              AI 检测貔貅盘、高税、黑名单、LP 风险、Owner 后门和假币风险。免费检测，无需连接钱包。
-            </p>
-            <div className="mt-8 max-w-2xl rounded-lg border border-[#464554] bg-[#16181d] p-3 shadow-[0_16px_40px_rgba(0,0,0,0.25)]">
-              <CheckForm compact={false} />
-            </div>
-            <p className="mt-5 text-sm text-[#9ca3af]">
-              第一版优先支持 SOL 和 BNB。其它 EVM 链保留 mock contract 兼容，后续按数据源接入推进。
-            </p>
-          </div>
+      <div className="mx-auto max-w-md space-y-8 px-4 pt-10 md:max-w-7xl md:px-8">
+        <section className="text-center">
+          <h1 className="text-4xl font-semibold leading-tight text-[#f9fafb] sm:text-5xl">买币前，<br /><span className="text-[#c0c1ff]">先查 CA。</span></h1>
+          <p className="mt-4 leading-7 text-[#c7c4d7]">AI 检测貔貅盘、高税、黑名单、LP 未锁、Owner 后门、假币与授权风险。</p>
+        </section>
 
-          <div className="rounded-lg border border-[#262932] bg-[#16181d] p-6 shadow-[0_20px_48px_rgba(0,0,0,0.28)]">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-[#9ca3af]">示例风险报告</p>
-              <span className="rounded-full border border-[#ef4444]/40 bg-[#ef4444]/10 px-3 py-1 text-xs font-semibold text-[#fca5a5]">BLOCK</span>
-            </div>
-            <h2 className="mt-4 text-3xl font-semibold text-[#f9fafb]">AI 结论：禁买</h2>
-            <p className="mt-2 text-[#fca5a5]">疑似貔貅盘，卖出路径存在一票否决风险。</p>
-            <div className="mt-6 space-y-3 text-sm leading-6 text-[#c7c4d7]">
-              <p className="border-l-2 border-[#ef4444] pl-3">卖出仿真失败，当前路径无法正常卖出。</p>
-              <p className="border-l-2 border-[#f97316] pl-3">合约 owner 可修改卖出税。</p>
-              <p className="border-l-2 border-[#f59e0b] pl-3">LP 锁定状态未确认，存在撤池风险。</p>
-              <p className="border-t border-[#262932] pt-4 text-[#9ca3af]">
-                不替你投资，只帮你把交易安全风险讲清楚。
-              </p>
-            </div>
+        <section className="space-y-4">
+          <div className="rounded-xl border border-[#464554] bg-[#16181d] p-3 shadow-[0_16px_40px_rgba(0,0,0,0.25)]"><CheckForm compact /></div>
+          <Link href="/wallet-check" className="flex h-12 items-center justify-center rounded-xl border border-[#464554] text-sm font-semibold text-[#f9fafb]">检查我的钱包</Link>
+          <p className="text-center text-xs text-[#9ca3af]">免费检测 · 无需连接钱包 · 优先支持 SOL 与 BNB</p>
+        </section>
+
+        <section>
+          <div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-semibold text-[#f9fafb]">高风险预警示例</h2><span className="text-xs font-semibold text-[#c0c1ff]">LIVE SCAN</span></div>
+          <div className="rounded-xl border border-[#ef4444]/35 bg-[#16181d] p-4">
+            <div className="flex items-start justify-between gap-3"><div><p className="font-semibold text-[#f9fafb]">Honeypot Token</p><p className="mt-1 font-mono text-xs text-[#9ca3af]">0x71C...492E</p></div><span className="rounded-md border border-[#ef4444]/30 bg-[#ef4444]/10 px-2 py-1 text-xs font-semibold text-[#fca5a5]">高风险</span></div>
+            <div className="mt-4 rounded-lg border border-[#262932] bg-[#1b1b23] p-3"><p className="text-xs font-semibold text-[#9ca3af]">AI 智能诊断</p><p className="mt-2 text-sm leading-6 text-[#f9fafb]">该合约存在典型的貔貅逻辑。Owner 已关闭卖出开关，且流动性池存在异常，建议立即远离。</p></div>
+            <div className="mt-3 grid grid-cols-2 gap-2 text-xs"><div className="rounded-lg border border-[#262932] bg-[#0d0d15] p-2 text-[#fca5a5]">貔貅盘风险</div><div className="rounded-lg border border-[#262932] bg-[#0d0d15] p-2 text-[#fde68a]">卖出税 99%</div></div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        <section><h2 className="mb-4 text-lg font-semibold text-[#f9fafb]">核心防御模块</h2><div className="grid grid-cols-2 gap-3">{defenseModules.map((module) => <Link key={module.title} href={module.href} className="rounded-xl border border-[#262932] bg-[#16181d] p-4"><p className="font-semibold text-[#f9fafb]">{module.title}</p><p className="mt-2 text-xs leading-5 text-[#9ca3af]">{module.description}</p></Link>)}</div></section>
+
+        <Link href="/app/points" className="flex items-center justify-between rounded-xl border border-[#eab308]/25 bg-[#16181d] p-4"><div><p className="font-semibold text-[#eab308]">Vigil Points (VP)</p><p className="mt-1 text-xs text-[#9ca3af]">完成安检，记录安全贡献点数</p></div><span className="text-[#eab308]">VP</span></Link>
+      </div>
+
+      <nav className="fixed inset-x-0 bottom-0 z-20 flex justify-around border-t border-[#262932] bg-[#16181d] px-4 py-3 text-xs text-[#9ca3af] md:hidden">
+        <Link href="/" className="font-semibold text-[#c0c1ff]">首页</Link><Link href="/wallet-check">钱包</Link><Link href="/risk-database">风险库</Link><Link href="/app/points">VP</Link>
+      </nav>
     </main>
   );
 }
