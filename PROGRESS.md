@@ -345,6 +345,7 @@
 - 第 70 轮目标门禁第 2 次通过：Data Adapters、API、SDK、Web、Admin 的 typecheck/test/build；Data Adapters 测试 7 个、API 测试 38 个、SDK 测试 28 个、Web 测试 4 个、Admin 测试 5 个用例通过。
 - 第 70 轮通过全仓 `pnpm lint/typecheck/test/build/db:validate`；当前 shell 只有 Node 20，因此继续使用临时 Node 22.13.1 + pnpm 11.7.0 执行。
 - 第 70 轮运行态 smoke check 已通过：`pnpm dev` 启动后执行 `pnpm smoke:v0` 返回 `V0 smoke passed`，覆盖 Admin SOL/BNB 证据 Provider 页面、Web API 清单和 API `/api/v1/risk/evidence-providers`。
+- 第 70 轮代码已提交为 `f70d9ff`，并已成功执行 `git push origin main`。
 
 ## 下一步
 

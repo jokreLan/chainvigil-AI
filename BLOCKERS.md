@@ -4,11 +4,6 @@
 
 - 继续从 mock 风险报告升级到真实链上风险检测，需要至少一个 EVM RPC、GoPlus/Honeypot 或等价安全数据源凭证。当前 V0 mock 闭环不受影响。
 - Docker 镜像构建实测暂时受 Docker Hub / 本机 Docker 网络影响：`node:20-bookworm-slim` 基础镜像元数据拉取超时或 EOF。Dockerfile 与 `docker compose config` 已通过静态校验，但镜像实际构建需等基础镜像可拉取后补验。
-- 第 64 轮验证记录本地已提交，但连续 3 次 `git push` 均被远端关闭连接：`Connection closed by 198.18.0.46 port 443`。当前本地 `main` 暂时领先 `origin/main`，待 GitHub SSH/网络恢复后重试推送。
-- 第 65 轮代码已本地提交；`git push origin main` 仍被远端关闭连接：`Connection closed by 198.18.0.46 port 443`。该问题不影响本地开发、测试和提交，待 GitHub SSH/网络恢复后统一推送。
-- 第 66 轮代码已本地提交；`git push origin main` 仍被远端关闭连接：`Connection closed by 198.18.0.46 port 443`。该问题不影响本地开发、测试和提交，待 GitHub SSH/网络恢复后统一推送。
-- 第 67 轮代码已本地提交；`git push origin main` 仍被远端关闭连接：`Connection closed by 198.18.0.46 port 443`。该问题不影响本地开发、测试和提交，待 GitHub SSH/网络恢复后统一推送。
-- 第 68 轮代码已本地提交；`git push origin main` 仍被远端关闭连接：`Connection closed by 198.18.0.46 port 443`。该问题不影响本地开发、测试和提交，待 GitHub SSH/网络恢复后统一推送。
 
 ## 已处理问题
 
@@ -34,6 +29,7 @@
 - 第 68 轮无新增阻塞；Telegram Bot 已改为 SOL/BNB 优先 mock 文案，真实群内自动识别和频控仍需 Telegram token、群权限模型和生产 webhook 配置。
 - 第 69 轮无新增阻塞；公开风险情报与 Admin 复核队列已切到 SOL/BNB mock 示例，真实榜单仍需数据源证据、误报处理和人工复核机制。
 - 第 70 轮无新增阻塞；SOL/BNB 风险证据 Provider contract、mock 降级和 `UNASSESSED` 置信度已固定，但真实扫描仍需对应 RPC、GoPlus/Honeypot 或等价数据源凭证、provider client 实现与人工误报治理。
+- 第 70 轮 `git push origin main` 已恢复并成功推送至 GitHub；第 64 至 69 轮的 SSH 连接关闭记录不再是当前阻塞。
 - Prisma schema 校验需要 `DATABASE_URL`；已在 db package 校验脚本中提供本地默认连接串，仅用于 schema validate。
 - 严格 TypeScript 可选字段导致 VP 事件和 API mock 输入报错；已修复。
 - Token 报告 OG 图片在本地边缘运行器中因中文动态字体加载和 `fit-content` 布局限制返回 500；已改为英文 ASCII 分享图文案和显式 flex 布局。
