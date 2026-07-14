@@ -432,6 +432,9 @@
 - 第 93 轮目标门禁第 1 次发现页面引用了不存在的 `PointLedgerSummary.confirmedVp/pendingVp`；已改为共享 contract 的 `totalConfirmed/totalPending`。
 - 完成开发 loop 第 93 轮：安全工作台新增只读钱包、监控规则和 VP 摘要，按风险流程组织模块入口与 V0 安全边界；不要求连接钱包、不引入执行型交易能力。
 - 第 93 轮目标门禁第 2 次通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
+- 开始开发 loop 第 94 轮：按统一深色安全情报规范重构 `/app/wallets`，复用只读钱包 watchlist contract。
+- 完成开发 loop 第 94 轮：钱包页新增 watchlist 摘要、链/状态、风险授权信息和只读体检跳转；明确不连接钱包、不请求签名、不读取私钥或助记词。
+- 第 94 轮目标门禁通过：`@chainvigil/web` typecheck/test/build（4 个用例）通过。
 
 ## 下一步
 

@@ -54,6 +54,7 @@
 - 第 92 轮无新增阻塞；真实个人报告历史需要账户/匿名会话策略、报告落库、检索分页与数据保留规则。
 - 连续 UI 完成循环已启动；无新增阻塞。真实链上风险数据、Bot 生产 webhook、账户和生产基础设施仍按当前 blocker 记录处理。
 - 第 93 轮无新增阻塞；安全工作台只聚合 mock summary，真实个人总览仍需账户、报告落库和钱包地址归属策略。
+- 第 94 轮无新增阻塞；真实 watchlist 需要账户或匿名本地存储策略、地址归属和报告落库。
 - Prisma schema 校验需要 `DATABASE_URL`；已在 db package 校验脚本中提供本地默认连接串，仅用于 schema validate。
 - 严格 TypeScript 可选字段导致 VP 事件和 API mock 输入报错；已修复。
 - Token 报告 OG 图片在本地边缘运行器中因中文动态字体加载和 `fit-content` 布局限制返回 500；已改为英文 ASCII 分享图文案和显式 flex 布局。

@@ -92,3 +92,4 @@
 - 报告历史在账户体系与 PostgreSQL 报告落库前只能展示共享 `TokenReportIndexItem` mock 数据，并必须明确不是用户个人历史；点击项仍跳转至同一份公开报告路由。
 - 剩余 V0 可独立交付工作以 `TASKS.md` 排序执行；每项必须在提交前通过目标门禁与全仓门禁，外部凭证、生产基础设施和真实数据源继续单独记录为 blocker，不阻塞 UI/contract 完成度。
 - 安全工作台总览仅聚合已存在的只读 mock summary contract；数字必须来自共享数据，不能用静态示例冒充钱包连接或个人资产状态。
+- 钱包列表在 V0 只展示 `WalletWatchlistItem` mock contract；没有账户体系前，不允许把它命名或呈现为用户真实已添加的钱包。
