@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>ChainVigil AI - 专业链上安检</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Geist:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#e4e1ed",
+                    "status-unknown": "#6B7280",
+                    "on-secondary-fixed-variant": "#6900b3",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "on-background": "#e4e1ed",
+                    "tertiary-fixed": "#ffdcc5",
+                    "on-tertiary-fixed-variant": "#703700",
+                    "on-tertiary": "#4f2500",
+                    "on-primary-fixed": "#07006c",
+                    "primary": "#c0c1ff",
+                    "on-tertiary-container": "#452000",
+                    "surface-container-highest": "#34343d",
+                    "on-primary-container": "#0d0096",
+                    "secondary-fixed-dim": "#ddb7ff",
+                    "on-secondary-container": "#d6a9ff",
+                    "tertiary-container": "#d97721",
+                    "primary-container": "#8083ff",
+                    "status-block": "#EF4444",
+                    "tertiary-fixed-dim": "#ffb783",
+                    "background": "#0A0B0F",
+                    "on-error": "#690005",
+                    "primary-fixed": "#e1e0ff",
+                    "secondary": "#ddb7ff",
+                    "surface-container-low": "#1b1b23",
+                    "inverse-surface": "#e4e1ed",
+                    "inverse-on-surface": "#303038",
+                    "status-medium": "#F59E0B",
+                    "surface-dim": "#13131b",
+                    "status-low": "#10B981",
+                    "error": "#ffb4ab",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "on-secondary": "#490080",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-lowest": "#0d0d15",
+                    "secondary-fixed": "#f0dbff",
+                    "outline": "#908fa0",
+                    "inverse-primary": "#494bd6",
+                    "on-surface-variant": "#c7c4d7",
+                    "tertiary": "#ffb783",
+                    "on-secondary-fixed": "#2c0051",
+                    "outline-variant": "#464554",
+                    "error-container": "#93000a",
+                    "text-primary": "#F9FAFB",
+                    "status-trial": "#06B6D4",
+                    "accent-vp": "#EAB308",
+                    "surface-bright": "#393841",
+                    "border": "#262932",
+                    "on-primary": "#1000a9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "1.5rem",
+                    "container-max": "1280px",
+                    "stack-lg": "2rem",
+                    "stack-md": "1rem",
+                    "stack-sm": "0.5rem",
+                    "margin-mobile": "1rem"
+            },
+            "fontFamily": {
+                    "headline-md": ["Geist"],
+                    "display-lg-mobile": ["Geist"],
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "display-lg": ["Geist"],
+                    "body-md": ["Inter"],
+                    "code-sm": ["monospace"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "code-sm": ["13px", {"lineHeight": "1.4", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0A0B0F;
+            color: #e4e1ed;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ai-gradient-text {
+            background: linear-gradient(135deg, #c0c1ff 0%, #ddb7ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .ai-glow-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .ai-glow-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(192, 193, 255, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .scanning-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #c0c1ff, transparent);
+            position: absolute;
+            width: 100%;
+            top: -2px;
+            animation: scan 3s ease-in-out infinite;
+        }
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen">
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-background">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[28px]">security</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">ChainVigil AI</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined">language</span>
+</button>
+</header>
+<main class="flex-grow pt-24 pb-32 px-4 space-y-8 max-w-md mx-auto w-full">
+<!-- Hero Section -->
+<section class="text-center space-y-4">
+<h1 class="font-display-lg-mobile text-display-lg-mobile leading-tight tracking-tight">
+                买币前，<br/><span class="ai-gradient-text">先查 CA。</span>
+</h1>
+<p class="text-on-surface-variant font-body-md text-body-md px-2 leading-relaxed">
+                AI 检测貔貅盘、高税、黑名单、LP 未锁、Owner 后门、假币与授权风险。
+            </p>
+</section>
+<!-- Search Input Block -->
+<section class="space-y-4">
+<div class="relative group">
+<div class="absolute -inset-1 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-xl blur opacity-25 group-focus-within:opacity-50 transition duration-500"></div>
+<div class="relative flex flex-col gap-3">
+<div class="relative">
+<input class="w-full h-16 bg-surface-container border border-border rounded-xl px-4 py-4 font-body-md text-body-md placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all" placeholder="粘贴 Token 合约地址或 DexScreener / GMGN 链接" type="text"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-surface border border-border flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-[14px] text-primary">atm</span>
+</div>
+<div class="w-6 h-6 rounded-full bg-surface border border-border flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-[14px] text-secondary">token</span>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full h-14 bg-gradient-to-r from-primary-container to-secondary-container rounded-xl flex items-center justify-center gap-2 text-on-primary font-headline-md text-[18px] font-bold shadow-lg shadow-primary/20 active:scale-95 transition-all">
+<span class="material-symbols-outlined">analytics</span>
+                        立即 CA 安检
+                    </button>
+<button class="w-full h-12 bg-transparent border border-outline-variant text-on-surface rounded-xl flex items-center justify-center gap-2 font-body-md text-body-md active:bg-surface-variant transition-all">
+<span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+                        检查我的钱包
+                    </button>
+</div>
+</div>
+<!-- Trust Indicators -->
+<div class="flex justify-center items-center gap-4 py-2">
+<div class="flex items-center gap-1 text-label-sm font-label-sm text-status-low">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+                    免费检测
+                </div>
+<div class="w-1 h-1 rounded-full bg-outline-variant"></div>
+<div class="flex items-center gap-1 text-label-sm font-label-sm text-on-surface-variant">
+                    无需连接钱包
+                </div>
+<div class="w-1 h-1 rounded-full bg-outline-variant"></div>
+<div class="flex items-center gap-1 text-label-sm font-label-sm text-on-surface-variant">
+                    支持主流 EVM 链
+                </div>
+</div>
+</section>
+<!-- Quick AI Assessment Preview (Fake Report Card) -->
+<section class="space-y-4">
+<div class="flex justify-between items-center px-1">
+<h2 class="font-headline-md text-[18px]">高风险预警示例</h2>
+<span class="text-label-sm font-label-sm text-primary uppercase tracking-widest">Live Scan</span>
+</div>
+<div class="bg-surface border border-status-block/30 rounded-xl p-4 space-y-4 ai-glow-card relative">
+<div class="scanning-line"></div>
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container border border-border flex items-center justify-center">
+<span class="material-symbols-outlined text-status-block">dangerous</span>
+</div>
+<div>
+<div class="font-headline-md text-body-md">Honeypot Token</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">0x71C...492E</div>
+</div>
+</div>
+<div class="bg-status-block/10 text-status-block px-2 py-1 rounded font-label-sm text-label-sm border border-status-block/20">
+                        高风险
+                    </div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-3 border border-border">
+<div class="text-label-sm font-label-sm text-on-surface-variant mb-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">psychology</span>
+                        AI 智能诊断
+                    </div>
+<p class="text-body-md font-body-md leading-snug">
+                        该合约存在典型的“貔貅”逻辑。Owner 已关闭卖出开关，且流动性池已被秘密撤回 95%。建议立即远离。
+                    </p>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<div class="bg-surface-container-lowest p-2 rounded-lg border border-border flex items-center gap-2">
+<span class="material-symbols-outlined text-status-block text-[18px]">block</span>
+<span class="text-label-sm font-label-sm">貔貅盘风险</span>
+</div>
+<div class="bg-surface-container-lowest p-2 rounded-lg border border-border flex items-center gap-2">
+<span class="material-symbols-outlined text-status-medium text-[18px]">percent</span>
+<span class="text-label-sm font-label-sm">卖出税 99%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Feature Bento Grid -->
+<section class="space-y-4">
+<h2 class="font-headline-md text-[18px] px-1">核心防御模块</h2>
+<div class="grid grid-cols-2 gap-3">
+<div class="bg-surface-container border border-border p-4 rounded-xl space-y-3">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">emergency_home</span>
+</div>
+<div class="space-y-1">
+<div class="font-body-md text-body-md font-semibold">貔貅检测</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">识别只能买不能卖的陷阱</div>
+</div>
+</div>
+<div class="bg-surface-container border border-border p-4 rounded-xl space-y-3">
+<div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">person_cancel</span>
+</div>
+<div class="space-y-1">
+<div class="font-body-md text-body-md font-semibold">黑名单风险</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">检测 Owner 是否可冻结账户</div>
+</div>
+</div>
+<div class="bg-surface-container border border-border p-4 rounded-xl space-y-3">
+<div class="w-10 h-10 rounded-lg bg-tertiary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">lock</span>
+</div>
+<div class="space-y-1">
+<div class="font-body-md text-body-md font-semibold">LP 锁仓分析</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">查看流动性池是否已锁定</div>
+</div>
+</div>
+<div class="bg-surface-container border border-border p-4 rounded-xl space-y-3">
+<div class="w-10 h-10 rounded-lg bg-status-low/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-status-low">history_edu</span>
+</div>
+<div class="space-y-1">
+<div class="font-body-md text-body-md font-semibold">权限后门</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">扫描隐藏的高危治理权限</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Vigil Points Promo -->
+<section class="bg-gradient-to-br from-[#1b1b23] to-background border border-accent-vp/20 rounded-xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 bg-accent-vp/10 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-accent-vp" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+<div>
+<div class="font-headline-md text-body-md text-accent-vp">Vigil Points (VP)</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">完成安检，赚取贡献点数</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-6 bg-surface-container rounded-t-xl shadow-lg border-t border-border/50">
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-4 py-1 transition-all" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-all rounded-xl px-4 py-1" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-label-sm text-label-sm">Wallet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-all rounded-xl px-4 py-1" href="#">
+<span class="material-symbols-outlined">database</span>
+<span class="font-label-sm text-label-sm">Database</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-all rounded-xl px-4 py-1" href="#">
+<span class="material-symbols-outlined">stars</span>
+<span class="font-label-sm text-label-sm">Points</span>
+</a>
+</nav>
+<!-- Visual Polish: Background Aura -->
+<div class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none opacity-30">
+<div class="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary blur-[120px] rounded-full"></div>
+<div class="absolute bottom-[20%] left-[-10%] w-[40%] h-[40%] bg-secondary-container blur-[100px] rounded-full"></div>
+</div>
+<script>
+        // Simple Micro-interaction for input highlight
+        const searchBtn = document.querySelector('button.bg-gradient-to-r');
+        searchBtn.addEventListener('click', () => {
+            searchBtn.classList.add('scale-95');
+            setTimeout(() => searchBtn.classList.remove('scale-95'), 100);
+        });
+
+        // Placeholder scroll effect logic or other micro-interactions can go here
+    </script>
+</body></html>

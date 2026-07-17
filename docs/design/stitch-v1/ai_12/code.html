@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vigil Points Center | ChainVigil AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#e4e1ed",
+                    "status-unknown": "#6B7280",
+                    "on-secondary-fixed-variant": "#6900b3",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "on-background": "#e4e1ed",
+                    "tertiary-fixed": "#ffdcc5",
+                    "on-tertiary-fixed-variant": "#703700",
+                    "on-tertiary": "#4f2500",
+                    "on-primary-fixed": "#07006c",
+                    "primary": "#c0c1ff",
+                    "on-tertiary-container": "#452000",
+                    "surface-container-highest": "#34343d",
+                    "on-primary-container": "#0d0096",
+                    "secondary-fixed-dim": "#ddb7ff",
+                    "on-tertiary-fixed": "#301400",
+                    "surface": "#16181D",
+                    "surface-container": "#1f1f27",
+                    "status-high": "#F97316",
+                    "surface-tint": "#c0c1ff",
+                    "secondary-container": "#6f00be",
+                    "surface-container-high": "#292932",
+                    "surface-variant": "#34343d",
+                    "text-secondary": "#9CA3AF",
+                    "on-secondary-container": "#d6a9ff",
+                    "tertiary-container": "#d97721",
+                    "primary-container": "#8083ff",
+                    "status-block": "#EF4444",
+                    "tertiary-fixed-dim": "#ffb783",
+                    "background": "#0A0B0F",
+                    "on-error": "#690005",
+                    "primary-fixed": "#e1e0ff",
+                    "secondary": "#ddb7ff",
+                    "surface-container-low": "#1b1b23",
+                    "inverse-surface": "#e4e1ed",
+                    "inverse-on-surface": "#303038",
+                    "status-medium": "#F59E0B",
+                    "surface-dim": "#13131b",
+                    "status-low": "#10B981",
+                    "error": "#ffb4ab",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "on-secondary": "#490080",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-lowest": "#0d0d15",
+                    "secondary-fixed": "#f0dbff",
+                    "outline": "#908fa0",
+                    "inverse-primary": "#494bd6",
+                    "on-surface-variant": "#c7c4d7",
+                    "tertiary": "#ffb783",
+                    "on-secondary-fixed": "#2c0051",
+                    "outline-variant": "#464554",
+                    "error-container": "#93000a",
+                    "text-primary": "#F9FAFB",
+                    "status-trial": "#06B6D4",
+                    "accent-vp": "#EAB308",
+                    "surface-bright": "#393841",
+                    "border": "#262932",
+                    "on-primary": "#1000a9"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "1.5rem",
+                    "container-max": "1280px",
+                    "stack-lg": "2rem",
+                    "stack-md": "1rem",
+                    "stack-sm": "0.5rem",
+                    "margin-mobile": "1rem"
+            },
+            "fontFamily": {
+                    "headline-md": ["Geist"],
+                    "display-lg-mobile": ["Geist"],
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "display-lg": ["Geist"],
+                    "body-md": ["Inter"],
+                    "code-sm": ["monospace"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "code-sm": ["13px", {"lineHeight": "1.4", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .vp-gradient-text {
+            background: linear-gradient(135deg, #c0c1ff 0%, #EAB308 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .ai-glow-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .ai-glow-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(192, 193, 255, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .scanning-line {
+            height: 2px;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, #c0c1ff, transparent);
+            position: absolute;
+            top: 0;
+            animation: scan 4s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-background dark:bg-background">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="security">security</span>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface">ChainVigil AI</h1>
+</div>
+<button class="hover:opacity-80 transition-opacity duration-200">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="language">language</span>
+</button>
+</header>
+<main class="pt-24 pb-32 px-4 md:px-gutter max-w-container-max mx-auto">
+<!-- Profile & Rank Header -->
+<section class="mb-stack-lg flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<div class="w-12 h-12 rounded-full bg-surface-container-high border border-border flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A futuristic, high-tech profile avatar for a web3 security platform. The avatar features a minimalist geometric shield icon glowing in neon purple against a dark, textured obsidian background. The lighting is moody and professional, using deep shadows and subtle electric blue highlights to emphasize a vigilant security expert persona." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBuE4oMvE5yuc2T-WKlfN-L2sBtrIRB6sXjlIPv5sksRQ91UdHA1v-XMfNL8FhhJlekYJ9Ma2DLCxIhiLBG8i0b6Uwkc5UUiJwtb5HuQXfRYaUvJ0qfxWHKA-U2Om3vRtHeUMKyT8TjzhEDoVN--27hKQ521iUqiPcCMwFoFjWkvFNirIXcMEJhflxZIYA1-JybI-zmA5IPQwhJzHxxqa9Pcf-NVWJISSDOGU7N71er5imdpG7p0uOSIuehNtvFH6LiNgxJo62wfEy"/>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-code-sm text-on-surface">0x71C...8e42</span>
+<span class="material-symbols-outlined text-primary text-sm" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<p class="font-label-sm text-status-low uppercase tracking-wider">Security Vigilante</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low border border-border rounded-xl px-4 py-3 flex items-center gap-4">
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant">Global Rank</span>
+<span class="font-headline-md text-primary">Top 8%</span>
+</div>
+<div class="h-10 w-px bg-border"></div>
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant">Trust Score</span>
+<span class="font-headline-md text-status-low">98</span>
+</div>
+</div>
+</section>
+<!-- Main Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Points Hero Card -->
+<div class="md:col-span-8 bg-surface border border-border rounded-xl p-8 ai-glow-card flex flex-col justify-center relative overflow-hidden">
+<div class="scanning-line"></div>
+<div class="z-10">
+<h2 class="font-label-sm text-on-surface-variant uppercase tracking-[0.2em] mb-4">Total Vigil Points</h2>
+<div class="flex items-baseline gap-3">
+<span class="font-display-lg text-display-lg md:text-display-lg vp-gradient-text">12,450</span>
+<span class="font-headline-md text-accent-vp">VP</span>
+</div>
+<p class="font-body-md text-on-surface-variant mt-4 max-w-md">Your contribution to the multi-chain security ecosystem is being recorded. Earned points determine your governance weight and security tier.</p>
+</div>
+<!-- Abstract AI Graphic Element -->
+<div class="absolute right-0 top-0 h-full w-1/3 opacity-20 pointer-events-none hidden md:block">
+
+</div>
+</div>
+<!-- Breakdown Card -->
+<div class="md:col-span-4 bg-surface-container border border-border rounded-xl p-6 flex flex-col justify-between">
+<h3 class="font-headline-md text-on-surface mb-6">Points Breakdown</h3>
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-body-md">成长哨点 (Growth)</span>
+</div>
+<span class="font-body-lg font-bold">8,200</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-accent-vp" data-icon="handshake">handshake</span>
+<span class="font-body-md">贡献哨点 (Contribution)</span>
+</div>
+<span class="font-body-lg font-bold">1,250</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" data-icon="group_add">group_add</span>
+<span class="font-body-md">推广哨点 (Referral)</span>
+</div>
+<span class="font-body-lg font-bold">3,000</span>
+</div>
+</div>
+<div class="mt-8 pt-4 border-t border-border/50">
+<button class="w-full py-3 bg-primary text-on-primary font-bold rounded-lg hover:opacity-90 transition-opacity">
+                        View Ranking Details
+                    </button>
+</div>
+</div>
+<!-- Tasks & Events -->
+<div class="md:col-span-7 space-y-4">
+<div class="flex items-center justify-between mb-2">
+<h3 class="font-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="task_alt">task_alt</span>
+                        任务与活动
+                    </h3>
+<span class="text-label-sm text-primary-container bg-on-primary-container/20 px-2 py-1 rounded">Daily Reset: 04:00 UTC</span>
+</div>
+<!-- Task Items -->
+<div class="bg-surface-container-low border border-border rounded-xl p-4 flex items-center justify-between group hover:border-primary/50 transition-colors">
+<div class="flex items-center gap-4">
+<div class="bg-surface-container-high w-12 h-12 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface" data-icon="share">share</span>
+</div>
+<div>
+<p class="font-body-md font-semibold">Share Security Report</p>
+<p class="font-label-sm text-on-surface-variant">Help others stay safe from rugpulls</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-accent-vp font-bold">+10 VP</span>
+<button class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg font-label-sm uppercase tracking-wide group-hover:scale-105 transition-transform">
+                            Go
+                        </button>
+</div>
+</div>
+<div class="bg-surface-container-low border border-border rounded-xl p-4 flex items-center justify-between group hover:border-primary/50 transition-colors">
+<div class="flex items-center gap-4">
+<div class="bg-surface-container-high w-12 h-12 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<div>
+<p class="font-body-md font-semibold">Complete Wallet Check</p>
+<p class="font-label-sm text-on-surface-variant">Analyze your holding risks</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-accent-vp font-bold">+50 VP</span>
+<button class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-lg font-label-sm uppercase tracking-wide group-hover:scale-105 transition-transform">
+                            Scan
+                        </button>
+</div>
+</div>
+<div class="bg-surface-container-low border border-border rounded-xl p-4 flex items-center justify-between group opacity-60">
+<div class="flex items-center gap-4">
+<div class="bg-surface-container-high w-12 h-12 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface" data-icon="terminal">terminal</span>
+</div>
+<div>
+<p class="font-body-md font-semibold">Deploy Sentinel Node</p>
+<p class="font-label-sm text-on-surface-variant">Contribute to the decentralized analysis layer</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-on-surface-variant font-label-sm">Soon</span>
+<button class="bg-surface-variant text-on-surface-variant px-4 py-2 rounded-lg font-label-sm uppercase tracking-wide cursor-not-allowed" disabled="">
+                            Locked
+                        </button>
+</div>
+</div>
+</div>
+<!-- History List -->
+<div class="md:col-span-5">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-headline-md text-on-surface">Activity History</h3>
+<button class="text-label-sm text-primary hover:underline">Export CSV</button>
+</div>
+<div class="bg-surface-container rounded-xl overflow-hidden border border-border">
+<div class="max-h-[400px] overflow-y-auto">
+<!-- History Items -->
+<div class="p-4 border-b border-border/50 flex justify-between items-center hover:bg-surface-container-high transition-colors">
+<div class="flex flex-col">
+<span class="font-body-md font-medium">Daily Login Bonus</span>
+<span class="text-label-sm text-on-surface-variant">2023-10-24 14:22</span>
+</div>
+<span class="text-status-low font-bold">+5 VP</span>
+</div>
+<div class="p-4 border-b border-border/50 flex justify-between items-center hover:bg-surface-container-high transition-colors">
+<div class="flex flex-col">
+<span class="font-body-md font-medium">Referral Milestone: 10 Users</span>
+<span class="text-label-sm text-on-surface-variant">2023-10-23 09:15</span>
+</div>
+<span class="text-status-low font-bold">+500 VP</span>
+</div>
+<div class="p-4 border-b border-border/50 flex justify-between items-center hover:bg-surface-container-high transition-colors">
+<div class="flex flex-col">
+<span class="font-body-md font-medium">Verified Smart Contract Report</span>
+<span class="text-label-sm text-on-surface-variant">2023-10-22 18:40</span>
+</div>
+<span class="text-status-low font-bold">+25 VP</span>
+</div>
+<div class="p-4 border-b border-border/50 flex justify-between items-center hover:bg-surface-container-high transition-colors">
+<div class="flex flex-col">
+<span class="font-body-md font-medium">Wallet Security Scan</span>
+<span class="text-label-sm text-on-surface-variant">2023-10-21 11:05</span>
+</div>
+<span class="text-status-low font-bold">+50 VP</span>
+</div>
+<div class="p-4 flex justify-between items-center hover:bg-surface-container-high transition-colors">
+<div class="flex flex-col">
+<span class="font-body-md font-medium">Community Bounty Participation</span>
+<span class="text-label-sm text-on-surface-variant">2023-10-20 15:30</span>
+</div>
+<span class="text-status-low font-bold">+100 VP</span>
+</div>
+</div>
+<div class="p-4 bg-surface-container-high/50 text-center">
+<button class="text-label-sm text-on-surface-variant hover:text-on-surface transition-colors">Load more activity</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Tier Progress (Mobile optimization) -->
+<section class="mt-stack-lg bg-surface border border-border rounded-xl p-6">
+<div class="flex justify-between items-end mb-4">
+<div>
+<h4 class="font-body-lg font-bold">Vigilance Tier: Gold</h4>
+<p class="text-label-sm text-on-surface-variant">2,550 VP until Platinum Tier</p>
+</div>
+<span class="text-label-sm text-accent-vp font-bold">83% Progress</span>
+</div>
+<div class="w-full h-3 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-secondary-container to-primary-container w-[83%] rounded-full relative">
+<div class="absolute inset-0 bg-[linear-gradient(45deg,rgba(255,255,255,0.1)_25%,transparent_25%,transparent_50%,rgba(255,255,255,0.1)_50%,rgba(255,255,255,0.1)_75%,transparent_75%,transparent)] bg-[length:16px_16px] animate-[pulse_2s_infinite]"></div>
+</div>
+</div>
+<div class="grid grid-cols-4 mt-4 text-center">
+<span class="text-label-sm text-on-surface-variant">Bronze</span>
+<span class="text-label-sm text-on-surface-variant">Silver</span>
+<span class="text-label-sm text-primary font-bold">Gold</span>
+<span class="text-label-sm text-on-surface-variant opacity-50">Platinum</span>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface-container dark:bg-surface-container shadow-lg rounded-t-xl md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-all scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-all scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-sm text-label-sm">Wallet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-all scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+<span class="font-label-sm text-label-sm">Database</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-3 py-1 transition-all scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="font-label-sm text-label-sm">Points</span>
+</a>
+</nav>
+<!-- Desktop Sidebar/Nav Placeholder for layout consistency -->
+<div class="hidden md:flex fixed left-0 top-16 h-[calc(100vh-64px)] w-20 flex-col items-center py-8 gap-8 bg-surface-container border-r border-border">
+<button class="w-12 h-12 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</button>
+<button class="w-12 h-12 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+</button>
+<button class="w-12 h-12 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+</button>
+<button class="w-12 h-12 rounded-xl flex items-center justify-center bg-secondary-container text-on-secondary-container transition-all shadow-md">
+<span class="material-symbols-outlined" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+</button>
+<div class="mt-auto">
+<button class="w-12 h-12 rounded-xl flex items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-all">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</div>
+<script>
+        // Micro-interaction for point numbers (optional count-up effect)
+        document.addEventListener('DOMContentLoaded', () => {
+            const vpElement = document.querySelector('.vp-gradient-text');
+            if (vpElement) {
+                let startValue = 12000;
+                let endValue = 12450;
+                let duration = 2000;
+                let startTime = null;
+
+                function animate(currentTime) {
+                    if (!startTime) startTime = currentTime;
+                    let progress = Math.min((currentTime - startTime) / duration, 1);
+                    vpElement.textContent = Math.floor(progress * (endValue - startValue) + startValue).toLocaleString();
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    }
+                }
+                requestAnimationFrame(animate);
+            }
+        });
+    </script>
+</body></html>

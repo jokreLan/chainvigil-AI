@@ -255,6 +255,37 @@ function collectLegacyEvmMockSnapshots(
   return { snapshots, missingLiveConfig };
 }
 
+/**
+ * Live provider client contract (S1).
+ * Implementations must never throw secrets; callers always have mock fallback.
+ */
+export interface LiveProviderClient {
+  id: string;
+  source: Exclude<TokenSecuritySnapshot["source"], "mock">;
+  isEnabled(env: Record<string, string | undefined>): boolean;
+  fetchSnapshot(input: TokenSecurityLookupInput): Promise<TokenSecuritySnapshot>;
+}
+
+/** Registry hook for S1 real detection — empty until a client is registered. */
+const liveProviderClients: LiveProviderClient[] = [];
+
+export function registerLiveProviderClient(client: LiveProviderClient): void {
+  const index = liveProviderClients.findIndex((item) => item.id === client.id);
+  if (index >= 0) {
+    liveProviderClients[index] = client;
+  } else {
+    liveProviderClients.push(client);
+  }
+}
+
+export function listRegisteredLiveProviderClients(): readonly LiveProviderClient[] {
+  return liveProviderClients;
+}
+
+export function clearLiveProviderClientsForTests(): void {
+  liveProviderClients.length = 0;
+}
+
 export async function lookupTokenSecurity(_input: TokenSecurityLookupInput) {
   const normalizedAddress = _input.chain === "solana" ? _input.address : _input.address.toLowerCase();
   const snapshot: TokenSecuritySnapshot = {
@@ -279,7 +310,51 @@ export async function collectTokenRiskData(
   const fetchedAt = new Date().toISOString();
   const providers = getRiskEvidenceProviderStatus(env, input.chain);
   const primaryCoverage = buildRiskEvidenceCoverage(input.chain, providers);
-  const primarySnapshots: TokenSecuritySnapshot[] = providers.map((provider) => ({
+
+  // S1 path: prefer registered live clients when enabled; always keep mock fallback per provider.
+  const liveSnapshots: TokenSecuritySnapshot[] = [];
+  for (const client of liveProviderClients) {
+    if (!client.isEnabled(env)) {
+      continue;
+    }
+
+    try {
+      const live = await client.fetchSnapshot({
+        chain: input.chain,
+        address: normalizedAddress,
+      });
+      liveSnapshots.push({
+        ...live,
+        executionMode: live.executionMode ?? "live",
+        address: normalizedAddress,
+        chain: input.chain,
+      });
+    } catch {
+      liveSnapshots.push({
+        source: client.source,
+        providerId: client.id,
+        chain: input.chain,
+        address: normalizedAddress,
+        fetchedAt,
+        freshForSeconds: 30,
+        executionMode: "mock",
+        fallbackReason: "live provider request failed; degraded to mock snapshot.",
+        data: {
+          mode: "degraded",
+          message: "Live provider error handled without leaking upstream details.",
+        },
+      });
+    }
+  }
+
+  const primarySnapshots: TokenSecuritySnapshot[] = providers.map((provider) => {
+    const liveHit = liveSnapshots.find((snap) => snap.providerId === provider.id);
+
+    if (liveHit) {
+      return liveHit;
+    }
+
+    return {
       source: provider.source,
       providerId: provider.id,
       chain: input.chain,
@@ -289,16 +364,18 @@ export async function collectTokenRiskData(
       executionMode: "mock",
       evidenceTypes: [...provider.evidenceTypes],
       fallbackReason: provider.ready
-        ? "真实数据源只完成配置；V0 不执行外部请求，已降级为 mock 快照。"
+        ? "真实数据源只完成配置；尚未注册 live client 或未执行外部请求，已降级为 mock 快照。"
         : provider.requiredEnv
           ? `缺少 ${provider.requiredEnv}，已降级为 mock 快照。`
           : "V0 尚未接入该 provider client，已降级为 mock 快照。",
       data: {
         mode: provider.mode,
         requiredEnv: provider.requiredEnv ?? null,
-        message: "V0 adapter contract only. Live provider calls are intentionally not enabled yet.",
+        message: "Adapter contract: registerLiveProviderClient() to enable live path.",
+        liveClientRegistered: liveProviderClients.some((client) => client.id === provider.id),
       },
-    }));
+    };
+  });
   const legacyBundle = providers.length === 0
     ? collectLegacyEvmMockSnapshots(input, normalizedAddress, fetchedAt, env)
     : undefined;

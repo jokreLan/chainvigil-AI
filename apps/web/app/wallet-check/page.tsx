@@ -1,44 +1,109 @@
-import Link from "next/link";
-import { listMockWalletCheckCapabilities } from "@chainvigil/risk-core";
-import { WalletCheckForm } from "../ui/wallet-check-form";
-import { MobileNav } from "../ui/mobile-nav";
+"use client";
 
-const checks = listMockWalletCheckCapabilities();
+import Link from "next/link";
+import { useLocale } from "../i18n/locale-context";
+import { MobileNav } from "../ui/mobile-nav";
+import { SiteHeader } from "../ui/site-header";
+import { WalletCheckForm } from "../ui/wallet-check-form";
 
 export default function WalletCheckPage() {
+  const { locale, t } = useLocale();
+  const isZh = locale === "zh";
+
+  const reasons = [
+    {
+      title: isZh ? "授权风险" : "Approval risk",
+      description: isZh
+        ? "识别无限授权、未知 spender 与长期未使用授权，先读后写。"
+        : "Spot unlimited approvals, unknown spenders, and stale grants — read before write.",
+      tone: "border-l-[#ef4444]",
+      href: "/app/approval-cleaner",
+    },
+    {
+      title: isZh ? "垃圾资产" : "Spam assets",
+      description: isZh
+        ? "标记可疑空投 Token / Spam NFT，避免误点钓鱼链接。"
+        : "Flag suspicious airdrop tokens / spam NFTs before you click phishing links.",
+      tone: "border-l-[#f97316]",
+      href: "/app/asset-barber",
+    },
+    {
+      title: isZh ? "高危持仓" : "Risky holdings",
+      description: isZh
+        ? "对持仓 Token 做买前安检式摘要，提示貔貅与权限风险。"
+        : "Buy-before style summary on holdings — honeypot and privilege risks.",
+      tone: "border-l-[#f59e0b]",
+      href: "/check",
+    },
+  ];
+
   return (
-    <main className="min-h-screen bg-[#0a0b0f] px-4 py-6 pb-28 md:px-8">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between border-b border-[#262932] pb-5 text-sm text-[#9ca3af]">
-        <Link href="/" className="font-semibold text-[#f9fafb]">
-          ChainVigil AI｜链哨 AI
-        </Link>
-        <Link href="/check">CA 安检</Link>
-      </nav>
+    <main className="min-h-screen bg-[#0a0b0f] pb-28">
+      <SiteHeader active="wallet" />
 
-      <section className="mx-auto mt-12 max-w-3xl text-center">
-        <p className="text-sm font-semibold text-[#c0c1ff]">Wallet health check</p>
-        <h1 className="mt-3 text-4xl font-semibold text-[#f9fafb] sm:text-5xl">钱包体检</h1>
-        <p className="mt-4 leading-8 text-[#c7c4d7]">输入钱包地址，先做一次只读体检。无需连接钱包。</p>
-      </section>
-      <section className="mx-auto mt-10 max-w-3xl">
-        <div className="rounded-xl border border-[#34343d] bg-[#16181d] p-5 sm:p-8">
-          <p className="mb-5 text-center text-sm text-[#9ca3af]">当前检测网络：<span className="font-semibold text-[#c0c1ff]">BNB Smart Chain</span></p>
+      <div className="mx-auto max-w-lg px-4 pt-10 md:max-w-xl">
+        <section className="text-center">
+          <h1 className="text-4xl font-bold tracking-tight ai-gradient-text">{t("wallet.title")}</h1>
+          <p className="mt-4 text-sm leading-7 text-[#c7c4d7]">{t("wallet.subtitle")}</p>
+          <p className="mt-2 text-xs text-[#6b7280]">{t("wallet.readonly")}</p>
+        </section>
+
+        <section className="mt-8 rounded-2xl border border-[#262932] bg-[#16181d] p-5">
+          <div className="mb-4 flex justify-center gap-3">
+            {["ETH", "BNB", "SOL", "BASE"].map((chain, i) => (
+              <span
+                key={chain}
+                className={`flex size-10 items-center justify-center rounded-full border text-[10px] font-semibold ${
+                  i === 1
+                    ? "border-[#8083ff] bg-[#8083ff]/15 text-[#c0c1ff]"
+                    : "border-[#34343d] text-[#9ca3af]"
+                }`}
+              >
+                {chain}
+              </span>
+            ))}
+          </div>
           <WalletCheckForm />
-          <p className="mt-5 text-center text-xs text-[#9ca3af]">ChainVigil 不会保存私钥，体检过程只读且公开透明。</p>
-        </div>
-      </section>
+          <p className="mt-4 text-center text-[11px] leading-5 text-[#9ca3af]">{t("wallet.privacy")}</p>
+        </section>
 
-      <section className="mx-auto mt-14 max-w-7xl">
-        <div className="mb-8 flex items-center gap-4"><div className="h-px flex-1 bg-[#262932]" /><h2 className="text-xl font-semibold text-[#f9fafb]">为什么需要体检？</h2><div className="h-px flex-1 bg-[#262932]" /></div>
-        <div className="grid gap-4 md:grid-cols-3">
-          {checks.map((item) => (
-            <div key={item.id} className="rounded-xl border border-[#262932] border-l-4 border-l-[#f97316] bg-[#16181d] p-5 text-left text-[#c7c4d7]">
-              <p className="text-xs font-semibold text-[#c0c1ff]">{item.category} · {item.v0Action}</p><h2 className="mt-3 text-lg font-semibold text-[#f9fafb]">{item.title}</h2><p className="mt-3 text-sm leading-6">{item.description}</p><p className="mt-4 text-xs text-[#9ca3af]">不做：{item.prohibitedActions.join(" / ")}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-      <section className="mx-auto mt-10 flex max-w-xl items-center justify-between rounded-full border border-[#262932] bg-[#292932] px-5 py-4 text-sm"><span className="text-[#f9fafb]">贡献安全报告可获得 Vigil Points</span><Link href="/app/points" className="font-semibold text-[#eab308]">查看 VP</Link></section>
+        <section className="mt-10">
+          <h2 className="text-center text-sm font-semibold tracking-wide text-[#9ca3af]">
+            {t("wallet.why")}
+          </h2>
+          <div className="mt-5 space-y-3">
+            {reasons.map((item) => (
+              <Link
+                key={item.title}
+                href={item.href}
+                className={`block rounded-2xl border border-[#262932] border-l-4 bg-[#16181d] p-4 ${item.tone}`}
+              >
+                <p className="font-semibold text-[#f9fafb]">{item.title}</p>
+                <p className="mt-2 text-sm leading-6 text-[#c7c4d7]">{item.description}</p>
+                <p className="mt-3 text-xs font-semibold text-[#c0c1ff]">{t("intel.open")}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <Link
+          href="/app/points"
+          className="mt-8 mb-4 flex items-center justify-between rounded-2xl border border-[#eab308]/30 bg-[#16181d] p-4"
+        >
+          <p className="text-sm text-[#c7c4d7]">
+            {isZh ? (
+              <>
+                贡献安全报告可获得 <span className="font-semibold text-[#eab308]">哨点 VP</span>
+              </>
+            ) : (
+              <>
+                Earn <span className="font-semibold text-[#eab308]">Vigil Points</span> by contributing
+              </>
+            )}
+          </p>
+          <span className="text-xs font-semibold text-[#eab308]">{t("points.goCheck")}</span>
+        </Link>
+      </div>
       <MobileNav active="wallet" />
     </main>
   );

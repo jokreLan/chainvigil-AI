@@ -1,12 +1,34 @@
 import { getCacheHealth } from "@chainvigil/cache";
 import { getSystemReadiness } from "@chainvigil/config";
-import { getAdapterHealth } from "@chainvigil/data-adapters";
+import { getAdapterHealth, listRegisteredLiveProviderClients } from "@chainvigil/data-adapters";
 import { getWorkerHealth } from "@chainvigil/worker";
 
 const labelByMode = {
   mock: "V0 mock",
   production: "生产",
 } as const;
+
+const launchCodeChecklist = [
+  { id: "fail-closed", label: "API/Bot production fail-closed", done: true },
+  { id: "admin-auth", label: "Admin + /api/v1/admin 鉴权", done: true },
+  { id: "cors", label: "CORS 白名单", done: true },
+  { id: "webhook", label: "Telegram webhook secret 钩子", done: true },
+  { id: "write-secret", label: "INTERNAL_WRITE_SECRET 写保护", done: true },
+  { id: "mode", label: "报告 mode / confidence 契约", done: true },
+  { id: "rate-limit", label: "限流 + trustProxy", done: true },
+  { id: "bot-api", label: "Bot → API 优先降级", done: true },
+  { id: "vp-catalog", label: "VP 权益目录", done: true },
+  { id: "live-registry", label: "live provider 注册点", done: true },
+] as const;
+
+const launchWeekendChecklist = [
+  "填 .env.production（HTTPS URL + 强密钥）",
+  "注册 GoPlus / Honeypot / RPC live client",
+  "Telegram 正式 webhook + secret",
+  "Postgres / Redis 生产实例",
+  "反代 TRUST_PROXY 与 CORS 域名",
+  "对生产域名跑 smoke:v0 + readiness",
+] as const;
 
 export default function SystemReadinessPage() {
   const readiness = getSystemReadiness();
@@ -15,14 +37,40 @@ export default function SystemReadinessPage() {
   const worker = getWorkerHealth();
   const rows = [readiness.current, readiness.mock, readiness.production];
   const enabledWorkerJobs = worker.jobs.filter((job) => job.enabled).length;
+  const liveClients = listRegisteredLiveProviderClients().length;
+  const codeDone = launchCodeChecklist.filter((item) => item.done).length;
 
   return (
     <main className="min-h-screen px-5 py-8 md:px-8 md:py-10">
-      <p className="text-sm font-semibold text-[#c0c1ff]">SYSTEM READINESS</p>
+      <p className="text-sm font-semibold text-[#c0c1ff]">SYSTEM READINESS · LAUNCH</p>
       <h1 className="mt-2 text-3xl font-semibold text-white">系统就绪状态</h1>
       <p className="mt-3 max-w-2xl text-[#c7c4d7]">
-        这里只展示缺失的配置名称和依赖状态，不展示任何密钥、连接串或 Bot token。
+        只展示缺失配置名与依赖状态，不展示密钥。代码侧上线项与周末外部依赖项分开追踪。
       </p>
+
+      <section className="mt-8 grid gap-4 lg:grid-cols-3">
+        <article className="rounded-lg border border-[#8083ff]/40 bg-[#16181d] p-5">
+          <p className="text-xs font-semibold text-[#c0c1ff]">代码上线就绪</p>
+          <p className="mt-3 text-3xl font-semibold text-white">
+            {codeDone}/{launchCodeChecklist.length}
+          </p>
+          <p className="mt-2 text-sm text-[#8f8b9e]">无外部 key 可完成的契约</p>
+        </article>
+        <article className="rounded-lg border border-[#262932] bg-[#16181d] p-5">
+          <p className="text-xs font-semibold text-[#eab308]">Live clients 已注册</p>
+          <p className="mt-3 text-3xl font-semibold text-white">{liveClients}</p>
+          <p className="mt-2 text-sm text-[#8f8b9e]">周末接 provider 后应 &gt; 0</p>
+        </article>
+        <article className="rounded-lg border border-[#262932] bg-[#16181d] p-5">
+          <p className="text-xs font-semibold text-[#fde68a]">生产安全预检</p>
+          <p className="mt-3 text-3xl font-semibold text-white">
+            {readiness.productionSecurity.ok ? "OK" : "待补"}
+          </p>
+          <p className="mt-2 text-sm text-[#8f8b9e]">
+            {readiness.productionSecurity.warnings.length} 项警告（仅名称）
+          </p>
+        </article>
+      </section>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-3">
         {rows.map((row) => (
@@ -56,6 +104,32 @@ export default function SystemReadinessPage() {
       </div>
 
       <section className="mt-8 rounded-lg border border-[#262932] bg-[#16181d] p-5">
+        <h2 className="text-xl font-semibold text-white">上线清单 · 代码侧</h2>
+        <p className="mt-2 text-sm text-[#8f8b9e]">对应 docs/ops/launch_checklist.md A–C 段。</p>
+        <ul className="mt-5 grid gap-2 md:grid-cols-2">
+          {launchCodeChecklist.map((item) => (
+            <li
+              key={item.id}
+              className="flex items-center justify-between gap-3 rounded border border-[#363944] px-3 py-2 text-sm"
+            >
+              <span className="text-[#c7c4d7]">{item.label}</span>
+              <span className="text-emerald-300">{item.done ? "done" : "todo"}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="mt-8 rounded-lg border border-[#eab308]/25 bg-[#16181d] p-5">
+        <h2 className="text-xl font-semibold text-white">上线清单 · 周末外部依赖</h2>
+        <p className="mt-2 text-sm text-[#8f8b9e]">密钥与 RPC 由负责人统一接入，本页不展示任何密钥值。</p>
+        <ol className="mt-5 list-decimal space-y-2 pl-5 text-sm text-[#c7c4d7]">
+          {launchWeekendChecklist.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="mt-8 rounded-lg border border-[#262932] bg-[#16181d] p-5">
         <h2 className="text-xl font-semibold text-white">依赖摘要</h2>
         <dl className="mt-5 grid gap-3 text-sm md:grid-cols-3">
           <div className="rounded border border-[#363944] p-3">
@@ -69,7 +143,7 @@ export default function SystemReadinessPage() {
             <dd className="mt-1 font-semibold">{adapters.length}</dd>
           </div>
           <div className="rounded border border-[#363944] p-3">
-            <dt className="text-[#8f8b9e]">Live-ready</dt>
+            <dt className="text-[#8f8b9e]">Live-ready（env 已配）</dt>
             <dd className="mt-1 font-semibold">{adapters.filter((adapter) => adapter.ready).length}</dd>
           </div>
           <div className="rounded border border-[#363944] p-3">
@@ -115,9 +189,7 @@ export default function SystemReadinessPage() {
             {readiness.productionSecurity.ok ? "ready" : "needs review"}
           </span>
         </div>
-        <p className="mt-3 text-sm text-[#8f8b9e]">
-          这里只展示需要复核的配置名称，不展示真实密钥值。
-        </p>
+        <p className="mt-3 text-sm text-[#8f8b9e]">只展示需要复核的配置名称，不展示真实密钥值。</p>
         {readiness.productionSecurity.warnings.length > 0 ? (
           <ul className="mt-4 grid gap-3 text-sm md:grid-cols-2">
             {readiness.productionSecurity.warnings.map((warning) => (

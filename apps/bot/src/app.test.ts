@@ -3,7 +3,7 @@ import { buildBotApp } from "./app.js";
 
 describe("bot app", () => {
   it("returns security headers", async () => {
-    const app = buildBotApp();
+    const app = await buildBotApp();
     const response = await app.inject({
       method: "GET",
       url: "/health",
@@ -12,12 +12,13 @@ describe("bot app", () => {
     expect(response.statusCode).toBe(200);
     expect(response.headers["x-content-type-options"]).toBe("nosniff");
     expect(response.headers["x-frame-options"]).toBe("DENY");
+    expect(response.headers["content-security-policy"]).toContain("default-src");
 
     await app.close();
   });
 
   it("returns a helpful reply without a /check command", async () => {
-    const app = buildBotApp();
+    const app = await buildBotApp();
     const response = await app.inject({
       method: "POST",
       url: "/telegram/webhook",
@@ -35,7 +36,7 @@ describe("bot app", () => {
   });
 
   it("handles /start with brand and check guidance", async () => {
-    const app = buildBotApp();
+    const app = await buildBotApp();
     const response = await app.inject({
       method: "POST",
       url: "/telegram/webhook",
@@ -55,7 +56,7 @@ describe("bot app", () => {
   });
 
   it("handles /check and returns a report link", async () => {
-    const app = buildBotApp();
+    const app = await buildBotApp();
     const response = await app.inject({
       method: "POST",
       url: "/telegram/webhook",
@@ -71,6 +72,8 @@ describe("bot app", () => {
 
     const body = response.json();
     expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.confidence).toBe("UNASSESSED");
     expect(body.reply).toContain("ChainVigil AI｜链哨 AI 检测结果：高危");
     expect(body.reply).toContain("/token/bsc/0x1111111111111111111111111111111111111110");
 
@@ -78,7 +81,7 @@ describe("bot app", () => {
   });
 
   it("handles /check for a Solana CA", async () => {
-    const app = buildBotApp();
+    const app = await buildBotApp();
     const response = await app.inject({
       method: "POST",
       url: "/telegram/webhook",
@@ -100,7 +103,7 @@ describe("bot app", () => {
   });
 
   it("returns a helpful reply for invalid /check input", async () => {
-    const app = buildBotApp();
+    const app = await buildBotApp();
     const response = await app.inject({
       method: "POST",
       url: "/telegram/webhook",
@@ -118,7 +121,7 @@ describe("bot app", () => {
   });
 
   it("handles /top and /settings skeleton commands", async () => {
-    const app = buildBotApp();
+    const app = await buildBotApp();
     const topResponse = await app.inject({
       method: "POST",
       url: "/telegram/webhook",
@@ -139,6 +142,33 @@ describe("bot app", () => {
     expect(topResponse.json().reply).toContain("BNB 0x2222");
     expect(settingsResponse.json().reply).toContain("群设置 skeleton");
     expect(settingsResponse.json().reply).toContain("Meme Watch CN");
+
+    await app.close();
+  });
+
+  it("rejects webhook calls with the wrong secret when configured", async () => {
+    const app = await buildBotApp({
+      env: {
+        TELEGRAM_WEBHOOK_SECRET: "telegram-webhook-32-random",
+      },
+    });
+
+    const unauthorized = await app.inject({
+      method: "POST",
+      url: "/telegram/webhook",
+      payload: { message: { text: "/start" } },
+    });
+    const authorized = await app.inject({
+      method: "POST",
+      url: "/telegram/webhook",
+      headers: {
+        "x-telegram-bot-api-secret-token": "telegram-webhook-32-random",
+      },
+      payload: { message: { text: "/start" } },
+    });
+
+    expect(unauthorized.statusCode).toBe(401);
+    expect(authorized.statusCode).toBe(200);
 
     await app.close();
   });

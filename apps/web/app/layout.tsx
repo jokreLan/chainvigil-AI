@@ -1,16 +1,31 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { getServerLocale } from "./i18n/server";
+import { LocaleProvider } from "./i18n/locale-context";
+import { buildPageMetadata, buildWebsiteJsonLd } from "./lib/seo";
+import { ApiStatusBanner } from "./ui/api-status-banner";
+import { JsonLd } from "./ui/json-ld";
+import { ToastProvider } from "./ui/toast";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_BASE_URL ?? "http://localhost:3000"),
-  title: "ChainVigil AI｜链哨 AI",
-  description: "买币前，先查 CA。免费 CA 安检、Token 风险报告与 Web3 安全解释。",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("home");
+}
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getServerLocale();
+  const htmlLang = locale === "zh" ? "zh-CN" : "en";
+
   return (
-    <html lang="zh-CN">
-      <body>{children}</body>
+    <html lang={htmlLang}>
+      <body>
+        <JsonLd data={buildWebsiteJsonLd(locale)} />
+        <LocaleProvider initialLocale={locale}>
+          <ToastProvider>
+            <ApiStatusBanner />
+            {children}
+          </ToastProvider>
+        </LocaleProvider>
+      </body>
     </html>
   );
 }

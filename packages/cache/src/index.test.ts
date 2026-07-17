@@ -3,7 +3,7 @@ import { createMemoryCache, createNoopCache, getCacheHealth } from "./index";
 
 describe("cache skeleton", () => {
   it("reports memory cache when Redis is not configured", () => {
-    expect(getCacheHealth({})).toEqual({
+    expect(getCacheHealth({})).toMatchObject({
       name: "memory",
       mode: "mock",
       ready: true,
@@ -12,7 +12,7 @@ describe("cache skeleton", () => {
   });
 
   it("reports redis live-ready when REDIS_URL exists", () => {
-    expect(getCacheHealth({ REDIS_URL: "redis://localhost:6379" })).toEqual({
+    expect(getCacheHealth({ REDIS_URL: "redis://localhost:6379" })).toMatchObject({
       name: "redis",
       mode: "live",
       ready: true,

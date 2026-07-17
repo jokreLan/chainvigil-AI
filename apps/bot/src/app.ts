@@ -1,13 +1,29 @@
 import Fastify from "fastify";
-import { parseTokenInput } from "@chainvigil/chain";
-import { readEnv } from "@chainvigil/config";
-import { buildTelegramCheckReply } from "@chainvigil/report";
-import { buildMockTokenRiskReport } from "@chainvigil/risk-core";
 import {
+  createCacheStore,
+  createRateLimiter,
+  RateLimitError,
+  type RateLimitOptions,
+} from "@chainvigil/cache";
+import { parseTokenInput } from "@chainvigil/chain";
+import {
+  constantTimeEqual,
+  defaultApiContentSecurityPolicy,
+  getSecurityHeaders,
+  readEnv,
+  resolveRuntimeMode,
+  resolveTrustProxy,
+} from "@chainvigil/config";
+import { buildTelegramCheckReply } from "@chainvigil/report";
+import {
+  buildTelegramCheckUsageReply,
   buildTelegramHelpReply,
   buildTelegramSettingsReply,
   buildTelegramStartReply,
+  buildTelegramTopReply,
+  getMockTelegramGroup,
 } from "@chainvigil/telegram";
+import { resolveTokenRiskReport } from "./resolve-report.js";
 
 interface TelegramWebhookBody {
   message?: {
@@ -18,16 +34,92 @@ interface TelegramWebhookBody {
   };
 }
 
-export function buildBotApp() {
-  const app = Fastify({ logger: false });
+class BotAuthError extends Error {
+  statusCode = 401;
+
+  constructor(message = "Invalid Telegram webhook secret.") {
+    super(message);
+  }
+}
+
+export interface BuildBotAppOptions {
+  env?: Record<string, string | undefined>;
+  rateLimit?: RateLimitOptions;
+}
+
+export async function buildBotApp(options: BuildBotAppOptions = {}) {
+  const env = options.env ?? process.env;
+  const trustProxy = resolveTrustProxy(env);
+  const app = Fastify({
+    logger: false,
+    trustProxy,
+    bodyLimit: 64 * 1024,
+    requestTimeout: 30_000,
+  });
+  const cache = options.rateLimit?.cache ?? (await createCacheStore(env)).store;
+  const checkRateLimit = createRateLimiter({
+    maxRequests: 30,
+    windowSeconds: 60,
+    ...options.rateLimit,
+    cache,
+  });
+  const securityHeaders = getSecurityHeaders({
+    enableHsts: resolveRuntimeMode(env) === "production",
+    contentSecurityPolicy: defaultApiContentSecurityPolicy,
+  });
 
   app.addHook("onRequest", async (_request, reply) => {
-    reply
-      .header("X-Content-Type-Options", "nosniff")
-      .header("Referrer-Policy", "no-referrer")
-      .header("X-Frame-Options", "DENY")
-      .header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+    for (const [key, value] of Object.entries(securityHeaders)) {
+      reply.header(key, value);
+    }
   });
+
+  app.setErrorHandler((error, _request, reply) => {
+    if (error instanceof BotAuthError) {
+      return reply.status(error.statusCode).send({
+        ok: false,
+        error: {
+          code: "UNAUTHORIZED",
+          message: error.message,
+        },
+      });
+    }
+
+    if (error instanceof RateLimitError) {
+      return reply.status(error.statusCode).send({
+        ok: false,
+        error: {
+          code: "RATE_LIMITED",
+          message: error.message,
+          retryAfter: error.resetAt,
+        },
+      });
+    }
+
+    throw error;
+  });
+
+  function requireWebhookSecret(request: {
+    headers: Record<string, string | string[] | undefined>;
+  }) {
+    const expected = env.TELEGRAM_WEBHOOK_SECRET?.trim();
+
+    // Production always requires secret (assertProductionRuntime). Mock without secret keeps local DX.
+    if (!expected) {
+      if (resolveRuntimeMode(env) === "production") {
+        throw new BotAuthError("Telegram webhook secret is required in production.");
+      }
+
+      return;
+    }
+
+    const providedHeader = request.headers["x-telegram-bot-api-secret-token"];
+    const provided = Array.isArray(providedHeader) ? providedHeader[0] : providedHeader;
+
+    if (!provided || !constantTimeEqual(provided, expected)) {
+      throw new BotAuthError();
+    }
+  }
 
   app.get("/health", async () => ({
     ok: true,
@@ -35,14 +127,19 @@ export function buildBotApp() {
   }));
 
   app.post<{ Body: TelegramWebhookBody }>("/telegram/webhook", async (request) => {
-    const text = request.body.message?.text ?? "";
+    requireWebhookSecret(request);
+    await checkRateLimit(`telegram-webhook:${request.ip}`);
+
+    const text = request.body?.message?.text ?? "";
     const normalizedText = text.trim().toLowerCase();
+    const chatId = request.body?.message?.chat?.id;
+    const locale = getMockTelegramGroup(chatId).language === "en" ? "en" : "zh";
 
     if (normalizedText.startsWith("/start")) {
       return {
         ok: true,
         mode: "mock",
-        reply: buildTelegramStartReply(),
+        reply: buildTelegramStartReply(locale),
       };
     }
 
@@ -50,7 +147,7 @@ export function buildBotApp() {
       return {
         ok: true,
         mode: "mock",
-        reply: buildTelegramHelpReply(),
+        reply: buildTelegramHelpReply(locale),
       };
     }
 
@@ -58,13 +155,7 @@ export function buildBotApp() {
       return {
         ok: true,
         mode: "mock",
-        reply: [
-          "高危 CA 榜单（mock）",
-          "1. SOL So111...1112｜谨慎｜权限与流动性待复核",
-          "2. BNB 0x2222...2220｜禁买｜黑名单权限",
-          "",
-          "完整榜单：http://localhost:3000/leaderboard/high-risk-tokens",
-        ].join("\n"),
+        reply: buildTelegramTopReply(locale),
       };
     }
 
@@ -72,7 +163,7 @@ export function buildBotApp() {
       return {
         ok: true,
         mode: "mock",
-        reply: buildTelegramSettingsReply(request.body.message?.chat?.id),
+        reply: buildTelegramSettingsReply(chatId, locale),
       };
     }
 
@@ -82,7 +173,7 @@ export function buildBotApp() {
       return {
         ok: true,
         mode: "mock",
-        reply: "请发送 /check <CA> 来 mock 调用链哨 AI 安检，优先支持 SOL 和 BNB。",
+        reply: buildTelegramCheckUsageReply(locale),
       };
     }
 
@@ -94,20 +185,28 @@ export function buildBotApp() {
       return {
         ok: true,
         mode: "mock",
-        reply: "请输入有效的 SOL 或 BNB Token 合约地址。例如：/check So11111111111111111111111111111111111111112",
+        reply:
+          locale === "en"
+            ? "Enter a valid SOL or BNB token CA. Example: /check So11111111111111111111111111111111111111112"
+            : "请输入有效的 SOL 或 BNB Token 合约地址。例如：/check So11111111111111111111111111111111111111112",
       };
     }
 
-    const report = buildMockTokenRiskReport({
+    const appBaseUrl = readEnv("APP_BASE_URL", "http://localhost:3000");
+    const apiBaseUrl = env.API_BASE_URL?.trim() || undefined;
+    const { report, source } = await resolveTokenRiskReport({
       input,
-      appBaseUrl: readEnv("APP_BASE_URL", "http://localhost:3000"),
+      appBaseUrl,
+      ...(apiBaseUrl ? { apiBaseUrl } : {}),
     });
 
     return {
       ok: true,
-      mode: "mock",
-      chatId: request.body.message?.chat?.id,
-      reply: buildTelegramCheckReply(report),
+      mode: report.mode,
+      confidence: report.confidence,
+      source,
+      chatId: request.body?.message?.chat?.id,
+      reply: buildTelegramCheckReply(report, locale),
     };
   });
 

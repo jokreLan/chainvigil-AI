@@ -35,8 +35,20 @@ export interface PointsRulesResponse {
   pointsName: string;
   englishName: string;
   shortName: "VP";
+  tagline?: string;
+  cashOffsetCapPercent?: number;
   rules: Record<string, { points: number; ledger: string; reason: string }>;
   disclaimer: string;
+  redemptions?: Array<{
+    id: string;
+    title: string;
+    description: string;
+    costVp: number;
+    category: string;
+    status: string;
+    cashAlternativeLabel?: string;
+    highlight?: boolean;
+  }>;
 }
 
 export interface TokenRiskDataSnapshot {

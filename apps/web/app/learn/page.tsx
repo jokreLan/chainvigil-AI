@@ -1,93 +1,130 @@
+"use client";
+
 import Link from "next/link";
 import { listMockRiskEducationLessons } from "@chainvigil/risk-core";
+import { useLocale } from "../i18n/locale-context";
+import { listGeoArticles } from "../lib/geo-articles";
 import { MobileNav } from "../ui/mobile-nav";
-
-const categoryLabels = ["貔貅盘", "卖出税", "黑名单", "LP 锁定", "授权风险", "空投钓鱼"];
+import { SiteHeader } from "../ui/site-header";
 
 export default function LearnPage() {
-  const lessons = listMockRiskEducationLessons();
+  const { locale, t } = useLocale();
+  const lessons = listMockRiskEducationLessons(locale);
+  const geoArticles = listGeoArticles(locale);
   const [featured, ...recent] = lessons;
 
   if (!featured) return null;
 
-  return (
-    <main className="min-h-screen bg-[#0a0b0f] pb-24 text-[#e4e1ed] md:pb-12">
-      <header className="sticky top-0 z-30 border-b border-[#262932] bg-[#0a0b0f]/95 px-5 py-4 backdrop-blur md:px-8">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <Link href="/" className="font-semibold text-[#f9fafb]">ChainVigil AI</Link>
-          <div className="flex items-center gap-5 text-sm text-[#c7c4d7]">
-            <Link href="/">首页</Link>
-            <Link href="/wallet-check">钱包</Link>
-            <Link className="text-[#c0c1ff]" href="/risk-database">风险库</Link>
-            <Link href="/app/points">VP</Link>
-          </div>
-        </div>
-      </header>
+  const categoryLabels = [
+    { name: t("learn.catHoneypot"), href: "/learn/honeypot" },
+    { name: t("learn.catTax"), href: "/learn/sell-tax" },
+    { name: t("learn.catBlacklist"), href: "/learn/blacklist" },
+    { name: t("learn.catLp"), href: "/learn/lp-unlocked" },
+    { name: t("learn.catApproval"), href: "/learn/unlimited-approval" },
+    { name: t("learn.catPhish"), href: "/learn/fake-usdt" },
+  ];
 
-      <div className="mx-auto max-w-7xl px-5 py-9 md:px-8 md:py-12">
-        <section className="max-w-2xl text-center md:text-left">
-          <p className="text-sm font-semibold text-[#c0c1ff]">Risk intelligence</p>
-          <h1 className="mt-3 text-3xl font-semibold text-[#f9fafb] md:text-5xl">风险百科</h1>
-          <p className="mt-4 text-base leading-7 text-[#9ca3af] md:text-lg">用人话解释合约漏洞、链上风险和常见骗局。先理解风险，再决定是否继续。</p>
+  return (
+    <main className="min-h-screen bg-[#0a0b0f] pb-28 text-[#e4e1ed]">
+      <SiteHeader active="intel" />
+
+      <div className="mx-auto max-w-lg px-4 py-8 md:max-w-xl">
+        <section>
+          <p className="text-xs font-semibold uppercase tracking-wide text-[#c0c1ff]">Risk Encyclopedia</p>
+          <h1 className="mt-2 text-3xl font-bold text-[#f9fafb]">{t("learn.title")}</h1>
+          <p className="mt-3 text-sm leading-6 text-[#9ca3af]">{t("learn.subtitle")}</p>
         </section>
 
-        <Link href="/check" className="mt-8 flex h-14 max-w-3xl items-center rounded-lg border border-[#262932] bg-[#16181d] px-4 text-sm text-[#9ca3af] hover:border-[#c0c1ff]">
-          搜索风险、漏洞或术语，或直接查 CA...
+        <Link
+          href="/check"
+          className="mt-6 flex h-12 items-center rounded-2xl border border-[#262932] bg-[#16181d] px-4 text-sm text-[#9ca3af]"
+        >
+          {t("learn.search")}
         </Link>
 
-        <section className="mt-10">
-          <h2 className="text-xl font-semibold text-[#f9fafb]">探索分类</h2>
-          <div className="mt-4 flex flex-wrap gap-3">
-            {categoryLabels.map((label, index) => (
-              <span key={label} className={index === 0 ? "rounded-full border border-[#c0c1ff]/30 bg-[#8083ff]/10 px-4 py-2 text-sm font-semibold text-[#c0c1ff]" : "rounded-full border border-[#262932] bg-[#16181d] px-4 py-2 text-sm text-[#c7c4d7]"}>{label}</span>
+        <section className="mt-8">
+          <h2 className="text-base font-semibold text-[#f9fafb]">{t("learn.categories")}</h2>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {categoryLabels.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="rounded-full border border-[#262932] bg-[#16181d] px-3 py-1.5 text-xs text-[#c7c4d7]"
+              >
+                {item.name}
+              </Link>
             ))}
           </div>
         </section>
 
-        <section className="mt-12 grid gap-8 lg:grid-cols-12">
-          <div className="lg:col-span-8">
-            <h2 className="text-xl font-semibold text-[#f9fafb]">主推解读</h2>
-            <article className="mt-5 overflow-hidden rounded-xl border border-[#262932] bg-[#16181d]">
-              <div className="flex h-48 items-center justify-center bg-[#292932] text-5xl font-semibold text-[#c0c1ff] md:h-64">!</div>
-              <div className="p-6 md:p-8">
-                <div className="flex items-center gap-3 text-xs font-semibold">
-                  <span className="rounded bg-[#ef4444]/10 px-2.5 py-1 text-[#ef4444]">核心风险</span>
-                  <span className="text-[#9ca3af]">风险教育</span>
-                </div>
-                <h3 className="mt-4 text-2xl font-semibold text-[#f9fafb]">{featured.title}</h3>
-                <p className="mt-3 max-w-2xl leading-7 text-[#9ca3af]">{featured.summary}</p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {featured.relatedSignals.map((signal) => <span key={signal} className="rounded bg-[#292932] px-2 py-1 font-mono text-xs text-[#c7c4d7]">{signal}</span>)}
-                </div>
-                <p className="mt-5 border-l-2 border-[#8083ff] pl-3 text-sm leading-6 text-[#c0c1ff]">{featured.recommendedAction}</p>
-              </div>
-            </article>
-          </div>
-
-          <div className="lg:col-span-4">
-            <h2 className="text-xl font-semibold text-[#f9fafb]">近期解读</h2>
-            <div className="mt-5 space-y-4">
-              {recent.map((lesson, index) => (
-                <article key={lesson.id} className="rounded-xl border border-[#262932] bg-[#16181d] p-5">
-                  <div className="flex gap-4">
-                    <div className={index === 0 ? "flex size-12 shrink-0 items-center justify-center rounded-lg bg-[#292932] text-xl text-[#f97316]" : "flex size-12 shrink-0 items-center justify-center rounded-lg bg-[#292932] text-xl text-[#ef4444]"}>!</div>
-                    <div>
-                      <h3 className="font-semibold text-[#f9fafb]">{lesson.title}</h3>
-                      <p className="mt-2 text-sm leading-6 text-[#9ca3af]">{lesson.summary}</p>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
+        <section className="mt-8">
+          <h2 className="text-base font-semibold text-[#f9fafb]">
+            {locale === "zh" ? "GEO 核心词条" : "Core GEO articles"}
+          </h2>
+          <div className="mt-3 space-y-2">
+            {geoArticles.map((article) => (
+              <Link
+                key={article.slug}
+                href={`/learn/${article.slug}`}
+                className="block rounded-2xl border border-[#262932] bg-[#16181d] p-4 transition hover:border-[#464554]"
+              >
+                <p className="font-semibold text-[#f9fafb]">{article.title}</p>
+                <p className="mt-1 text-sm leading-6 text-[#9ca3af]">{article.description}</p>
+              </Link>
+            ))}
           </div>
         </section>
 
-        <section className="mt-12 flex flex-col items-center justify-between gap-6 rounded-xl border border-[#262932] bg-[#1b1b23] p-6 md:flex-row md:p-10">
-          <div className="max-w-xl text-center md:text-left">
-            <h2 className="text-2xl font-semibold text-[#f9fafb]">发现可疑 CA？</h2>
-            <p className="mt-3 leading-7 text-[#9ca3af]">不要只凭名称或群聊消息判断。使用链哨 AI 的 CA 安检入口先看基础风险报告。</p>
+        <section className="mt-8">
+          <h2 className="text-base font-semibold text-[#f9fafb]">{t("learn.featured")}</h2>
+          <article className="mt-3 rounded-2xl border border-[#ef4444]/30 bg-[#16181d] p-5">
+            <span className="rounded-full bg-[#ef4444]/15 px-2.5 py-1 text-[10px] font-semibold text-[#fca5a5]">
+              CRITICAL RISK
+            </span>
+            <h3 className="mt-3 text-xl font-semibold text-[#f9fafb]">{featured.title}</h3>
+            <p className="mt-2 text-sm leading-6 text-[#c7c4d7]">{featured.summary}</p>
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {featured.relatedSignals.map((signal) => (
+                <span
+                  key={signal}
+                  className="rounded bg-[#292932] px-2 py-1 font-mono text-[10px] text-[#9ca3af]"
+                >
+                  {signal}
+                </span>
+              ))}
+            </div>
+            <p className="mt-3 text-sm text-[#c0c1ff]">{featured.recommendedAction}</p>
+            <Link href="/risk-database" className="mt-4 inline-flex text-sm font-semibold text-[#c0c1ff]">
+              {t("learn.readMore")}
+            </Link>
+          </article>
+        </section>
+
+        <section className="mt-8">
+          <h2 className="text-base font-semibold text-[#f9fafb]">{t("learn.recent")}</h2>
+          <div className="mt-3 space-y-3">
+            {(recent.length ? recent : lessons).map((lesson) => (
+              <article key={lesson.id} className="rounded-2xl border border-[#262932] bg-[#16181d] p-4">
+                <p className="text-[11px] uppercase text-[#9ca3af]">{lesson.category}</p>
+                <h3 className="mt-1 font-semibold text-[#f9fafb]">{lesson.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-[#c7c4d7]">{lesson.summary}</p>
+              </article>
+            ))}
           </div>
-          <Link href="/check" className="w-full rounded-lg bg-[#c0c1ff] px-6 py-4 text-center text-sm font-semibold text-[#1000a9] md:w-auto">现在查 CA</Link>
+          <Link href="/risk-database" className="mt-4 block text-center text-sm font-semibold text-[#c0c1ff]">
+            {t("learn.viewAll")}
+          </Link>
+        </section>
+
+        <section className="mt-8 rounded-2xl border border-[#8083ff]/30 bg-[#16181d] p-5 text-center">
+          <p className="font-semibold text-[#f9fafb]">{t("common.suspiciousCa")}</p>
+          <p className="mt-2 text-sm text-[#9ca3af]">{t("common.dontGuessLong")}</p>
+          <Link
+            href="/check"
+            className="mt-4 inline-flex min-h-11 items-center rounded-xl bg-[#8083ff] px-5 text-sm font-semibold text-[#0d0096]"
+          >
+            {t("common.ctaScan")}
+          </Link>
         </section>
       </div>
       <MobileNav active="database" />

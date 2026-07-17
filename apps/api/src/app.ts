@@ -1,9 +1,21 @@
 import cors from "@fastify/cors";
 import Fastify from "fastify";
 import { listMockAdminAuditLogs } from "@chainvigil/audit";
+import { createCacheStore } from "@chainvigil/cache";
 import { parseTokenInput, supportedChains } from "@chainvigil/chain";
 import { getCacheHealth } from "@chainvigil/cache";
-import { getSystemReadiness, readEnv } from "@chainvigil/config";
+import {
+  allowsUnauthenticatedServiceWrites,
+  defaultApiContentSecurityPolicy,
+  getAllowedCorsOrigins,
+  getSecurityHeaders,
+  getSystemReadiness,
+  readEnv,
+  resolveRuntimeMode,
+  resolveTrustProxy,
+  verifyBasicAuth,
+  verifyWriteSecret,
+} from "@chainvigil/config";
 import {
   collectTokenRiskData,
   getAdapterHealth,
@@ -20,6 +32,7 @@ import {
 import {
   buildMockTokenRiskReport,
   buildMockWalletHealthReport,
+  type ContentLocale,
   listMockAssetCleanupPolicies,
   listMockFakeTokenExamples,
   listMockHighRiskTokens,
@@ -55,6 +68,22 @@ class ApiInputError extends Error {
   }
 }
 
+class ApiAuthError extends Error {
+  statusCode = 401;
+
+  constructor(message = "需要管理员认证。") {
+    super(message);
+  }
+}
+
+class ApiForbiddenError extends Error {
+  statusCode = 403;
+
+  constructor(message = "缺少有效的服务写密钥。") {
+    super(message);
+  }
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
@@ -75,17 +104,27 @@ function optionalChain(value: unknown): ChainId | undefined {
   return value;
 }
 
-function requiredString(body: Record<string, unknown>, field: string): string {
+function requiredString(body: Record<string, unknown>, field: string, maxLength = 256): string {
   const value = body[field];
 
   if (typeof value !== "string" || value.trim().length === 0) {
     throw new ApiInputError(`缺少 ${field}。`, field);
   }
 
-  return value.trim();
+  const trimmed = value.trim();
+
+  if (trimmed.length > maxLength) {
+    throw new ApiInputError(`${field} 过长。`, field);
+  }
+
+  return trimmed;
 }
 
-function optionalString(body: Record<string, unknown>, field: string): string | undefined {
+function optionalString(
+  body: Record<string, unknown>,
+  field: string,
+  maxLength = 256,
+): string | undefined {
   const value = body[field];
 
   if (value === undefined || value === null || value === "") {
@@ -96,7 +135,13 @@ function optionalString(body: Record<string, unknown>, field: string): string | 
     throw new ApiInputError(`${field} 必须是字符串。`, field);
   }
 
-  return value.trim();
+  const trimmed = value.trim();
+
+  if (trimmed.length > maxLength) {
+    throw new ApiInputError(`${field} 过长。`, field);
+  }
+
+  return trimmed;
 }
 
 function requireBody(body: unknown): Record<string, unknown> {
@@ -107,9 +152,24 @@ function requireBody(body: unknown): Record<string, unknown> {
   return body;
 }
 
+function resolveRequestLocale(
+  request: { headers: Record<string, string | string[] | undefined> },
+  bodyLocale?: unknown,
+): ContentLocale {
+  if (bodyLocale === "en" || bodyLocale === "zh") {
+    return bodyLocale;
+  }
+  const raw = request.headers["accept-language"];
+  const header = Array.isArray(raw) ? raw[0] : raw;
+  if (typeof header === "string" && header.toLowerCase().startsWith("en")) {
+    return "en";
+  }
+  return "zh";
+}
+
 function parseTokenCheckBody(body: unknown): TokenCheckRequest {
   const record = requireBody(body);
-  const input = requiredString(record, "input");
+  const input = requiredString(record, "input", 512);
   const chain = optionalChain(record.chain);
 
   try {
@@ -124,6 +184,10 @@ function parseTokenCheckBody(body: unknown): TokenCheckRequest {
 
   if (chain) {
     parsed.chain = chain;
+  }
+
+  if (record.locale === "en" || record.locale === "zh") {
+    parsed.locale = record.locale;
   }
 
   return parsed;
@@ -152,7 +216,7 @@ function parseTokenPathParams(
 
 function parseWalletHealthBody(body: unknown): WalletHealthRequest {
   const record = requireBody(body);
-  const address = requiredString(record, "address");
+  const address = requiredString(record, "address", 128);
   const chain = optionalChain(record.chain);
 
   try {
@@ -169,6 +233,10 @@ function parseWalletHealthBody(body: unknown): WalletHealthRequest {
     parsed.chain = chain;
   }
 
+  if (record.locale === "en" || record.locale === "zh") {
+    parsed.locale = record.locale;
+  }
+
   return parsed;
 }
 
@@ -179,7 +247,7 @@ function parsePointEventBody(body: unknown): {
   idempotencyKey: string;
 } {
   const record = requireBody(body);
-  const type = requiredString(record, "type") as PointEventType;
+  const type = requiredString(record, "type", 64) as PointEventType;
 
   if (!(type in listPointRules())) {
     throw new ApiInputError("未知 VP 事件类型。", "type");
@@ -187,15 +255,47 @@ function parsePointEventBody(body: unknown): {
 
   const parsed = {
     type,
-    idempotencyKey: requiredString(record, "idempotencyKey"),
+    idempotencyKey: requiredString(record, "idempotencyKey", 200),
   };
-  const subjectId = optionalString(record, "subjectId");
-  const actorId = optionalString(record, "actorId");
+  const subjectId = optionalString(record, "subjectId", 200);
+  const actorId = optionalString(record, "actorId", 200);
 
   return {
     ...parsed,
     ...(subjectId ? { subjectId } : {}),
     ...(actorId ? { actorId } : {}),
+  };
+}
+
+function parseReferralEventBody(body: unknown): {
+  referralCode: string;
+  source: string;
+  action: string;
+  subjectId?: string;
+} {
+  const record = requireBody(body);
+  const referralCode = requiredString(record, "referralCode", 64);
+  const source = requiredString(record, "source", 64);
+  const action = requiredString(record, "action", 64);
+  const subjectId = optionalString(record, "subjectId", 200);
+
+  if (!/^[a-zA-Z0-9_.:-]{1,64}$/.test(referralCode)) {
+    throw new ApiInputError("referralCode 格式无效。", "referralCode");
+  }
+
+  if (!/^[a-zA-Z0-9_.:-]{1,64}$/.test(source)) {
+    throw new ApiInputError("source 格式无效。", "source");
+  }
+
+  if (!/^[a-zA-Z0-9_.:-]{1,64}$/.test(action)) {
+    throw new ApiInputError("action 格式无效。", "action");
+  }
+
+  return {
+    referralCode,
+    source,
+    action,
+    ...(subjectId ? { subjectId } : {}),
   };
 }
 
@@ -222,23 +322,103 @@ function buildServiceMeta(): ServiceMeta {
 
 export interface BuildApiAppOptions {
   rateLimit?: RateLimitOptions;
+  env?: Record<string, string | undefined>;
 }
 
 export async function buildApiApp(options: BuildApiAppOptions = {}) {
-  const app = Fastify({ logger: false });
-  const checkRateLimit = createRateLimiter(options.rateLimit);
+  const env = options.env ?? process.env;
+  const trustProxy = resolveTrustProxy(env);
+  const app = Fastify({
+    logger: false,
+    trustProxy,
+    bodyLimit: 32 * 1024,
+    requestTimeout: 30_000,
+  });
+  const cache =
+    options.rateLimit?.cache ??
+    (await createCacheStore(env)).store;
+  const checkRateLimit = createRateLimiter({
+    ...options.rateLimit,
+    cache,
+  });
+  const securityHeaders = getSecurityHeaders({
+    enableHsts: resolveRuntimeMode(env) === "production",
+    contentSecurityPolicy: defaultApiContentSecurityPolicy,
+  });
 
   app.addHook("onRequest", async (_request, reply) => {
-    reply
-      .header("X-Content-Type-Options", "nosniff")
-      .header("Referrer-Policy", "no-referrer")
-      .header("X-Frame-Options", "DENY")
-      .header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+    for (const [key, value] of Object.entries(securityHeaders)) {
+      reply.header(key, value);
+    }
   });
 
+  const corsOrigins = getAllowedCorsOrigins(env);
+
   await app.register(cors, {
-    origin: true,
+    origin: corsOrigins,
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: [
+      "content-type",
+      "authorization",
+      "x-chainvigil-write-secret",
+      "x-request-id",
+    ],
+    maxAge: 600,
   });
+
+  function headerValue(
+    value: string | string[] | undefined,
+  ): string | undefined {
+    if (Array.isArray(value)) {
+      return value[0];
+    }
+
+    return value;
+  }
+
+  function requireAdmin(request: {
+    headers: Record<string, string | string[] | undefined>;
+  }) {
+    const result = verifyBasicAuth(headerValue(request.headers.authorization), {
+      username: env.ADMIN_BASIC_AUTH_USERNAME,
+      password: env.ADMIN_BASIC_AUTH_PASSWORD,
+    });
+
+    if (!result.ok) {
+      throw new ApiAuthError();
+    }
+  }
+
+  function requireServiceWrite(request: {
+    headers: Record<string, string | string[] | undefined>;
+  }) {
+    if (allowsUnauthenticatedServiceWrites(env)) {
+      return;
+    }
+
+    const writeSecret = env.INTERNAL_WRITE_SECRET;
+    const authorization = headerValue(request.headers.authorization);
+    const provided =
+      headerValue(request.headers["x-chainvigil-write-secret"]) ??
+      (authorization?.startsWith("Bearer ")
+        ? authorization.slice("Bearer ".length)
+        : undefined);
+
+    if (verifyWriteSecret(provided, writeSecret)) {
+      return;
+    }
+
+    const admin = verifyBasicAuth(authorization, {
+      username: env.ADMIN_BASIC_AUTH_USERNAME,
+      password: env.ADMIN_BASIC_AUTH_PASSWORD,
+    });
+
+    if (admin.enabled && admin.ok) {
+      return;
+    }
+
+    throw new ApiForbiddenError("缺少有效的服务写密钥或管理员认证。");
+  }
 
   app.setErrorHandler((error, _request, reply) => {
     if (error instanceof ApiInputError) {
@@ -247,6 +427,27 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
           code: "BAD_REQUEST",
           message: error.message,
           field: error.field,
+        },
+      });
+    }
+
+    if (error instanceof ApiAuthError) {
+      return reply
+        .status(error.statusCode)
+        .header("www-authenticate", 'Basic realm="ChainVigil Admin API", charset="UTF-8"')
+        .send({
+          error: {
+            code: "UNAUTHORIZED",
+            message: error.message,
+          },
+        });
+    }
+
+    if (error instanceof ApiForbiddenError) {
+      return reply.status(error.statusCode).send({
+        error: {
+          code: "FORBIDDEN",
+          message: error.message,
         },
       });
     }
@@ -267,105 +468,170 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
   app.get("/health", async () => ({
     ok: true,
     service: "chainvigil-api",
-    adapters: getAdapterHealth(),
-    cache: getCacheHealth(),
+    adapters: getAdapterHealth(env),
+    cache: getCacheHealth(env),
   }));
 
   app.get("/api/v1/system/readiness", async () => ({
     service: "chainvigil-api",
-    readiness: getSystemReadiness(),
-    adapters: getAdapterHealth(),
-    cache: getCacheHealth(),
+    readiness: getSystemReadiness(env),
+    adapters: getAdapterHealth(env),
+    cache: getCacheHealth(env),
   }));
 
-  app.get("/api/v1/data-sources/adapters", async () => ({
-    adapters: getAdapterHealth(),
-    mode: "mock",
-  }));
+  app.get("/api/v1/data-sources/adapters", async (request) => {
+    await checkRateLimit(`read:adapters:${request.ip}`);
+    return {
+      adapters: getAdapterHealth(env),
+      mode: "mock",
+    };
+  });
 
-  app.get("/api/v1/risk/evidence-providers", async () => ({
-    primaryChains: ["solana", "bsc"],
-    providers: getRiskEvidenceProviderStatus(),
-    mode: "mock",
-  }));
+  app.get("/api/v1/risk/evidence-providers", async (request) => {
+    await checkRateLimit(`read:evidence:${request.ip}`);
+    return {
+      primaryChains: ["solana", "bsc"],
+      providers: getRiskEvidenceProviderStatus(env),
+      mode: "mock",
+    };
+  });
 
-  app.get("/api/v1/worker/jobs", async () => ({
-    worker: getWorkerHealth(),
-    mode: "mock",
-  }));
+  app.get("/api/v1/worker/jobs", async (request) => {
+    await checkRateLimit(`read:worker:${request.ip}`);
+    return {
+      worker: getWorkerHealth(),
+      mode: "mock",
+    };
+  });
 
-  app.get("/api/v1/risk/database", async () => ({
-    entries: listMockRiskDatabaseEntries(),
-    mode: "mock",
-  }));
+  app.get("/api/v1/risk/database", async (request) => {
+    await checkRateLimit(`read:risk-db:${request.ip}`);
+    const locale = resolveRequestLocale(request);
+    return {
+      entries: listMockRiskDatabaseEntries(locale),
+      mode: "mock",
+      locale,
+    };
+  });
 
-  app.get("/api/v1/risk/monitor-rules", async () => ({
-    rules: listMockRiskMonitorRules(),
-    mode: "mock",
-  }));
+  app.get("/api/v1/risk/monitor-rules", async (request) => {
+    await checkRateLimit(`read:monitor:${request.ip}`);
+    const locale = resolveRequestLocale(request);
+    return {
+      rules: listMockRiskMonitorRules(locale),
+      mode: "mock",
+      locale,
+    };
+  });
 
-  app.get("/api/v1/asset-cleanup/policies", async () => ({
-    policies: listMockAssetCleanupPolicies(),
-    mode: "mock",
-  }));
+  app.get("/api/v1/asset-cleanup/policies", async (request) => {
+    await checkRateLimit(`read:cleanup:${request.ip}`);
+    const locale = resolveRequestLocale(request);
+    return {
+      policies: listMockAssetCleanupPolicies(locale),
+      mode: "mock",
+      locale,
+    };
+  });
 
-  app.get("/api/v1/risk/high-risk-tokens", async () => ({
-    tokens: listMockHighRiskTokens(readEnv("APP_BASE_URL", "http://localhost:3000")),
-    mode: "mock",
-  }));
+  app.get("/api/v1/risk/high-risk-tokens", async (request) => {
+    await checkRateLimit(`read:high-risk:${request.ip}`);
+    const locale = resolveRequestLocale(request);
+    return {
+      tokens: listMockHighRiskTokens(readEnv("APP_BASE_URL", "http://localhost:3000"), locale),
+      mode: "mock",
+      locale,
+    };
+  });
 
-  app.get("/api/v1/risk/fake-token-examples", async () => ({
-    examples: listMockFakeTokenExamples(),
-    mode: "mock",
-  }));
+  app.get("/api/v1/risk/fake-token-examples", async (request) => {
+    await checkRateLimit(`read:fake-tokens:${request.ip}`);
+    const locale = resolveRequestLocale(request);
+    return {
+      examples: listMockFakeTokenExamples(locale),
+      mode: "mock",
+      locale,
+    };
+  });
 
-  app.get("/api/v1/risk/education-lessons", async () => ({
-    lessons: listMockRiskEducationLessons(),
-    mode: "mock",
-  }));
+  app.get("/api/v1/risk/education-lessons", async (request) => {
+    await checkRateLimit(`read:lessons:${request.ip}`);
+    const locale = resolveRequestLocale(request);
+    return {
+      lessons: listMockRiskEducationLessons(locale),
+      mode: "mock",
+      locale,
+    };
+  });
 
   app.get("/api/v1/meta", async () => buildServiceMeta());
 
-  app.get("/api/v1/admin/audit/logs", async () => ({
-    logs: listMockAdminAuditLogs(),
-    mode: "mock",
-  }));
+  app.get("/api/v1/admin/audit/logs", async (request) => {
+    requireAdmin(request);
+    await checkRateLimit(`admin:audit:${request.ip}`);
+    return {
+      logs: listMockAdminAuditLogs(),
+      mode: "mock",
+    };
+  });
 
-  app.get("/api/v1/admin/risk-review/queue", async () => ({
-    items: listMockRiskReviewQueue(readEnv("APP_BASE_URL", "http://localhost:3000")),
-    mode: "mock",
-  }));
+  app.get("/api/v1/admin/risk-review/queue", async (request) => {
+    requireAdmin(request);
+    await checkRateLimit(`admin:review:${request.ip}`);
+    return {
+      items: listMockRiskReviewQueue(readEnv("APP_BASE_URL", "http://localhost:3000")),
+      mode: "mock",
+    };
+  });
 
-  app.get("/api/v1/admin/risk-labels", async () => ({
-    labels: listMockRiskLabels(),
-    mode: "mock",
-  }));
+  app.get("/api/v1/admin/risk-labels", async (request) => {
+    requireAdmin(request);
+    await checkRateLimit(`admin:labels:${request.ip}`);
+    return {
+      labels: listMockRiskLabels(),
+      mode: "mock",
+    };
+  });
 
-  app.get("/api/v1/admin/token-reports", async () => ({
-    reports: listMockTokenReportIndex(readEnv("APP_BASE_URL", "http://localhost:3000")),
-    mode: "mock",
-  }));
+  app.get("/api/v1/admin/token-reports", async (request) => {
+    requireAdmin(request);
+    await checkRateLimit(`admin:reports:${request.ip}`);
+    return {
+      reports: listMockTokenReportIndex(readEnv("APP_BASE_URL", "http://localhost:3000")),
+      mode: "mock",
+    };
+  });
 
-  app.get("/api/v1/telegram/groups", async () => ({
-    groups: listMockTelegramGroups(),
-    mode: "mock",
-  }));
+  app.get("/api/v1/telegram/groups", async (request) => {
+    await checkRateLimit(`read:tg-groups:${request.ip}`);
+    return {
+      groups: listMockTelegramGroups(),
+      mode: "mock",
+    };
+  });
 
-  app.get("/api/v1/telegram/commands", async () => ({
-    commands: listTelegramCommands(),
-    mode: "mock",
-  }));
+  app.get("/api/v1/telegram/commands", async (request) => {
+    await checkRateLimit(`read:tg-commands:${request.ip}`);
+    const locale = resolveRequestLocale(request);
+    return {
+      commands: listTelegramCommands(locale),
+      mode: "mock",
+      locale,
+    };
+  });
 
   app.get("/openapi.json", async () => openApiDocument);
 
   app.post<{ Body: TokenCheckRequest }>("/api/v1/token/check", async (request) => {
     await checkRateLimit(`token-check:${request.ip}`);
     const body = parseTokenCheckBody(request.body);
+    const locale = resolveRequestLocale(request, body.locale);
     const appBaseUrl = readEnv("APP_BASE_URL", "http://localhost:3000");
     const report = buildMockTokenRiskReport({
       input: body.input,
       chain: body.chain,
       appBaseUrl,
+      locale,
     });
     const pointEvent = createPendingPointEvent({
       type: "FIRST_CA_CHECK",
@@ -376,92 +642,137 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
     return {
       report,
       pointEvent,
+      mode: report.mode,
+      confidence: report.confidence,
+      locale,
     };
   });
 
   app.get<{ Params: { chain: string; address: string } }>(
     "/api/v1/token/:chain/:address",
     async (request) => {
+      await checkRateLimit(`token-get:${request.ip}`);
       const params = parseTokenPathParams(request.params);
+      const locale = resolveRequestLocale(request);
       const appBaseUrl = readEnv("APP_BASE_URL", "http://localhost:3000");
       const report = buildMockTokenRiskReport({
         input: params.input,
         chain: params.chain,
         appBaseUrl,
+        locale,
       });
 
-      return { report };
+      return { report, mode: report.mode, confidence: report.confidence, locale };
     },
   );
 
   app.get<{ Params: { chain: string; address: string } }>(
     "/api/v1/token/:chain/:address/data",
     async (request) => {
+      await checkRateLimit(`token-data:${request.ip}`);
       const params = parseTokenPathParams(request.params);
-      const data = await collectTokenRiskData({
-        chain: params.chain,
-        address: params.input,
-      });
+      const data = await collectTokenRiskData(
+        {
+          chain: params.chain,
+          address: params.input,
+        },
+        env,
+      );
 
-      return { data };
+      return { data, mode: "mock", confidence: data.coverage.confidence };
     },
   );
 
   app.post<{ Body: WalletHealthRequest }>("/api/v1/wallet/health", async (request) => {
     await checkRateLimit(`wallet-health:${request.ip}`);
     const body = parseWalletHealthBody(request.body);
+    const locale = resolveRequestLocale(request, body.locale);
     const appBaseUrl = readEnv("APP_BASE_URL", "http://localhost:3000");
     const report = buildMockWalletHealthReport({
       address: body.address,
       chain: body.chain,
       appBaseUrl,
+      locale,
     });
 
-    return { report };
+    return { report, mode: report.mode, confidence: report.confidence, locale };
   });
 
   app.get<{ Params: { address: string } }>("/api/v1/wallet/:address/health", async (request) => {
+    await checkRateLimit(`wallet-get:${request.ip}`);
+
     try {
       parseTokenInput(request.params.address, "bsc");
     } catch {
       throw new ApiInputError("请输入有效的 EVM 钱包地址。", "address");
     }
 
+    const locale = resolveRequestLocale(request);
     const appBaseUrl = readEnv("APP_BASE_URL", "http://localhost:3000");
     const report = buildMockWalletHealthReport({
       address: request.params.address,
       appBaseUrl,
+      locale,
     });
 
-    return { report };
+    return { report, mode: report.mode, confidence: report.confidence, locale };
   });
 
-  app.get("/api/v1/wallet/watchlist", async () => ({
-    wallets: listMockWalletWatchlist(readEnv("APP_BASE_URL", "http://localhost:3000")),
-    mode: "mock",
-  }));
+  app.get("/api/v1/wallet/watchlist", async (request) => {
+    await checkRateLimit(`read:watchlist:${request.ip}`);
+    const locale = resolveRequestLocale(request);
+    return {
+      wallets: listMockWalletWatchlist(readEnv("APP_BASE_URL", "http://localhost:3000"), locale),
+      mode: "mock",
+      locale,
+    };
+  });
 
-  app.get("/api/v1/wallet/check-capabilities", async () => ({
-    capabilities: listMockWalletCheckCapabilities(),
-    mode: "mock",
-  }));
+  app.get("/api/v1/wallet/check-capabilities", async (request) => {
+    await checkRateLimit(`read:capabilities:${request.ip}`);
+    const locale = resolveRequestLocale(request);
+    return {
+      capabilities: listMockWalletCheckCapabilities(locale),
+      mode: "mock",
+      locale,
+    };
+  });
 
-  app.get("/api/v1/user/settings", async () => ({
-    settings: listMockUserPreferenceSettings(),
-    mode: "mock",
-  }));
+  app.get("/api/v1/user/settings", async (request) => {
+    await checkRateLimit(`read:settings:${request.ip}`);
+    const locale = resolveRequestLocale(request);
+    return {
+      settings: listMockUserPreferenceSettings(locale),
+      mode: "mock",
+      locale,
+    };
+  });
 
-  app.get("/api/v1/points/rules", async () => getPointProgram());
+  app.get("/api/v1/points/rules", async (request) => {
+    await checkRateLimit(`read:points-rules:${request.ip}`);
+    const locale = resolveRequestLocale(request);
+    return { ...getPointProgram(locale), locale };
+  });
 
-  app.get<{ Querystring: { subjectId?: string } }>("/api/v1/points/ledger", async (request) => ({
-    ledger: getMockPointLedgerSummary(request.query.subjectId?.trim() || "visitor:mock"),
-    mode: "mock",
-  }));
+  app.get<{ Querystring: { subjectId?: string } }>("/api/v1/points/ledger", async (request) => {
+    await checkRateLimit(`read:points-ledger:${request.ip}`);
+    const locale = resolveRequestLocale(request);
+    return {
+      ledger: getMockPointLedgerSummary(request.query.subjectId?.trim() || "visitor:mock", locale),
+      mode: "mock",
+      locale,
+    };
+  });
 
-  app.get("/api/v1/growth/channels", async () => ({
-    channels: listMockGrowthChannels(),
-    mode: "mock",
-  }));
+  app.get("/api/v1/growth/channels", async (request) => {
+    await checkRateLimit(`read:growth:${request.ip}`);
+    const locale = resolveRequestLocale(request);
+    return {
+      channels: listMockGrowthChannels(locale),
+      mode: "mock",
+      locale,
+    };
+  });
 
   app.post<{
     Body: {
@@ -472,6 +783,7 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
     };
   }>("/api/v1/points/event", async (request) => {
     await checkRateLimit(`points-event:${request.ip}`);
+    requireServiceWrite(request);
     const body = parsePointEventBody(request.body);
     const pointEventInput: Parameters<typeof createPendingPointEvent>[0] = {
       type: body.type,
@@ -488,7 +800,7 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
     const event = createPendingPointEvent(pointEventInput);
 
-    return { event };
+    return { event, mode: "mock" };
   });
 
   app.post<{
@@ -500,17 +812,20 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
     };
   }>("/api/v1/referral/event", async (request) => {
     await checkRateLimit(`referral-event:${request.ip}`);
+    requireServiceWrite(request);
+    const body = parseReferralEventBody(request.body);
 
     return {
       event: {
         id: crypto.randomUUID(),
-        referralCode: request.body.referralCode,
-        source: request.body.source,
-        action: request.body.action,
-        subjectId: request.body.subjectId ?? null,
+        referralCode: body.referralCode,
+        source: body.source,
+        action: body.action,
+        subjectId: body.subjectId ?? null,
         status: "recorded",
         createdAt: new Date().toISOString(),
       },
+      mode: "mock",
     };
   });
 

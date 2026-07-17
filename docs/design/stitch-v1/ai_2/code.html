@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>高危 CA 榜单 - ChainVigil AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#1b1b23",
+                    "on-error": "#690005",
+                    "on-tertiary": "#4f2500",
+                    "background": "#0A0B0F",
+                    "status-unknown": "#6B7280",
+                    "on-tertiary-container": "#452000",
+                    "error-container": "#93000a",
+                    "surface": "#16181D",
+                    "secondary-fixed": "#f0dbff",
+                    "primary-container": "#8083ff",
+                    "surface-container-lowest": "#0d0d15",
+                    "on-primary-container": "#0d0096",
+                    "error": "#ffb4ab",
+                    "secondary": "#ddb7ff",
+                    "primary": "#c0c1ff",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "on-surface-variant": "#c7c4d7",
+                    "text-primary": "#F9FAFB",
+                    "tertiary-fixed-dim": "#ffb783",
+                    "secondary-container": "#6f00be",
+                    "on-secondary-container": "#d6a9ff",
+                    "on-error-container": "#ffdad6",
+                    "inverse-primary": "#494bd6",
+                    "tertiary-container": "#d97721",
+                    "surface-bright": "#393841",
+                    "on-secondary-fixed": "#2c0051",
+                    "status-trial": "#06B6D4",
+                    "primary-fixed": "#e1e0ff",
+                    "text-secondary": "#9CA3AF",
+                    "on-secondary": "#490080",
+                    "status-medium": "#F59E0B",
+                    "accent-vp": "#EAB308",
+                    "status-low": "#10B981",
+                    "inverse-surface": "#e4e1ed",
+                    "surface-variant": "#34343d",
+                    "on-tertiary-fixed": "#301400",
+                    "on-primary-fixed": "#07006c",
+                    "on-surface": "#e4e1ed",
+                    "outline": "#908fa0",
+                    "inverse-on-surface": "#303038",
+                    "tertiary": "#ffb783",
+                    "on-tertiary-fixed-variant": "#703700",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "status-high": "#F97316",
+                    "surface-dim": "#13131b",
+                    "surface-container-high": "#292932",
+                    "on-primary": "#1000a9",
+                    "status-block": "#EF4444",
+                    "surface-container-highest": "#34343d",
+                    "secondary-fixed-dim": "#ddb7ff",
+                    "tertiary-fixed": "#ffdcc5",
+                    "outline-variant": "#464554",
+                    "on-secondary-fixed-variant": "#6900b3",
+                    "on-background": "#e4e1ed",
+                    "surface-tint": "#c0c1ff",
+                    "surface-container": "#1f1f27",
+                    "border": "#262932"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-md": "1rem",
+                    "container-max": "1280px",
+                    "stack-lg": "2rem",
+                    "margin-mobile": "1rem",
+                    "stack-sm": "0.5rem",
+                    "gutter": "1.5rem"
+            },
+            "fontFamily": {
+                    "display-lg-mobile": [
+                            "Geist"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "headline-md": [
+                            "Geist"
+                    ],
+                    "code-sm": [
+                            "monospace"
+                    ],
+                    "label-sm": [
+                            "Inter"
+                    ],
+                    "display-lg": [
+                            "Geist"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "display-lg-mobile": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.3",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "code-sm": [
+                            "13px",
+                            {
+                                    "lineHeight": "1.4",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "1.1",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col">
+<!-- TopAppBar (Hidden on desktop, mapped from JSON) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-background dark:bg-background transition-opacity duration-200 md:hidden">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim text-2xl" data-icon="security" data-weight="fill" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface">ChainVigil AI</span>
+</div>
+<button class="hover:opacity-80 transition-opacity duration-200">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim text-2xl" data-icon="language">language</span>
+</button>
+</header>
+<!-- Desktop Top Navigation (Custom for Desktop layout, hides TopAppBar) -->
+<nav class="hidden md:flex fixed top-0 left-0 w-full z-50 h-16 bg-surface border-b border-border px-gutter justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="security" data-weight="fill" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface">ChainVigil AI</span>
+</div>
+<div class="flex gap-8 font-label-sm text-label-sm text-on-surface-variant">
+<a class="hover:text-primary transition-colors flex items-center gap-1" href="#"><span class="material-symbols-outlined text-lg" data-icon="home">home</span>Home</a>
+<a class="hover:text-primary transition-colors flex items-center gap-1" href="#"><span class="material-symbols-outlined text-lg" data-icon="account_balance_wallet">account_balance_wallet</span>Wallet</a>
+<a class="text-primary flex items-center gap-1 bg-secondary-container/20 px-3 py-1 rounded-full" href="#"><span class="material-symbols-outlined text-lg" data-icon="database" data-weight="fill" style="font-variation-settings: 'FILL' 1;">database</span>Database</a>
+<a class="hover:text-primary transition-colors flex items-center gap-1" href="#"><span class="material-symbols-outlined text-lg" data-icon="stars">stars</span>Points</a>
+</div>
+<button class="hover:opacity-80 transition-opacity duration-200">
+<span class="material-symbols-outlined text-on-surface-variant text-2xl" data-icon="language">language</span>
+</button>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow pt-20 pb-24 md:pb-8 px-margin-mobile md:px-gutter max-w-container-max mx-auto w-full flex flex-col gap-stack-lg">
+<!-- Header Section -->
+<section class="flex flex-col gap-stack-md">
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-text-primary">High-Risk Database</h1>
+<p class="font-body-md text-body-md text-text-secondary max-w-2xl">Real-time tracking of malicious contracts, fake tokens, and known scammers identified by ChainVigil AI.</p>
+</section>
+<!-- Tabs -->
+<div class="flex overflow-x-auto no-scrollbar gap-2 pb-2 -mx-margin-mobile px-margin-mobile md:mx-0 md:px-0">
+<button class="whitespace-nowrap px-4 py-2 rounded-lg bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="warning" data-weight="fill" style="font-variation-settings: 'FILL' 1;">warning</span>
+                高危 CA
+            </button>
+<button class="whitespace-nowrap px-4 py-2 rounded-lg bg-surface border border-border text-on-surface-variant hover:bg-surface-variant font-label-sm text-label-sm flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="money_off">money_off</span>
+                假币数据库
+            </button>
+<button class="whitespace-nowrap px-4 py-2 rounded-lg bg-surface border border-border text-on-surface-variant hover:bg-surface-variant font-label-sm text-label-sm flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="person_off">person_off</span>
+                高危部署者
+            </button>
+</div>
+<!-- Filters -->
+<div class="flex flex-col md:flex-row gap-stack-md bg-surface p-4 rounded-xl border border-border">
+<div class="flex-1 flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-text-secondary uppercase">Chain Type</label>
+<select class="bg-surface-container border border-outline-variant text-on-surface rounded-lg px-3 py-2 font-body-md text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none w-full appearance-none">
+<option value="all">All Chains</option>
+<option value="base">Base</option>
+<option value="solana">Solana</option>
+<option value="eth">Ethereum</option>
+</select>
+</div>
+<div class="flex-1 flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-text-secondary uppercase">Risk Type</label>
+<select class="bg-surface-container border border-outline-variant text-on-surface rounded-lg px-3 py-2 font-body-md text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none w-full appearance-none">
+<option value="all">All Risks</option>
+<option value="honeypot">Honeypot (貔貅)</option>
+<option value="high_tax">High Tax (高税)</option>
+<option value="blacklist">Blacklist (黑名单)</option>
+</select>
+</div>
+<div class="flex-1 flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-text-secondary uppercase">Time Range</label>
+<select class="bg-surface-container border border-outline-variant text-on-surface rounded-lg px-3 py-2 font-body-md text-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none w-full appearance-none">
+<option value="24h">Last 24 Hours</option>
+<option value="7d">Last 7 Days</option>
+<option value="30d">Last 30 Days</option>
+</select>
+</div>
+</div>
+<!-- Leaderboard List -->
+<div class="flex flex-col gap-4">
+<!-- List Header (Desktop Only) -->
+<div class="hidden md:grid grid-cols-12 gap-4 px-4 py-2 font-label-sm text-label-sm text-text-secondary uppercase border-b border-border">
+<div class="col-span-1">Rank</div>
+<div class="col-span-4">Token &amp; CA</div>
+<div class="col-span-2">Risk Level</div>
+<div class="col-span-3">Core Risk</div>
+<div class="col-span-2 text-right">Metrics</div>
+</div>
+<!-- Item 1 (Block) -->
+<div class="bg-surface border border-border rounded-xl p-4 flex flex-col md:grid md:grid-cols-12 gap-4 items-start md:items-center relative overflow-hidden group hover:border-status-block/50 transition-colors">
+<!-- Subtle Red Glow for BLOCK items -->
+<div class="absolute inset-0 bg-gradient-to-r from-status-block/5 to-transparent pointer-events-none"></div>
+<div class="flex items-center gap-4 col-span-1 md:col-span-1 w-full md:w-auto justify-between md:justify-start">
+<span class="font-headline-md text-headline-md text-status-block font-bold">#1</span>
+<div class="md:hidden flex items-center gap-1 bg-surface-container px-2 py-1 rounded text-text-secondary font-code-sm text-code-sm">
+<span class="material-symbols-outlined text-sm" data-icon="visibility">visibility</span> 12.4k
+                    </div>
+</div>
+<div class="flex items-center gap-3 col-span-4 w-full">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center border border-outline-variant overflow-hidden shrink-0">
+<span class="material-symbols-outlined text-status-block text-xl" data-icon="coronavirus">coronavirus</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-body-md text-body-md font-semibold text-text-primary truncate">PEPE2.0_FAKE</span>
+<span class="bg-surface-container text-text-secondary font-code-sm text-[10px] px-1.5 py-0.5 rounded border border-border">BASE</span>
+</div>
+<div class="flex items-center gap-1 text-text-secondary font-code-sm text-code-sm mt-0.5">
+<span class="truncate">0x8f...4d2a</span>
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[14px]" data-icon="content_copy">content_copy</span></button>
+</div>
+</div>
+</div>
+<div class="col-span-2 flex flex-wrap gap-2 w-full md:w-auto">
+<span class="bg-status-block/10 text-status-block border border-status-block/20 px-2 py-1 rounded font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="block" data-weight="fill" style="font-variation-settings: 'FILL' 1;">block</span>
+                        BLOCK (禁买)
+                    </span>
+</div>
+<div class="col-span-3 text-text-secondary font-body-md text-[14px] w-full border-l border-border pl-4 md:border-none md:pl-0">
+<strong class="text-on-surface block md:inline">Honeypot Detected:</strong> 卖出失败 (Sell transaction reverts for non-whitelisted addresses).
+                </div>
+<div class="col-span-2 flex items-center gap-4 justify-end w-full mt-2 md:mt-0 pt-2 md:pt-0 border-t border-border md:border-none">
+<div class="hidden md:flex items-center gap-1 text-text-secondary font-code-sm text-code-sm">
+<span class="material-symbols-outlined text-[16px]" data-icon="visibility">visibility</span> 12.4k
+                    </div>
+<button class="bg-surface-container hover:bg-surface-variant border border-outline-variant text-text-primary px-3 py-1.5 rounded-lg font-label-sm text-label-sm transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="share">share</span>
+                        Share
+                    </button>
+</div>
+</div>
+<!-- Item 2 (High Risk) -->
+<div class="bg-surface border border-border rounded-xl p-4 flex flex-col md:grid md:grid-cols-12 gap-4 items-start md:items-center relative overflow-hidden group hover:border-status-high/50 transition-colors">
+<div class="flex items-center gap-4 col-span-1 md:col-span-1 w-full md:w-auto justify-between md:justify-start">
+<span class="font-headline-md text-headline-md text-text-secondary font-bold">#2</span>
+</div>
+<div class="flex items-center gap-3 col-span-4 w-full">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center border border-outline-variant overflow-hidden shrink-0">
+<span class="material-symbols-outlined text-status-high text-xl" data-icon="toll">toll</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-body-md text-body-md font-semibold text-text-primary truncate">USDT_Yield</span>
+<span class="bg-surface-container text-text-secondary font-code-sm text-[10px] px-1.5 py-0.5 rounded border border-border">SOL</span>
+</div>
+<div class="flex items-center gap-1 text-text-secondary font-code-sm text-code-sm mt-0.5">
+<span class="truncate">DezX...3qV2</span>
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[14px]" data-icon="content_copy">content_copy</span></button>
+</div>
+</div>
+</div>
+<div class="col-span-2 flex flex-wrap gap-2 w-full md:w-auto">
+<span class="bg-status-high/10 text-status-high border border-status-high/20 px-2 py-1 rounded font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span>
+                        HIGH RISK
+                    </span>
+</div>
+<div class="col-span-3 text-text-secondary font-body-md text-[14px] w-full border-l border-border pl-4 md:border-none md:pl-0">
+<strong class="text-on-surface block md:inline">High Tax:</strong> 买入税 0%, 卖出税 99% (Effectively un-sellable).
+                </div>
+<div class="col-span-2 flex items-center gap-4 justify-end w-full mt-2 md:mt-0 pt-2 md:pt-0 border-t border-border md:border-none">
+<div class="hidden md:flex items-center gap-1 text-text-secondary font-code-sm text-code-sm">
+<span class="material-symbols-outlined text-[16px]" data-icon="visibility">visibility</span> 8.2k
+                    </div>
+<button class="bg-surface-container hover:bg-surface-variant border border-outline-variant text-text-primary px-3 py-1.5 rounded-lg font-label-sm text-label-sm transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="share">share</span>
+                        Share
+                    </button>
+</div>
+</div>
+<!-- Item 3 (High Risk) -->
+<div class="bg-surface border border-border rounded-xl p-4 flex flex-col md:grid md:grid-cols-12 gap-4 items-start md:items-center relative overflow-hidden group hover:border-status-high/50 transition-colors">
+<div class="flex items-center gap-4 col-span-1 md:col-span-1 w-full md:w-auto justify-between md:justify-start">
+<span class="font-headline-md text-headline-md text-text-secondary font-bold">#3</span>
+</div>
+<div class="flex items-center gap-3 col-span-4 w-full">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center border border-outline-variant overflow-hidden shrink-0">
+<span class="material-symbols-outlined text-text-secondary text-xl" data-icon="question_mark">question_mark</span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-body-md text-body-md font-semibold text-text-primary truncate">Official_Airdrop</span>
+<span class="bg-surface-container text-text-secondary font-code-sm text-[10px] px-1.5 py-0.5 rounded border border-border">ETH</span>
+</div>
+<div class="flex items-center gap-1 text-text-secondary font-code-sm text-code-sm mt-0.5">
+<span class="truncate">0x11...99aa</span>
+<button class="hover:text-primary transition-colors"><span class="material-symbols-outlined text-[14px]" data-icon="content_copy">content_copy</span></button>
+</div>
+</div>
+</div>
+<div class="col-span-2 flex flex-wrap gap-2 w-full md:w-auto">
+<span class="bg-status-high/10 text-status-high border border-status-high/20 px-2 py-1 rounded font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span>
+                        HIGH RISK
+                    </span>
+</div>
+<div class="col-span-3 text-text-secondary font-body-md text-[14px] w-full border-l border-border pl-4 md:border-none md:pl-0">
+<strong class="text-on-surface block md:inline">Impersonation:</strong> 假冒官方 (Similar ticker, malicious deployer history).
+                </div>
+<div class="col-span-2 flex items-center gap-4 justify-end w-full mt-2 md:mt-0 pt-2 md:pt-0 border-t border-border md:border-none">
+<div class="hidden md:flex items-center gap-1 text-text-secondary font-code-sm text-code-sm">
+<span class="material-symbols-outlined text-[16px]" data-icon="visibility">visibility</span> 5.1k
+                    </div>
+<button class="bg-surface-container hover:bg-surface-variant border border-outline-variant text-text-primary px-3 py-1.5 rounded-lg font-label-sm text-label-sm transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="share">share</span>
+                        Share
+                    </button>
+</div>
+</div>
+</div>
+<!-- Disclaimer -->
+<div class="mt-8 bg-surface-container-low border border-border rounded-xl p-4 flex gap-3 items-start">
+<span class="material-symbols-outlined text-status-medium shrink-0" data-icon="info">info</span>
+<p class="font-body-md text-[14px] text-text-secondary">
+<strong>Disclaimer:</strong> This leaderboard is generated automatically based on on-chain data and AI heuristics by ChainVigil. It is for informational purposes only and does not constitute financial or investment advice. Always conduct your own research (DYOR) before interacting with any smart contract.
+            </p>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only, mapped from JSON) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface-container dark:bg-surface-container shadow-lg rounded-t-xl transition-all scale-95 active:scale-90 md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant p-2 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-[10px] mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant p-2 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-sm text-[10px] mt-1">Wallet</span>
+</a>
+<!-- Active Tab: Database -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-4 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="database" data-weight="fill" style="font-variation-settings: 'FILL' 1;">database</span>
+<span class="font-label-sm text-[10px] mt-1">Database</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant p-2 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="stars">stars</span>
+<span class="font-label-sm text-[10px] mt-1">Points</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ChainVigil AI - Risk Report</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface": "#e4e1ed",
+                      "status-unknown": "#6B7280",
+                      "on-secondary-fixed-variant": "#6900b3",
+                      "on-primary-fixed-variant": "#2f2ebe",
+                      "on-background": "#e4e1ed",
+                      "tertiary-fixed": "#ffdcc5",
+                      "on-tertiary-fixed-variant": "#703700",
+                      "on-tertiary": "#4f2500",
+                      "on-primary-fixed": "#07006c",
+                      "primary": "#c0c1ff",
+                      "on-tertiary-container": "#452000",
+                      "surface-container-highest": "#34343d",
+                      "on-primary-container": "#0d0096",
+                      "secondary-fixed-dim": "#ddb7ff",
+                      "on-tertiary-fixed": "#301400",
+                      "surface": "#16181D",
+                      "surface-container": "#1f1f27",
+                      "status-high": "#F97316",
+                      "surface-tint": "#c0c1ff",
+                      "secondary-container": "#6f00be",
+                      "surface-container-high": "#292932",
+                      "surface-variant": "#34343d",
+                      "text-secondary": "#9CA3AF",
+                      "on-secondary-container": "#d6a9ff",
+                      "tertiary-container": "#d97721",
+                      "primary-container": "#8083ff",
+                      "status-block": "#EF4444",
+                      "tertiary-fixed-dim": "#ffb783",
+                      "background": "#0A0B0F",
+                      "on-error": "#690005",
+                      "primary-fixed": "#e1e0ff",
+                      "secondary": "#ddb7ff",
+                      "surface-container-low": "#1b1b23",
+                      "inverse-surface": "#e4e1ed",
+                      "inverse-on-surface": "#303038",
+                      "status-medium": "#F59E0B",
+                      "surface-dim": "#13131b",
+                      "status-low": "#10B981",
+                      "error": "#ffb4ab",
+                      "primary-fixed-dim": "#c0c1ff",
+                      "on-secondary": "#490080",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-lowest": "#0d0d15",
+                      "secondary-fixed": "#f0dbff",
+                      "outline": "#908fa0",
+                      "inverse-primary": "#494bd6",
+                      "on-surface-variant": "#c7c4d7",
+                      "tertiary": "#ffb783",
+                      "on-secondary-fixed": "#2c0051",
+                      "outline-variant": "#464554",
+                      "error-container": "#93000a",
+                      "text-primary": "#F9FAFB",
+                      "status-trial": "#06B6D4",
+                      "accent-vp": "#EAB308",
+                      "surface-bright": "#393841",
+                      "border": "#262932",
+                      "on-primary": "#1000a9"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "1.5rem",
+                      "container-max": "1280px",
+                      "stack-lg": "2rem",
+                      "stack-md": "1rem",
+                      "stack-sm": "0.5rem",
+                      "margin-mobile": "1rem"
+              },
+              "fontFamily": {
+                      "headline-md": ["Geist"],
+                      "display-lg-mobile": ["Geist"],
+                      "label-sm": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "display-lg": ["Geist"],
+                      "body-md": ["Inter"],
+                      "code-sm": ["monospace"]
+              },
+              "fontSize": {
+                      "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "display-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "code-sm": ["13px", {"lineHeight": "1.4", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 1;
+        }
+        .scanning-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #c0c1ff, transparent);
+            animation: scan 3s linear infinite;
+            position: absolute;
+            left: 0;
+            width: 100%;
+            z-index: 10;
+        }
+        @keyframes scan {
+            0% { top: 0; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        .ai-gradient-bg {
+            background: radial-gradient(circle at top right, rgba(192, 193, 255, 0.05), transparent 60%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary selection:text-on-primary">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-background dark:bg-background">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="security">security</span>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight">ChainVigil AI</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex gap-6 items-center">
+<a class="text-on-surface-variant hover:opacity-80 transition-opacity font-label-sm text-label-sm" href="#">Dashboard</a>
+<a class="text-on-surface-variant hover:opacity-80 transition-opacity font-label-sm text-label-sm" href="#">Academy</a>
+<a class="text-primary hover:opacity-80 transition-opacity font-label-sm text-label-sm" href="#">Reports</a>
+</div>
+<button class="p-2 rounded-full hover:bg-surface-variant transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+</button>
+</div>
+</header>
+<main class="pt-24 pb-32 px-4 md:px-gutter max-w-container-max mx-auto">
+<!-- Token Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+<div class="space-y-1">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 bg-surface-container rounded-xl flex items-center justify-center border border-border overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A futuristic circular token icon for a cryptocurrency named PEPE2, featuring a stylized green frog head with digital glitch effects and neon circuitry patterns against a deep black background. Professional 3D render, high contrast, cyber-security aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV4AeLJj67sSEo2o3_nPWpYSQBsAKgSiDkaThc-t0fwGWK1-EZFp8K6p54jE6ABLgLqhtjj_zbN-fs7uVMN8iK8GYs3imDIfqm068nL_A8-LrUOinN1St7855vOW-WMOjXLfEH4j6hnHgbRmyzizI1JvvsA2uwUoit4klO8UpUfNH1eWjlchfrqCyPbvNUT-ibjDnEntpmsiONgMf1rFkT17iCKNpXCH0zKoUpOvbNyGqPySBRrfIjartRiNvxdVvLNLRT7NYwrGip"/>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md font-bold text-text-primary">PEPE2</h2>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="px-2 py-0.5 bg-surface-container-high rounded text-label-sm font-label-sm border border-border">Base</span>
+<span class="font-code-sm text-code-sm">0x7c...4f21</span>
+<button class="hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl border border-border bg-surface-container hover:bg-surface-variant transition-all font-label-sm text-label-sm">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+                    分享风险报告
+                </button>
+<button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-primary text-on-primary hover:opacity-90 transition-all font-label-sm text-label-sm">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+                    检查我的钱包
+                </button>
+</div>
+</div>
+<!-- AI Conclusion Card -->
+<section class="relative overflow-hidden mb-8 p-6 md:p-8 rounded-2xl border border-status-block/30 bg-surface-container-lowest ai-gradient-bg">
+<div class="scanning-line"></div>
+<div class="flex flex-col md:flex-row gap-6 relative z-20">
+<!-- Status Circle -->
+<div class="flex-shrink-0 flex flex-col items-center justify-center p-6 rounded-2xl bg-status-block/10 border border-status-block/20 text-status-block text-center w-full md:w-48">
+<span class="material-symbols-outlined text-[48px] mb-2" data-icon="dangerous" style="font-variation-settings: 'FILL' 1;">dangerous</span>
+<span class="font-headline-md text-headline-md font-extrabold">禁买</span>
+<span class="text-label-sm font-label-sm opacity-80 mt-1 uppercase">Danger</span>
+</div>
+<!-- Summary Content -->
+<div class="flex-grow space-y-4">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+<span class="font-label-sm text-label-sm tracking-widest uppercase">ChainVigil AI Analysis Conclusion</span>
+</div>
+<p class="font-body-lg text-body-lg text-text-primary leading-relaxed">
+                        该 token 疑似 <span class="text-status-block font-bold">貔貅盘 (Honeypot)</span>。卖出仿真失败，这意味着用户买入后无法变现。且合约 owner 拥有极高权限，可随时修改卖出税并设置黑名单，存在极高的资产流失风险。
+                    </p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+<div class="flex items-start gap-3 p-3 rounded-xl bg-surface-container-high/50 border border-border">
+<span class="material-symbols-outlined text-status-block" data-icon="error">error</span>
+<div>
+<h4 class="text-label-sm font-label-sm text-on-surface">卖出仿真失败</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">合约限制执行</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-3 rounded-xl bg-surface-container-high/50 border border-border">
+<span class="material-symbols-outlined text-status-block" data-icon="person_off">person_off</span>
+<div>
+<h4 class="text-label-sm font-label-sm text-on-surface">存在黑名单权限</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">Owner可封锁地址</p>
+</div>
+</div>
+<div class="flex items-start gap-3 p-3 rounded-xl bg-surface-container-high/50 border border-border">
+<span class="material-symbols-outlined text-status-block" data-icon="lock_open">lock_open</span>
+<div>
+<h4 class="text-label-sm font-label-sm text-on-surface">LP 未锁</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">极易发生撤池 Rug</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid Details -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Buy/Sell Simulation - Span 8 -->
+<div class="md:col-span-8 group bg-surface-container rounded-2xl border border-border p-6 hover:border-status-block/40 transition-all duration-300">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="monitoring">monitoring</span>
+</div>
+<div>
+<h3 class="font-headline-md text-[20px]">买卖仿真分析</h3>
+<p class="text-on-surface-variant text-label-sm font-label-sm">实时交易执行验证</p>
+</div>
+</div>
+<span class="px-3 py-1 bg-status-block/20 text-status-block rounded-full text-label-sm font-label-sm border border-status-block/30">风险极高</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+<!-- Buy State -->
+<div class="space-y-4">
+<div class="flex justify-between items-center pb-2 border-b border-border">
+<span class="text-on-surface-variant text-label-sm font-label-sm">买入测试</span>
+<span class="text-status-low font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="check_circle">check_circle</span> 成功
+                            </span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant font-label-sm text-label-sm">买入税 (Buy Tax)</span>
+<span class="text-on-surface font-code-sm">0%</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant font-label-sm text-label-sm">最大买入量</span>
+<span class="text-on-surface font-code-sm">No Limit</span>
+</div>
+</div>
+<!-- Sell State -->
+<div class="space-y-4">
+<div class="flex justify-between items-center pb-2 border-b border-border">
+<span class="text-on-surface-variant text-label-sm font-label-sm">卖出测试</span>
+<span class="text-status-block font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]" data-icon="cancel">cancel</span> 失败
+                            </span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant font-label-sm text-label-sm">卖出税 (Sell Tax)</span>
+<span class="text-status-block font-bold font-code-sm">100.0%</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant font-label-sm text-label-sm">失败原因</span>
+<span class="text-on-surface font-label-sm text-label-sm">HoneyPot Detected</span>
+</div>
+</div>
+</div>
+<div class="mt-6 p-4 bg-surface-container-high rounded-xl border border-border/50 text-label-sm font-label-sm text-on-surface-variant italic">
+                    AI 备注: 该合约代码包含动态调整税率逻辑，在探测到钱包持有量达到一定阈值后，卖出功能将被程序化阻断。
+                </div>
+</div>
+<!-- Contract Permissions - Span 4 -->
+<div class="md:col-span-4 bg-surface-container rounded-2xl border border-border p-6 hover:border-primary/40 transition-all duration-300">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="policy">policy</span>
+</div>
+<div>
+<h3 class="font-headline-md text-[20px]">合约权限</h3>
+<p class="text-on-surface-variant text-label-sm font-label-sm">关键权限扫描</p>
+</div>
+</div>
+<ul class="space-y-4">
+<li class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl border border-border">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-status-high" data-icon="verified_user">verified_user</span>
+<span class="text-label-sm font-label-sm">Owner 权限</span>
+</div>
+<span class="text-status-high font-bold text-label-sm">未放弃</span>
+</li>
+<li class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl border border-status-block/30">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-status-block" data-icon="block">block</span>
+<span class="text-label-sm font-label-sm">黑名单功能</span>
+</div>
+<span class="text-status-block font-bold text-label-sm">检测到</span>
+</li>
+<li class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl border border-border">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-status-medium" data-icon="edit">edit</span>
+<span class="text-label-sm font-label-sm">修改税率</span>
+</div>
+<span class="text-status-medium font-bold text-label-sm">可修改</span>
+</li>
+<li class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl border border-border">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-status-low" data-icon="paid">paid</span>
+<span class="text-label-sm font-label-sm">增发权限</span>
+</div>
+<span class="text-status-low font-bold text-label-sm">未发现</span>
+</li>
+</ul>
+</div>
+<!-- Liquidity Section - Span 12 -->
+<div class="md:col-span-12 bg-surface-container rounded-2xl border border-border p-6">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="water_drop">water_drop</span>
+</div>
+<div>
+<h3 class="font-headline-md text-[20px]">流动性分析 (LP)</h3>
+<p class="text-on-surface-variant text-label-sm font-label-sm">资金池安全性检测</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="text-right">
+<p class="text-label-sm font-label-sm text-on-surface-variant">总流动性 (USD)</p>
+<p class="font-headline-md text-headline-md font-bold text-text-primary">$124,502.80</p>
+</div>
+<div class="w-[1px] bg-border h-10 self-center"></div>
+<div class="text-right">
+<p class="text-label-sm font-label-sm text-on-surface-variant">LP 持有者</p>
+<p class="font-headline-md text-headline-md font-bold text-text-primary">12</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<div class="space-y-6">
+<div class="flex items-center justify-between p-5 rounded-2xl bg-status-block/5 border border-status-block/20">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-status-block/20 rounded-full flex items-center justify-center text-status-block">
+<span class="material-symbols-outlined text-[32px]" data-icon="lock_open">lock_open</span>
+</div>
+<div>
+<h4 class="font-label-sm text-label-sm text-on-surface">LP 锁定状态</h4>
+<p class="text-status-block font-bold">未锁定 (Unlocked)</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-status-block animate-pulse" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="space-y-3">
+<h5 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Top LP Holders</h5>
+<div class="bg-surface-container-low rounded-xl border border-border overflow-hidden">
+<div class="flex justify-between p-3 border-b border-border bg-surface-container-high/50">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Holder</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Percentage</span>
+</div>
+<div class="flex justify-between p-3 border-b border-border/50">
+<span class="font-code-sm text-code-sm text-primary">0xDeployer...f92</span>
+<span class="font-code-sm text-code-sm text-on-surface">92.4%</span>
+</div>
+<div class="flex justify-between p-3 border-b border-border/50">
+<span class="font-code-sm text-code-sm">0xUnknown...a12</span>
+<span class="font-code-sm text-code-sm text-on-surface">4.1%</span>
+</div>
+<div class="flex justify-between p-3">
+<span class="font-code-sm text-code-sm">Others</span>
+<span class="font-code-sm text-code-sm text-on-surface">3.5%</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col justify-center items-center gap-4">
+<!-- Chart Placeholder Representation -->
+<div class="relative w-full max-w-[280px] aspect-square rounded-full border-[20px] border-surface-container-high flex items-center justify-center">
+<div class="absolute inset-0 border-[20px] border-status-block border-l-transparent border-t-transparent border-r-transparent rounded-full rotate-45"></div>
+<div class="text-center">
+<p class="text-[32px] font-bold text-status-block">92%</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Owner 持有</p>
+</div>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant text-center px-8">
+                            持有权极度集中在部署者手中。由于 LP 未锁定，项目方可随时撤出 $12w+ 流动性资金。
+                        </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Evidence Panels (Expandable) -->
+<section class="mt-8 space-y-4">
+<h3 class="font-headline-md text-[20px] mb-4">技术证据详情</h3>
+<!-- Item 1 - Expanded -->
+<div class="rounded-xl border border-border bg-surface-container overflow-hidden">
+<button class="w-full flex items-center justify-between p-4 hover:bg-surface-variant transition-colors" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-status-block" data-icon="code">code</span>
+<span class="font-label-sm text-label-sm">合约代码相似度分析 (Honeypot Patterns)</span>
+</div>
+<span class="material-symbols-outlined arrow transition-transform duration-300" data-icon="expand_more">expand_more</span>
+</button>
+<div class="p-4 bg-surface-container-lowest border-t border-border">
+<div class="bg-black/40 p-4 rounded-lg font-code-sm text-code-sm overflow-x-auto text-on-surface-variant">
+<p class="text-status-block">// 检测到典型的貔貅盘逻辑片段:</p>
+<p class="mt-2 text-on-surface"><span class="text-status-high">function</span> <span class="text-primary">_transfer</span>(address from, address to, uint256 amount) internal override {</p>
+<p class="pl-4">require(!_isBlacklisted[from], <span class="text-status-block">"Address Blacklisted"</span>);</p>
+<p class="pl-4">if(to == uniswapV2Pair &amp;&amp; !swapping &amp;&amp; !isExcludedFromFees[from]) {</p>
+<p class="pl-8 text-status-block">require(sellEnabled, "Sell currently disabled by policy");</p>
+<p class="pl-4">}</p>
+<p class="pl-4">...</p>
+<p class="text-on-surface">}</p>
+</div>
+<p class="mt-4 text-label-sm font-label-sm text-on-surface-variant">
+                        AI 检测到该合约使用了臭名昭著的 "Toggle Sell" 模板。部署者可以调用 `setSellEnabled(false)` 来全局禁止卖出。
+                    </p>
+</div>
+</div>
+<!-- Item 2 - Collapsed -->
+<div class="rounded-xl border border-border bg-surface-container overflow-hidden">
+<button class="w-full flex items-center justify-between p-4 hover:bg-surface-variant transition-colors" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-status-medium" data-icon="account_tree">account_tree</span>
+<span class="font-label-sm text-label-sm">资金流向分析 (Money Trail)</span>
+</div>
+<span class="material-symbols-outlined arrow transition-transform duration-300" data-icon="expand_more">expand_more</span>
+</button>
+<div class="hidden p-4 bg-surface-container-lowest border-t border-border">
+<p class="text-label-sm font-label-sm text-on-surface-variant">部署者钱包资金来源显示其关联了多个已被标记为 Rug Pull 的历史地址。建议远离该项目方关联的所有新项目。</p>
+</div>
+</div>
+</section>
+<!-- Vigil Points Banner -->
+<div class="mt-12 p-6 rounded-2xl bg-gradient-to-r from-secondary-container/20 to-primary-container/20 border border-primary/20 flex flex-col md:flex-row items-center justify-between gap-6">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 bg-surface rounded-2xl flex items-center justify-center text-accent-vp border border-accent-vp/30 shadow-[0_0_15px_rgba(234,179,8,0.1)]">
+<span class="material-symbols-outlined text-[32px]" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+<div>
+<h3 class="font-headline-md text-[18px] text-text-primary">发现潜在风险获赠 Vigil Points</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant">您的每一次扫描都在为 Web3 安全生态做贡献。当前获得: <span class="text-accent-vp font-bold">+15 VP</span></p>
+</div>
+</div>
+<button class="px-6 py-2.5 rounded-full bg-surface-bright text-on-surface hover:bg-surface-variant transition-colors font-label-sm text-label-sm border border-border">
+                查看积分榜
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface-container dark:bg-surface-container shadow-lg rounded-t-xl md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-all scale-95 active:scale-90 px-3 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-all scale-95 active:scale-90 px-3 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-sm text-label-sm">Wallet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant transition-all scale-95 active:scale-90 px-3 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+<span class="font-label-sm text-label-sm">Database</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-3 py-1 transition-all scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="font-label-sm text-label-sm">Points</span>
+</a>
+</nav>
+<script>
+        // Simple Micro-interactions
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.classList.add('scale-95');
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.classList.remove('scale-95');
+            });
+        });
+
+        // Copy address simulation
+        const copyBtn = document.querySelector('[data-icon="content_copy"]').parentElement;
+        copyBtn.addEventListener('click', () => {
+            const originalIcon = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<span class="material-symbols-outlined text-[18px] text-status-low" data-icon="check">check</span>';
+            setTimeout(() => {
+                copyBtn.innerHTML = originalIcon;
+            }, 2000);
+        });
+    </script>
+</body></html>

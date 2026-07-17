@@ -2,8 +2,27 @@
 
 :root {
   color-scheme: dark;
-  background: #0a0b0f;
-  color: #f9fafb;
+  --cv-bg: #0a0b0f;
+  --cv-surface: #16181d;
+  --cv-surface-low: #1b1b23;
+  --cv-surface-high: #292932;
+  --cv-border: #262932;
+  --cv-outline: #464554;
+  --cv-primary: #c0c1ff;
+  --cv-primary-container: #8083ff;
+  --cv-on-primary: #0d0096;
+  --cv-secondary: #ddb7ff;
+  --cv-text: #f9fafb;
+  --cv-text-muted: #9ca3af;
+  --cv-text-body: #c7c4d7;
+  --cv-vp: #eab308;
+  --cv-block: #ef4444;
+  --cv-high: #f97316;
+  --cv-medium: #f59e0b;
+  --cv-low: #10b981;
+  --cv-unknown: #6b7280;
+  background: var(--cv-bg);
+  color: var(--cv-text);
   font-family:
     Inter, "PingFang SC", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -12,7 +31,8 @@
 body {
   margin: 0;
   min-width: 320px;
-  background: #0a0b0f;
+  background: var(--cv-bg);
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -24,7 +44,83 @@ input {
   font: inherit;
 }
 
+:where(a, button, input):focus-visible {
+  outline: 2px solid var(--cv-primary);
+  outline-offset: 3px;
+}
+
 ::selection {
-  background: #8083ff;
-  color: #0a0b0f;
+  background: var(--cv-primary-container);
+  color: var(--cv-bg);
+}
+
+.ai-gradient-text {
+  background: linear-gradient(135deg, #c0c1ff 0%, #ddb7ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ai-glow-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-glow-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(192, 193, 255, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+@keyframes cv-scan-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cv-pulse-ring {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.08);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+}
+
+@keyframes cv-scan-line {
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+.cv-scan-orb {
+  animation: cv-scan-spin 8s linear infinite;
+}
+
+.cv-scan-ring {
+  animation: cv-pulse-ring 2.4s ease-out infinite;
+}
+
+.cv-scan-line {
+  animation: cv-scan-line 2.8s ease-in-out infinite;
+}
+
+.cv-bottom-nav-safe {
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
 }

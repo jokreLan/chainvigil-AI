@@ -5,32 +5,70 @@ import type {
   PointEventType,
   PointLedger,
   PointLedgerSummary,
+  VpRedemptionItem,
 } from "@chainvigil/types";
+
+export type PointsLocale = "zh" | "en";
+
+function normalizeLocale(locale?: string | null): PointsLocale {
+  return locale === "en" ? "en" : "zh";
+}
+
+function pick(locale: PointsLocale, zh: string, en: string): string {
+  return locale === "en" ? en : zh;
+}
 
 const pointProgramMeta = {
   pointsName: "哨点",
   englishName: "Vigil Points",
   shortName: "VP",
-  disclaimer: "VP 用于产品权益和生态贡献记录，不承诺固定兑换平台币。",
+  cashOffsetCapPercent: 30,
 } as const;
 
-const pointRules: Record<PointEventType, { points: number; ledger: PointLedger; reason: string }> = {
-  FIRST_CA_CHECK: { points: 20, ledger: "xp", reason: "首次完成 CA 安检" },
-  DAILY_FIRST_CA_CHECK: { points: 5, ledger: "xp", reason: "每日首次 CA 安检" },
-  FIRST_NEW_CA_CHECK: { points: 10, ledger: "xp", reason: "首次检测新的 CA" },
-  REPORT_SHARED: { points: 5, ledger: "growth_reward", reason: "分享风险报告" },
-  SHARE_EFFECTIVE_VISIT: { points: 3, ledger: "growth_reward", reason: "分享带来有效访问" },
-  SHARE_EFFECTIVE_CA_CHECK: {
-    points: 15,
-    ledger: "growth_reward",
-    reason: "分享带来有效 CA 检测",
-  },
-  RISK_REPORT_SUBMITTED: {
-    points: 30,
-    ledger: "security_contribution",
-    reason: "提交高危 CA 举报",
-  },
-};
+function pointRulesFor(
+  locale: PointsLocale,
+): Record<PointEventType, { points: number; ledger: PointLedger; reason: string }> {
+  return {
+    FIRST_CA_CHECK: {
+      points: 20,
+      ledger: "xp",
+      reason: pick(locale, "首次完成 CA 安检", "First CA check completed"),
+    },
+    DAILY_FIRST_CA_CHECK: {
+      points: 5,
+      ledger: "xp",
+      reason: pick(locale, "每日首次 CA 安检", "Daily first CA check"),
+    },
+    FIRST_NEW_CA_CHECK: {
+      points: 10,
+      ledger: "xp",
+      reason: pick(locale, "首次检测新的 CA", "First check of a new CA"),
+    },
+    REPORT_SHARED: {
+      points: 5,
+      ledger: "growth_reward",
+      reason: pick(locale, "分享风险报告", "Shared a risk report"),
+    },
+    SHARE_EFFECTIVE_VISIT: {
+      points: 3,
+      ledger: "growth_reward",
+      reason: pick(locale, "分享带来有效访问", "Share drove an effective visit"),
+    },
+    SHARE_EFFECTIVE_CA_CHECK: {
+      points: 15,
+      ledger: "growth_reward",
+      reason: pick(locale, "分享带来有效 CA 检测", "Share drove an effective CA check"),
+    },
+    RISK_REPORT_SUBMITTED: {
+      points: 30,
+      ledger: "security_contribution",
+      reason: pick(locale, "提交高危 CA 举报", "Submitted a high-risk CA report"),
+    },
+  };
+}
+
+/** Default zh rules for ledger mock / createPendingPointEvent compatibility. */
+const pointRules = pointRulesFor("zh");
 
 export function createPendingPointEvent(params: {
   type: PointEventType;
@@ -62,8 +100,8 @@ export function createPendingPointEvent(params: {
   return event;
 }
 
-export function listPointRules() {
-  return pointRules;
+export function listPointRules(locale?: PointsLocale | null) {
+  return pointRulesFor(normalizeLocale(locale));
 }
 
 const mockPointLedgerEvents = [
@@ -115,9 +153,19 @@ export function listMockPointLedgerEvents(subjectId = "visitor:mock"): PointEven
   }));
 }
 
-export function getMockPointLedgerSummary(subjectId = "visitor:mock"): PointLedgerSummary {
+export function getMockPointLedgerSummary(
+  subjectId = "visitor:mock",
+  locale?: PointsLocale | null,
+): PointLedgerSummary {
+  const lang = normalizeLocale(locale);
   const recentEvents = listMockPointLedgerEvents(subjectId);
   const ledgers: PointLedger[] = ["xp", "security_contribution", "growth_reward"];
+
+  const disclaimer = pick(
+    lang,
+    "VP 为产品权益积分，用于兑换查询额度、监控与会员体验；不构成代币、收益承诺或投资建议，不可提现、不可转让。",
+    "VP is a product perk ledger for check quotas, monitors, and membership trials — not a token, yield promise, or investment advice; non-withdrawable and non-transferable.",
+  );
 
   return {
     pointsName: pointProgramMeta.pointsName,
@@ -138,11 +186,12 @@ export function getMockPointLedgerSummary(subjectId = "visitor:mock"): PointLedg
       };
     }),
     recentEvents,
-    disclaimer: pointProgramMeta.disclaimer,
+    disclaimer,
   };
 }
 
-export function listMockGrowthChannels(): GrowthChannel[] {
+export function listMockGrowthChannels(locale?: PointsLocale | null): GrowthChannel[] {
+  const lang = normalizeLocale(locale);
   const channels = [
     {
       id: "channel-kol-001",
@@ -157,7 +206,11 @@ export function listMockGrowthChannels(): GrowthChannel[] {
       pendingVp: 420,
       confirmedVp: 860,
       conversionRate: 0.25,
-      note: "按有效访问和有效 CA 检测结算，不奖励空点击。",
+      note: pick(
+        lang,
+        "按有效访问和有效 CA 检测结算，不奖励空点击。",
+        "Settles on effective visits and CA checks — no empty-click rewards.",
+      ),
       updatedAt: "2026-07-08T02:00:00.000Z",
     },
     {
@@ -173,7 +226,11 @@ export function listMockGrowthChannels(): GrowthChannel[] {
       pendingVp: 260,
       confirmedVp: 510,
       conversionRate: 0.2,
-      note: "等待真实群组归因和反作弊策略接入后再确认待结算 VP。",
+      note: pick(
+        lang,
+        "等待真实群组归因和反作弊策略接入后再确认待结算 VP。",
+        "Pending VP waits for live group attribution and anti-abuse rules.",
+      ),
       updatedAt: "2026-07-08T02:10:00.000Z",
     },
     {
@@ -189,7 +246,11 @@ export function listMockGrowthChannels(): GrowthChannel[] {
       pendingVp: 0,
       confirmedVp: 180,
       conversionRate: 0.2,
-      note: "旧周报入口暂停新增奖励，保留历史统计。",
+      note: pick(
+        lang,
+        "旧周报入口暂停新增奖励，保留历史统计。",
+        "Legacy weekly entry paused for new rewards; history kept.",
+      ),
       updatedAt: "2026-07-08T02:20:00.000Z",
     },
   ] satisfies GrowthChannel[];
@@ -197,9 +258,82 @@ export function listMockGrowthChannels(): GrowthChannel[] {
   return channels.map((channel) => ({ ...channel }));
 }
 
-export function getPointProgram() {
+export function listVpRedemptions(locale?: PointsLocale | null): VpRedemptionItem[] {
+  const lang = normalizeLocale(locale);
+  const vpRedemptions: VpRedemptionItem[] = [
+    {
+      id: "redeem.extra_checks_10",
+      title: pick(lang, "额外安检 10 次", "Extra 10 CA checks"),
+      description: pick(
+        lang,
+        "当日查询额度用尽后，用哨点续航继续查 CA。",
+        "When daily quota is used up, spend VP to keep scanning CAs.",
+      ),
+      costVp: 40,
+      category: "checks",
+      status: "preview",
+      cashAlternativeLabel: pick(lang, "Pro 会员含更高额度", "Pro includes higher quotas"),
+      highlight: true,
+    },
+    {
+      id: "redeem.monitor_ca_7d",
+      title: pick(lang, "监控 1 个 CA · 7 天", "Monitor 1 CA · 7 days"),
+      description: pick(
+        lang,
+        "风险等级变化时提醒（上线后接入通知通道）。",
+        "Alert when risk level changes (notifications when live).",
+      ),
+      costVp: 100,
+      category: "monitor",
+      status: "coming_soon",
+      cashAlternativeLabel: pick(lang, "约 ¥9 加购", "About ¥9 add-on"),
+      highlight: true,
+    },
+    {
+      id: "redeem.pro_7d",
+      title: pick(lang, "Pro 体验 7 天", "Pro trial · 7 days"),
+      description: pick(
+        lang,
+        "高级报告字段、更高限额；可用 VP 抵扣部分现金。",
+        "Advanced report fields and higher limits; VP can offset part of cash.",
+      ),
+      costVp: 200,
+      category: "pro",
+      status: "coming_soon",
+      cashAlternativeLabel: "¥19–49 / mo",
+    },
+    {
+      id: "redeem.group_boost_day",
+      title: pick(lang, "群日查询扩容", "Group daily quota boost"),
+      description: pick(
+        lang,
+        "群 Bot 当日查询上限提升，适合活跃中文交易群。",
+        "Raises group bot daily check cap for active trading groups.",
+      ),
+      costVp: 150,
+      category: "group",
+      status: "coming_soon",
+      cashAlternativeLabel: pick(lang, "群商业版月费", "Group business plan fee"),
+    },
+  ];
+
+  return vpRedemptions.map((item) => ({ ...item }));
+}
+
+export function getPointProgram(locale?: PointsLocale | null) {
+  const lang = normalizeLocale(locale);
   return {
-    ...pointProgramMeta,
-    rules: pointRules,
+    pointsName: pick(lang, "哨点", "Vigil Points"),
+    englishName: pointProgramMeta.englishName,
+    shortName: pointProgramMeta.shortName,
+    tagline: pick(lang, "用安检与贡献换防护权益", "Turn scans & contributions into protection perks"),
+    disclaimer: pick(
+      lang,
+      "VP 为产品权益积分，用于兑换查询额度、监控与会员体验；不构成代币、收益承诺或投资建议，不可提现、不可转让。",
+      "VP is a product perk ledger for check quotas, monitors, and membership trials — not a token, yield promise, or investment advice; non-withdrawable and non-transferable.",
+    ),
+    cashOffsetCapPercent: pointProgramMeta.cashOffsetCapPercent,
+    rules: pointRulesFor(lang),
+    redemptions: listVpRedemptions(lang),
   };
 }

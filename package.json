@@ -12,7 +12,8 @@
     "db:generate": "pnpm --filter @chainvigil/db prisma:generate",
     "db:migrate": "pnpm --filter @chainvigil/db prisma:migrate",
     "format": "prettier --write .",
-    "smoke:v0": "node scripts/smoke-v0.mjs"
+    "smoke:v0": "node scripts/smoke-v0.mjs",
+    "launch:check": "node scripts/launch-check.mjs"
   },
   "devDependencies": {
     "@types/node": "^20.19.4",

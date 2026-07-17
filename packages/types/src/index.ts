@@ -46,6 +46,9 @@ export interface TokenRiskEvidence {
   deployerRiskLabel?: string;
 }
 
+export type ReportExecutionMode = "mock" | "live";
+export type ReportConfidence = "UNASSESSED" | "LOW" | "MEDIUM" | "HIGH";
+
 export interface TokenRiskReport {
   id: string;
   chain: ChainId;
@@ -62,6 +65,10 @@ export interface TokenRiskReport {
   checkedAt: string;
   reportUrl: string;
   shareText: string;
+  /** Always present so clients cannot mistake mock for live chain evidence. */
+  mode: ReportExecutionMode;
+  confidence: ReportConfidence;
+  confidenceScore: number;
 }
 
 export interface TokenCheckRequest {
@@ -70,10 +77,14 @@ export interface TokenCheckRequest {
   source?: "web" | "telegram" | "api" | "admin";
   referrer?: string;
   forceRefresh?: boolean;
+  /** User-facing copy language for mock/live reports. */
+  locale?: "zh" | "en";
 }
 
 export interface TokenCheckResponse {
   report: TokenRiskReport;
+  mode?: ReportExecutionMode;
+  confidence?: ReportConfidence;
 }
 
 export interface AdminTokenReportIndexItem {
@@ -123,16 +134,23 @@ export interface WalletHealthReport {
   checkedAt: string;
   reportUrl: string;
   disclaimer: string;
+  mode: ReportExecutionMode;
+  confidence: ReportConfidence;
+  confidenceScore: number;
 }
 
 export interface WalletHealthRequest {
   address: string;
   chain?: ChainId;
   source?: "web" | "api" | "admin";
+  /** User-facing copy language for mock/live reports. */
+  locale?: "zh" | "en";
 }
 
 export interface WalletHealthResponse {
   report: WalletHealthReport;
+  mode?: ReportExecutionMode;
+  confidence?: ReportConfidence;
 }
 
 export interface WalletWatchlistItem {
@@ -317,6 +335,20 @@ export interface PointLedgerSummary {
   balances: PointLedgerBalance[];
   recentEvents: PointEvent[];
   disclaimer: string;
+}
+
+/** Product benefits redeemable with confirmed VP (second growth engine). */
+export type VpRedemptionStatus = "preview" | "coming_soon" | "active";
+
+export interface VpRedemptionItem {
+  id: string;
+  title: string;
+  description: string;
+  costVp: number;
+  category: "checks" | "monitor" | "pro" | "group";
+  status: VpRedemptionStatus;
+  cashAlternativeLabel?: string;
+  highlight?: boolean;
 }
 
 export type GrowthChannelType = "kol" | "telegram_group" | "x_thread";

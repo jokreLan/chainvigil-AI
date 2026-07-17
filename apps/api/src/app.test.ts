@@ -712,4 +712,126 @@ describe("api app", () => {
 
     await app.close();
   });
+
+  it("protects admin routes when basic auth password is configured", async () => {
+    const app = await buildApiApp({
+      env: {
+        ...process.env,
+        ADMIN_BASIC_AUTH_USERNAME: "ops",
+        ADMIN_BASIC_AUTH_PASSWORD: "admin-password-32-random",
+      },
+    });
+    const unauthorized = await app.inject({ method: "GET", url: "/api/v1/admin/audit/logs" });
+    const authorized = await app.inject({
+      method: "GET",
+      url: "/api/v1/admin/audit/logs",
+      headers: {
+        authorization: `Basic ${Buffer.from("ops:admin-password-32-random").toString("base64")}`,
+      },
+    });
+
+    expect(unauthorized.statusCode).toBe(401);
+    expect(unauthorized.json().error.code).toBe("UNAUTHORIZED");
+    expect(authorized.statusCode).toBe(200);
+    expect(authorized.json().mode).toBe("mock");
+
+    await app.close();
+  });
+
+  it("requires write secret for points and referral events when configured", async () => {
+    const app = await buildApiApp({
+      env: {
+        ...process.env,
+        INTERNAL_WRITE_SECRET: "internal-write-32-random",
+      },
+    });
+
+    const blockedPoints = await app.inject({
+      method: "POST",
+      url: "/api/v1/points/event",
+      payload: {
+        type: "REPORT_SHARED",
+        idempotencyKey: "test:blocked-points",
+      },
+    });
+    const allowedPoints = await app.inject({
+      method: "POST",
+      url: "/api/v1/points/event",
+      headers: {
+        "x-chainvigil-write-secret": "internal-write-32-random",
+      },
+      payload: {
+        type: "REPORT_SHARED",
+        idempotencyKey: "test:allowed-points",
+      },
+    });
+    const blockedReferral = await app.inject({
+      method: "POST",
+      url: "/api/v1/referral/event",
+      payload: {
+        referralCode: "KOL001",
+        source: "web",
+        action: "copy_report_link",
+      },
+    });
+    const allowedReferral = await app.inject({
+      method: "POST",
+      url: "/api/v1/referral/event",
+      headers: {
+        "x-chainvigil-write-secret": "internal-write-32-random",
+      },
+      payload: {
+        referralCode: "KOL001",
+        source: "web",
+        action: "copy_report_link",
+        subjectId: "bsc:0x1111111111111111111111111111111111111110",
+      },
+    });
+    const invalidReferral = await app.inject({
+      method: "POST",
+      url: "/api/v1/referral/event",
+      headers: {
+        "x-chainvigil-write-secret": "internal-write-32-random",
+      },
+      payload: {
+        referralCode: "bad code!",
+        source: "web",
+        action: "copy_report_link",
+      },
+    });
+
+    expect(blockedPoints.statusCode).toBe(403);
+    expect(allowedPoints.statusCode).toBe(200);
+    expect(blockedReferral.statusCode).toBe(403);
+    expect(allowedReferral.statusCode).toBe(200);
+    expect(allowedReferral.json().mode).toBe("mock");
+    expect(invalidReferral.statusCode).toBe(400);
+    expect(invalidReferral.json().error.field).toBe("referralCode");
+
+    await app.close();
+  });
+
+  it("returns mock and confidence markers on token reports", async () => {
+    const app = await buildApiApp();
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/v1/token/check",
+      payload: {
+        input: "0x1111111111111111111111111111111111111113",
+        chain: "bsc",
+      },
+    });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(body.mode).toBe("mock");
+    expect(body.confidence).toBe("UNASSESSED");
+    expect(body.report).toMatchObject({
+      mode: "mock",
+      confidence: "UNASSESSED",
+      confidenceScore: 0,
+    });
+
+    await app.close();
+  });
 });

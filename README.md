@@ -37,9 +37,9 @@ pnpm dev
 默认服务：
 
 - Web：`http://localhost:3000`
-- Admin：`http://localhost:3001`（默认本地免登录；设置 `ADMIN_BASIC_AUTH_PASSWORD` 后启用 Basic Auth）
-- API：`http://localhost:4000`
-- Bot skeleton：`http://localhost:4001`
+- Admin：`http://localhost:3001`（默认本地免登录；设置 `ADMIN_BASIC_AUTH_PASSWORD` 后启用 Basic Auth，API `/api/v1/admin/*` 同步生效）
+- API：`http://localhost:4000`（CORS 白名单、写接口可配 `INTERNAL_WRITE_SECRET`、报告带 `mode`/`confidence`）
+- Bot skeleton：`http://localhost:4001`（可配 `TELEGRAM_WEBHOOK_SECRET` 校验 webhook）
 - Worker skeleton：后台长驻进程，V0 只打印健康心跳和 job contract
 
 健康检查：
@@ -89,9 +89,21 @@ pnpm db:validate
 pnpm smoke:v0
 ```
 
-当前 smoke 覆盖 Web `/health`、Web `/check`、Web 风险数据库、Web 高危 CA 榜单、Web 假币数据库、Web 风险监控、Web 买后清理策略、Web VP ledger、Web Bot commands、Web API 清单、Web 用户报告历史、Web 钱包 watchlist、Web 推广中心、Web 设置页、Token 报告页 JSON-LD、Admin `/health`、Admin readiness/worker jobs、Admin data sources（含 SOL/BNB 证据 Provider）、Admin `/audit`、Admin reports、Admin channels、Admin risk review、Admin risk labels、Admin VP ledger、Admin Telegram groups/commands、API BNB/Solana token check、API meta、API data sources、API SOL/BNB 风险证据 Provider、API worker jobs、API 风险数据库、API 高危 CA 榜单、API 假币样例、API 风险监控规则、API 买后清理策略、API 钱包 watchlist、API 用户设置、API VP ledger、API growth channels、API Telegram groups/commands、API 只读审计日志、API 只读风险复核队列、API 只读风险标签目录、API 只读 Token 报告索引、API 坏钱包 400、Bot `/start`、Bot 坏 `/check` 提示和关键安全响应头。
+当前 smoke 约 64 项，覆盖：Web/Admin health 与安全头；对外页双语文案；**robots / sitemap**（耐久页在、CA/wallet 不进 sitemap）；**`/learn` GEO**（honeypot FAQ JSON-LD）；Token 报告 **noindex + freshness**；JSON-LD / mode / confidence；Admin 中文运营面；API token check（zh+en locale）、meta、数据源、证据 Provider、worker、风险库/榜单、监控/清理策略、钱包/设置/VP/growth/Telegram/审计；Bot `/start` 与坏 `/check`。另见 `pnpm launch:check`（无进程静态契约）。
 
-上线前安全边界和生产预检见 `SECURITY.md`。
+上线前安全边界和生产预检见 `SECURITY.md`、`docs/ops/launch_checklist.md`。
+
+## 战略与推进（OPC）
+
+一人公司总控与下阶段任务：
+
+- 总控：`docs/strategy/MASTER_CONTROL.md`
+- 90 天 GTM：`docs/go-to-market/gtm_90_days.md`
+- VP 第二曲线：`docs/product/vp_second_engine_v1.md`
+- 运维手册：`docs/ops/runbook_v1.md`
+- 任务板：`TASKS.md`
+
+**定位一句话：** 买币前，在群里用中文把 CA 查清楚。
 
 ## V0 mock 流程
 
@@ -210,9 +222,14 @@ Admin 后台 V0 使用可配置 Basic Auth skeleton：
 ```text
 ADMIN_BASIC_AUTH_USERNAME=admin
 ADMIN_BASIC_AUTH_PASSWORD=change-me-before-deploy
+INTERNAL_WRITE_SECRET=local-dev-write-secret-32
+TELEGRAM_WEBHOOK_SECRET=local-dev-telegram-webhook
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
+TRUST_PROXY=0
 ```
 
-本地不设置 `ADMIN_BASIC_AUTH_PASSWORD` 时，Admin 保持直接可访问，方便第一阶段开发。
+本地不设置 `ADMIN_BASIC_AUTH_PASSWORD` 时，Admin UI 与 API admin 路由保持直接可访问，方便第一阶段开发。  
+生产模式（`CHAINVIGIL_RUNTIME_MODE=production`）启动时会 **fail-closed**：缺密钥/弱密钥/非 HTTPS 公开 URL 直接拒绝启动。详见 `SECURITY.md`。
 
 ## Admin 审计
 

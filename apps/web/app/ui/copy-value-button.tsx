@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useT } from "../i18n/locale-context";
 
 interface CopyValueButtonProps {
   value: string;
@@ -29,6 +30,7 @@ async function copyText(value: string) {
 }
 
 export function CopyValueButton({ value, label, className = "" }: CopyValueButtonProps) {
+  const t = useT();
   const [feedback, setFeedback] = useState<"copied" | "failed" | null>(null);
 
   async function onCopy() {
@@ -42,7 +44,8 @@ export function CopyValueButton({ value, label, className = "" }: CopyValueButto
     window.setTimeout(() => setFeedback(null), 1800);
   }
 
-  const text = feedback === "copied" ? "已复制" : feedback === "failed" ? "复制失败" : label;
+  const text =
+    feedback === "copied" ? t("common.copied") : feedback === "failed" ? t("common.copyFailed") : label;
 
   return (
     <button

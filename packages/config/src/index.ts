@@ -1,3 +1,5 @@
+import { timingSafeEqual } from "node:crypto";
+
 export function readEnv(name: string, fallback?: string): string {
   const value = process.env[name] ?? fallback;
 
@@ -60,9 +62,19 @@ export const envVarSpecs: EnvVarSpec[] = [
     description: "Telegram Bot token；V0 本地 mock 可留空。",
   },
   {
+    name: "TELEGRAM_WEBHOOK_SECRET",
+    requiredIn: ["production"],
+    description: "Telegram webhook secret token，用于校验 X-Telegram-Bot-Api-Secret-Token。",
+  },
+  {
     name: "ADMIN_BASIC_AUTH_PASSWORD",
     requiredIn: ["production"],
     description: "Admin Basic Auth 密码；本地 mock 可留空，生产必须配置。",
+  },
+  {
+    name: "INTERNAL_WRITE_SECRET",
+    requiredIn: ["production"],
+    description: "服务端写接口密钥（积分/推荐事件），至少 16 字符，不暴露给浏览器。",
   },
   {
     name: "GOPLUS_API_KEY",
@@ -121,7 +133,9 @@ export interface SystemReadiness {
   productionSecurity: ProductionSecurityReadiness;
 }
 
-export function resolveRuntimeMode(env: Record<string, string | undefined>): RuntimeMode {
+export function resolveRuntimeMode(
+  env: Record<string, string | undefined> = process.env,
+): RuntimeMode {
   return env.CHAINVIGIL_RUNTIME_MODE === "production" ? "production" : "mock";
 }
 
@@ -136,7 +150,7 @@ const placeholderValues = new Set([
   "test",
 ]);
 
-function isUnsafeSecretValue(value: string | undefined): boolean {
+export function isUnsafeSecretValue(value: string | undefined): boolean {
   const normalized = value?.trim().toLowerCase();
 
   return !normalized || placeholderValues.has(normalized) || normalized.length < 16;
@@ -172,6 +186,8 @@ export function getProductionSecurityReadiness(
     "ADMIN_SECRET",
     "JWT_SECRET",
     "TELEGRAM_BOT_TOKEN",
+    "TELEGRAM_WEBHOOK_SECRET",
+    "INTERNAL_WRITE_SECRET",
   ]) {
     if (isUnsafeSecretValue(env[name])) {
       warnings.push({
@@ -214,3 +230,215 @@ export function getSystemReadiness(
     productionSecurity: getProductionSecurityReadiness(env),
   };
 }
+
+/**
+ * Fail-closed production gate. Throws if runtime mode is production and
+ * required env or security prechecks fail. Never includes secret values.
+ */
+export function assertProductionRuntime(
+  env: Record<string, string | undefined> = process.env,
+): void {
+  const mode = resolveRuntimeMode(env);
+
+  if (mode !== "production") {
+    return;
+  }
+
+  const readiness = getSystemReadiness(env);
+  const problems: string[] = [];
+
+  if (!readiness.production.ok) {
+    problems.push(`missing env: ${readiness.production.missing.join(", ")}`);
+  }
+
+  if (!readiness.productionSecurity.ok) {
+    problems.push(
+      `security warnings: ${readiness.productionSecurity.warnings.map((warning) => warning.name).join(", ")}`,
+    );
+  }
+
+  if (problems.length > 0) {
+    throw new Error(
+      `ChainVigil production startup blocked. ${problems.join(" | ")}. See SECURITY.md.`,
+    );
+  }
+}
+
+export function constantTimeEqual(left: string, right: string): boolean {
+  const leftBuffer = Buffer.from(left);
+  const rightBuffer = Buffer.from(right);
+
+  if (leftBuffer.length !== rightBuffer.length) {
+    // Compare against self to keep roughly constant work on length mismatch.
+    timingSafeEqual(leftBuffer, leftBuffer);
+    return false;
+  }
+
+  return timingSafeEqual(leftBuffer, rightBuffer);
+}
+
+export interface BasicAuthConfig {
+  username?: string | undefined;
+  password?: string | undefined;
+}
+
+export interface BasicAuthResult {
+  enabled: boolean;
+  ok: boolean;
+}
+
+export function isBasicAuthEnabled(config: BasicAuthConfig): boolean {
+  return Boolean(config.password?.trim());
+}
+
+export function verifyBasicAuth(
+  authorization: string | null | undefined,
+  config: BasicAuthConfig,
+  decodeBase64: (value: string) => string = (value) => Buffer.from(value, "base64").toString("utf8"),
+): BasicAuthResult {
+  if (!isBasicAuthEnabled(config)) {
+    return { enabled: false, ok: true };
+  }
+
+  if (!authorization?.startsWith("Basic ")) {
+    return { enabled: true, ok: false };
+  }
+
+  try {
+    const encoded = authorization.slice("Basic ".length);
+    const decoded = decodeBase64(encoded);
+    const splitAt = decoded.indexOf(":");
+
+    if (splitAt < 0) {
+      return { enabled: true, ok: false };
+    }
+
+    const username = decoded.slice(0, splitAt);
+    const password = decoded.slice(splitAt + 1);
+    const expectedUsername = config.username?.trim() || "admin";
+    const expectedPassword = config.password ?? "";
+
+    const ok =
+      constantTimeEqual(username, expectedUsername) && constantTimeEqual(password, expectedPassword);
+
+    return {
+      enabled: true,
+      ok,
+    };
+  } catch {
+    return { enabled: true, ok: false };
+  }
+}
+
+export function verifyWriteSecret(
+  provided: string | null | undefined,
+  expected: string | undefined,
+): boolean {
+  if (!expected?.trim()) {
+    return false;
+  }
+
+  return constantTimeEqual(provided?.trim() ?? "", expected.trim());
+}
+
+/**
+ * Whether anonymous service-write endpoints may accept traffic without a write secret.
+ * Production never allows this; mock allows only when INTERNAL_WRITE_SECRET is unset (local DX).
+ */
+export function allowsUnauthenticatedServiceWrites(
+  env: Record<string, string | undefined> = process.env,
+): boolean {
+  if (resolveRuntimeMode(env) === "production") {
+    return false;
+  }
+
+  return !env.INTERNAL_WRITE_SECRET?.trim();
+}
+
+export function getAllowedCorsOrigins(
+  env: Record<string, string | undefined> = process.env,
+): string[] | true {
+  const configured = env.CORS_ALLOWED_ORIGINS?.split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  if (configured && configured.length > 0) {
+    return configured;
+  }
+
+  const defaults = [
+    env.APP_BASE_URL,
+    env.NEXT_PUBLIC_APP_BASE_URL,
+    env.ADMIN_BASE_URL,
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001",
+  ]
+    .map((origin) => origin?.trim())
+    .filter((origin): origin is string => Boolean(origin));
+
+  // Deduplicate while preserving order.
+  return [...new Set(defaults)];
+}
+
+export function resolveTrustProxy(
+  env: Record<string, string | undefined> = process.env,
+): boolean | number | string {
+  const raw = env.TRUST_PROXY?.trim().toLowerCase();
+
+  if (!raw || raw === "false" || raw === "0") {
+    return false;
+  }
+
+  if (raw === "true" || raw === "1") {
+    return true;
+  }
+
+  const asNumber = Number(raw);
+
+  if (Number.isFinite(asNumber) && asNumber > 0) {
+    return asNumber;
+  }
+
+  return raw;
+}
+
+export function getSecurityHeaders(options?: {
+  enableHsts?: boolean;
+  contentSecurityPolicy?: string;
+}): Record<string, string> {
+  const headers: Record<string, string> = {
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "no-referrer",
+    "X-Frame-Options": "DENY",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Cross-Origin-Resource-Policy": "same-site",
+  };
+
+  if (options?.contentSecurityPolicy) {
+    headers["Content-Security-Policy"] = options.contentSecurityPolicy;
+  }
+
+  if (options?.enableHsts) {
+    headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
+  }
+
+  return headers;
+}
+
+export const defaultWebContentSecurityPolicy = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  "object-src 'none'",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data:",
+  "style-src 'self' 'unsafe-inline'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  "connect-src 'self' https: http://localhost:* http://127.0.0.1:*",
+].join("; ");
+
+export const defaultApiContentSecurityPolicy = "default-src 'none'; frame-ancestors 'none'";

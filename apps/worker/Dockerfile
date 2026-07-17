@@ -1,15 +1,22 @@
-FROM node:20-bookworm-slim
+# syntax=docker/dockerfile:1
 
+FROM node:20-bookworm-slim AS build
 WORKDIR /app
-
+ENV NODE_ENV=production
 RUN corepack enable
-
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json tsconfig.base.json ./
 COPY packages ./packages
 COPY apps/worker ./apps/worker
+RUN pnpm install --frozen-lockfile \
+  && pnpm --filter @chainvigil/worker build
 
-RUN pnpm install --frozen-lockfile
-RUN pnpm --filter @chainvigil/worker build
-
+FROM node:20-bookworm-slim AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+RUN corepack enable \
+  && groupadd --system --gid 1001 chainvigil \
+  && useradd --system --uid 1001 --gid chainvigil chainvigil
+COPY --from=build --chown=chainvigil:chainvigil /app /app
+USER chainvigil
 WORKDIR /app/apps/worker
 CMD ["pnpm", "start"]

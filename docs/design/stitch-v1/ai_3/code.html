@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fake Token Database - ChainVigil AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&amp;family=Inter:wght@400..600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "border": "#262932",
+                        "secondary-container": "#6f00be",
+                        "on-primary-fixed": "#07006c",
+                        "on-secondary-fixed": "#2c0051",
+                        "inverse-on-surface": "#303038",
+                        "primary": "#c0c1ff",
+                        "status-high": "#F97316",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "surface-dim": "#13131b",
+                        "secondary-fixed": "#f0dbff",
+                        "on-tertiary-container": "#452000",
+                        "text-secondary": "#9CA3AF",
+                        "surface-container-lowest": "#0d0d15",
+                        "on-tertiary": "#4f2500",
+                        "tertiary": "#ffb783",
+                        "surface-container-low": "#1b1b23",
+                        "surface": "#16181D",
+                        "on-secondary-container": "#d6a9ff",
+                        "secondary": "#ddb7ff",
+                        "status-medium": "#F59E0B",
+                        "inverse-surface": "#e4e1ed",
+                        "status-trial": "#06B6D4",
+                        "surface-tint": "#c0c1ff",
+                        "surface-container-high": "#292932",
+                        "inverse-primary": "#494bd6",
+                        "outline": "#908fa0",
+                        "accent-vp": "#EAB308",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-primary": "#1000a9",
+                        "status-low": "#10B981",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "on-surface": "#e4e1ed",
+                        "primary-fixed": "#e1e0ff",
+                        "surface-variant": "#34343d",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "on-secondary": "#490080",
+                        "on-surface-variant": "#c7c4d7",
+                        "on-tertiary-fixed-variant": "#703700",
+                        "background": "#0A0B0F",
+                        "tertiary-fixed-dim": "#ffb783",
+                        "on-error-container": "#ffdad6",
+                        "error-container": "#93000a",
+                        "error": "#ffb4ab",
+                        "on-background": "#e4e1ed",
+                        "tertiary-fixed": "#ffdcc5",
+                        "tertiary-container": "#d97721",
+                        "surface-container-highest": "#34343d",
+                        "status-block": "#EF4444",
+                        "on-error": "#690005",
+                        "text-primary": "#F9FAFB",
+                        "surface-bright": "#393841",
+                        "primary-container": "#8083ff",
+                        "surface-container": "#1f1f27",
+                        "on-primary-container": "#0d0096",
+                        "on-tertiary-fixed": "#301400",
+                        "outline-variant": "#464554",
+                        "status-unknown": "#6B7280"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "1rem",
+                        "container-max": "1280px",
+                        "stack-sm": "0.5rem",
+                        "gutter": "1.5rem",
+                        "stack-lg": "2rem",
+                        "margin-mobile": "1rem"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Geist"],
+                        "display-lg": ["Geist"],
+                        "display-lg-mobile": ["Geist"],
+                        "code-sm": ["monospace"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "code-sm": ["13px", { "lineHeight": "1.4", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24 md:pb-8 flex flex-col md:flex-row">
+<!-- TopAppBar (Web) / Hidden on Mobile -->
+<header class="hidden md:flex fixed top-0 left-0 w-full z-50 justify-between items-center px-gutter h-16 bg-background dark:bg-background border-b border-border shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined fill text-primary dark:text-primary-fixed-dim text-2xl" data-icon="security">security</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface tracking-tight">ChainVigil AI</span>
+</div>
+<nav class="flex items-center gap-8">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:opacity-80 transition-opacity duration-200" href="#">Home</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:opacity-80 transition-opacity duration-200" href="#">Wallet</a>
+<a class="font-label-sm text-label-sm text-primary hover:opacity-80 transition-opacity duration-200" href="#">Database</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:opacity-80 transition-opacity duration-200" href="#">Points</a>
+</nav>
+<div>
+<span class="material-symbols-outlined text-on-surface-variant text-xl cursor-pointer hover:text-primary transition-colors" data-icon="language">language</span>
+</div>
+</header>
+<!-- SideNav (Web) - Placeholder for structural layout -->
+<div class="hidden md:block w-64 flex-shrink-0 pt-20 px-6 border-r border-border min-h-screen sticky top-0 bg-surface-container">
+<div class="space-y-4">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-sm text-label-sm">Wallet Health</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-secondary-container text-on-secondary-container transition-colors shadow-sm" href="#">
+<span class="material-symbols-outlined fill" data-icon="database">database</span>
+<span class="font-label-sm text-label-sm">Threat Database</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary" data-icon="stars">stars</span>
+<span class="font-label-sm text-label-sm">Vigil Points</span>
+</a>
+</div>
+</div>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full max-w-container-max mx-auto px-margin-mobile md:px-gutter pt-8 md:pt-24 space-y-stack-lg">
+<!-- Header & Search -->
+<div class="space-y-4">
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-text-primary">Fake Token Database</h1>
+<p class="font-body-lg text-body-lg text-text-secondary max-w-2xl">
+                Identify and verify smart contracts impersonating legitimate assets. Always verify the official contract address before interacting.
+            </p>
+<div class="relative w-full max-w-3xl mt-6">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full h-14 pl-12 pr-4 bg-surface border border-border rounded-xl font-body-md text-body-md text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder-on-surface-variant transition-all" placeholder="Search by CA, Token Name, or Symbol..." type="text"/>
+</div>
+</div>
+<!-- Official vs Fake Comparison -->
+<section class="bg-surface border border-border rounded-xl p-6 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent pointer-events-none"></div>
+<h2 class="font-headline-md text-headline-md text-text-primary mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="compare_arrows">compare_arrows</span>
+                Official vs. Imposter Example
+            </h2>
+<div class="grid md:grid-cols-2 gap-6 relative z-10">
+<!-- Official -->
+<div class="bg-surface-container rounded-lg p-5 border border-status-low/20 relative">
+<div class="absolute top-0 right-0 bg-status-low/10 text-status-low font-label-sm text-label-sm px-3 py-1 rounded-bl-lg rounded-tr-lg flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] fill" data-icon="check_circle">check_circle</span> Verified
+                    </div>
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center text-xl font-bold text-text-primary">USDT</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-text-primary text-[20px]">Tether USD</h3>
+<p class="font-body-md text-body-md text-text-secondary text-sm">Official Ethereum Contract</p>
+</div>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant bg-surface p-3 rounded-md break-all">
+                        0xdAC17F958D2ee523a2206206994597C13D831ec7
+                    </div>
+</div>
+<!-- Fake -->
+<div class="bg-surface-container rounded-lg p-5 border border-status-block/20 relative">
+<div class="absolute top-0 right-0 bg-status-block/10 text-status-block font-label-sm text-label-sm px-3 py-1 rounded-bl-lg rounded-tr-lg flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] fill" data-icon="warning">warning</span> Imposter
+                    </div>
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center text-xl font-bold text-text-primary border-2 border-status-block/50">USDT</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-text-primary text-[20px]">Tether USD (Fake)</h3>
+<p class="font-body-md text-body-md text-status-block text-sm">Honeypot Detected</p>
+</div>
+</div>
+<div class="font-code-sm text-code-sm text-status-block/80 bg-status-block/5 p-3 rounded-md break-all line-through">
+                        0x1A2b...FakeAddress...8C9d
+                    </div>
+</div>
+</div>
+</section>
+<!-- Threat List -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h2 class="font-headline-md text-headline-md text-text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-status-block" data-icon="pest_control">pest_control</span>
+                    Recently Detected Imposters
+                </h2>
+<div class="flex gap-2">
+<button class="px-3 py-1.5 rounded-md border border-border text-label-sm font-label-sm text-on-surface hover:bg-surface-variant transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="filter_list">filter_list</span> Filter
+                    </button>
+</div>
+</div>
+<div class="grid gap-4">
+<!-- Threat Card 1 -->
+<div class="bg-surface border border-border rounded-xl p-5 hover:border-outline-variant transition-colors flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-status-block flex-shrink-0">
+<span class="material-symbols-outlined fill" data-icon="dangerous">dangerous</span>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-headline-md text-headline-md text-text-primary text-[18px]">USDC</h3>
+<span class="bg-surface-variant px-2 py-0.5 rounded text-label-sm font-label-sm text-text-secondary">Base</span>
+</div>
+<p class="font-body-md text-body-md text-text-secondary text-sm">Impersonating Official Circle USDC</p>
+</div>
+</div>
+<div class="flex-1 md:text-center px-4 w-full md:w-auto border-l-2 border-border/50 pl-4 py-2">
+<span class="block text-status-block font-label-sm text-label-sm uppercase mb-1">Reason</span>
+<span class="font-body-md text-body-md text-on-surface text-sm">100% Sell Tax (Honeypot)</span>
+</div>
+<div class="w-full md:w-auto flex justify-end">
+<button class="w-full md:w-auto px-4 py-2 bg-surface-container hover:bg-surface-variant border border-border rounded-lg text-text-primary font-label-sm text-label-sm transition-colors flex items-center justify-center gap-2">
+                            View Report <span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Threat Card 2 -->
+<div class="bg-surface border border-border rounded-xl p-5 hover:border-outline-variant transition-colors flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-status-high flex-shrink-0">
+<span class="material-symbols-outlined fill" data-icon="warning">warning</span>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-headline-md text-headline-md text-text-primary text-[18px]">PEPE</h3>
+<span class="bg-surface-variant px-2 py-0.5 rounded text-label-sm font-label-sm text-text-secondary">ETH</span>
+</div>
+<p class="font-body-md text-body-md text-text-secondary text-sm">Impersonating Pepe Coin</p>
+</div>
+</div>
+<div class="flex-1 md:text-center px-4 w-full md:w-auto border-l-2 border-border/50 pl-4 py-2">
+<span class="block text-status-high font-label-sm text-label-sm uppercase mb-1">Reason</span>
+<span class="font-body-md text-body-md text-on-surface text-sm">Hidden Mint Function Found</span>
+</div>
+<div class="w-full md:w-auto flex justify-end">
+<button class="w-full md:w-auto px-4 py-2 bg-surface-container hover:bg-surface-variant border border-border rounded-lg text-text-primary font-label-sm text-label-sm transition-colors flex items-center justify-center gap-2">
+                            View Report <span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Educational Block -->
+<section class="bg-surface-container-low border border-border rounded-xl p-6 mt-8">
+<h3 class="font-headline-md text-headline-md text-text-primary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-status-trial" data-icon="school">school</span>
+                How to Verify Contract Addresses
+            </h3>
+<ul class="space-y-3 font-body-md text-body-md text-text-secondary">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5" data-icon="looks_one">looks_one</span>
+<span><strong>Check Official Sources:</strong> Always get the CA (Contract Address) from the project's official Twitter bio, website, or established trackers like CoinGecko/CoinMarketCap.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5" data-icon="looks_two">looks_two</span>
+<span><strong>Use ChainVigil Scanner:</strong> Paste the contract into our main scanner before interacting. We analyze the bytecode for malicious patterns regardless of the name.</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5" data-icon="looks_3">looks_3</span>
+<span><strong>Don't Trust Names:</strong> Scammers can freely name their tokens exactly the same as legitimate ones (e.g., creating a fake 'USDT'). Only the contract address is unique.</span>
+</li>
+</ul>
+</section>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface-container dark:bg-surface-container shadow-lg rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant scale-95 active:scale-90 transition-all p-2 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant scale-95 active:scale-90 transition-all p-2 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-sm text-label-sm mt-1">Wallet</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-3 py-1 scale-95 active:scale-90 transition-all shadow-sm" href="#">
+<span class="material-symbols-outlined fill" data-icon="database">database</span>
+<span class="font-label-sm text-label-sm mt-1">Database</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant scale-95 active:scale-90 transition-all p-2 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="stars">stars</span>
+<span class="font-label-sm text-label-sm mt-1">Points</span>
+</a>
+</nav>
+</body></html>

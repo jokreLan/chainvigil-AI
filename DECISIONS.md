@@ -1,5 +1,37 @@
 # DECISIONS
 
+## 2026-07-17 · Token CA 不做 SEO（分享工具页）
+
+- **原则：** 山寨/meme 热点寿命短，单 CA 报告不是长期 SEO 资产。
+- **`/token/[chain]/[address]`：** 默认可打开、可分享、可复查；metadata **`noindex, follow`**。保留 OG/Twitter 卡片（群分享）。
+- **`/wallet/[address]/health`：** 同理 **noindex**（隐私 + 非获客页）。
+- **Sitemap：** 只放耐久页（首页、/check、链专题、情报/百科、bot、定价等），**永不列入**全量 CA/钱包 URL。
+- **robots.txt：** 仍 **allow** `/token/` 以便社媒抓取预览；索引控制靠 meta noindex，不靠一刀切 disallow（避免误伤 OG）。
+- **真正 SEO/GEO：** 词条、链专题、工具落地页、精选案例模式页——不跟单个死亡 CA 赌收录。
+- 日后若做「案例库」收录，必须 **白名单/人工**，与原始报告 URL 解耦。
+- **周末 SEO/GEO 资产：** 全站 Organization/WebSite JSON-LD；公开耐久页独立 title/description/canonical；`/learn/[slug]` 8 条 GEO 词条（Article+FAQ+HowTo）；sitemap 含词条；报告页保留 noindex + 过期提示。
+
+## 2026-07-17 · 语言策略：对外双语 / Admin 仅中文
+
+- **对外（双语 zh + en）**：Web 用户端全路径（含 `/app` 工作台）、Telegram Bot 命令与回复（按群 `language`）、公开 API 人话说明页。
+- **对内（仅中文）**：`apps/admin` 运营后台；不做 LanguageSwitcher。
+- Web 实现：cookie/localStorage `cv_locale` + `LocaleProvider`；切换后 `router.refresh()`。
+- Bot 实现：`@chainvigil/telegram` 回复函数接受 `locale`；默认 zh，群设置 `language: en` 时切英文。
+- mock 数据正文（risk-core 案例长文）可逐步英文化；UI 壳层与主路径交互文案必须双语。
+- Token/钱包 mock 报告与分享/SEO/Telegram 回复支持 `locale`（`buildMockTokenRiskReport` / `buildMockWalletHealthReport` / `@chainvigil/report`）；默认 zh，Web 用 cookie locale，Bot 用群 `language`。
+- 公开情报 mock 列表（风险库 / 百科 / 高危榜 / 假币 / 监控 / 清理策略 / watchlist）接受 `locale`；API 读 `body.locale` 或 `Accept-Language`，Web 直读用 cookie locale 并在 check/health POST body 带上 `locale`。
+- 用户偏好 settings、钱包能力清单、VP program/规则/兑换/渠道 note 也支持 `locale`；Solana/BNB 专题 SEO `generateMetadata` 按 cookie 切语言。
+
+## 2026-07-17 · OPC 总控锁定
+
+- 产品定位：中文买前 CA 安检入口（非 GoPlus 级数据底层）；主链 SOL + BNB。
+- 主分发：Telegram 群 / Bot；Web 为报告与 SEO 壳。
+- 第二曲线：哨点 VP → 产品权益 → 订阅/群版；不承诺 token、不可提现。
+- 竞品：GoPlus/Honeypot 作供应商；差异化在人话结论与群场景。
+- 精力：真检测 50% · TG 分发 30% · VP 权益 20%。
+- 文档：`docs/strategy/MASTER_CONTROL.md`、`docs/go-to-market/gtm_90_days.md`、`docs/product/vp_second_engine_v1.md`、`docs/ops/runbook_v1.md`。
+
+
 ## 2026-07-08
 
 - 品牌命名统一为 ChainVigil AI｜链哨 AI；旧文档中的 Token 哨兵仅作为历史产品名参考，不进入 V0 对外主文案。

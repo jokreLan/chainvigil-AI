@@ -1,5 +1,49 @@
 # PROGRESS
 
+## 2026-07-17 · OPC 多角色总控推进
+
+- 锁定战略：中文买前安检入口 · SOL/BNB · TG 主分发 · VP 第二曲线（权益非 token）。
+- 新增文档：`docs/strategy/MASTER_CONTROL.md`、`docs/go-to-market/gtm_90_days.md`、`docs/product/vp_second_engine_v1.md`、`docs/ops/runbook_v1.md`；重写 `TASKS.md`。
+- 产品/UX：首页定位与 VP 第二引擎入口；`/app/points` 可兑换权益目录；Bot 页与欢迎语对齐。
+- 研发：`listVpRedemptions` + `registerLiveProviderClient` 真检测编排骨架（成功 live / 失败降级 mock）。
+- 校验：points / data-adapters / telegram / web / api 相关 typecheck 与 test 通过。
+
+## 2026-07-17 · 上线目标代码推进（无外部 key）
+
+- 报告/钱包统一 `ReportModeBanner` + `describeReportMode`；分享前缀按 mode。
+- Bot `resolveTokenRiskReport`：优先 `API_BASE_URL`，失败降级 local-mock。
+- 定价页 Free/Pro/群版 + VP 抵扣说明；`.env.production.example` + `pnpm launch:check`。
+- 文档：`docs/ops/launch_checklist.md`。测试/typecheck/launch:check 通过。
+
+## 2026-07-17 · 上线推进续（build + admin + smoke）
+
+- 全仓 `pnpm typecheck` / `pnpm test` / `pnpm build` 通过。
+- Admin `/system-readiness` 展示代码上线清单与周末外部依赖清单；首页增加模式/预检摘要。
+- `scripts/smoke-v0.mjs` 断言 API/Web/Bot 的 mode·confidence 与 VP 兑换目录。
+
+## 2026-07-17 · Stitch v1 P0→P2 UI 落地
+
+- 读取 `docs/design/stitch-v1`，写入 `SCREEN_MAP.md`。
+- P0：首页 ai_8、扫描中 ca_ai（CheckForm overlay）、报告页 ai_4；保留 mode banner / SOL·BNB。
+- P1：钱包体检入口、VP 中心、MobileNav 四 Tab 样式。
+- P2：高危榜、假币库 Tab、授权扫描列表 UI。
+- 设计 token / 扫描动画写入 `globals.css`。
+
+## 2026-07-17 · Stitch v1 P3 UI 落地
+
+- 推广中心 `/app/growth`、风险百科 `/learn`、风险库 `/risk-database`、开发者中心 `/developers`。
+- 授权页接入 `RevokeConfirmModal`（演示二次确认，不广播交易）。
+- 资产理发师顶栏与导航微调；`SCREEN_MAP` 进度全绿。
+- web typecheck + test 通过。
+
+## 2026-07-17 · 产品流程 / UX 补充包全量
+
+- 安检失败全屏态 + 校验示例文案；扫描成功写 localStorage 最近记录。
+- 报告页固定行动条；分享成功 toast + VP 引导；任务回传 `?from=task` / `?done=check`。
+- 情报枢纽 `/intel`；底栏 Database 指向枢纽；桌面 SiteHeader。
+- API 状态条；推广真复制；撤销 Modal Esc + 关闭 toast「未上链」。
+- 钱包报告 → 授权列表主按钮。
+
 ## 2026-07-08
 
 - 阅读产品总案、版本规划与技术设计、Monorepo 架构设计。

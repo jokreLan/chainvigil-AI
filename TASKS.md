@@ -1,16 +1,55 @@
-# UI Completion Loop
+# ChainVigil AI｜推进任务板（OPC 总控）
 
-This list covers the remaining V0 work that can be completed without external credentials or production infrastructure. Each item follows: implement, run targeted checks, fix up to three times, run the full repository gate, update project logs, commit, push, then proceed.
+> 战略见 `docs/strategy/MASTER_CONTROL.md`。完成一项勾一项；阻塞写 `BLOCKERS.md`。
 
-- [completed] Rebuild the Web App workspace overview (`/app`) with the unified security-intelligence layout.
-- [completed] Rebuild the read-only wallet watchlist (`/app/wallets`).
-- [completed] Rebuild read-only user preferences (`/app/settings`).
-- [completed] Rebuild the public API reference page (`/api`) and V0 pricing/status page (`/pricing`).
-- [completed] Standardize remaining public utility pages, empty/loading/error states, mobile layout, CA copy and share feedback.
-- [completed] Add Solana/BNB SEO/GEO topic pages, structured data, sitemap and internal links.
-- [completed] Expand page-level contracts, API/SDK boundary tests and V0 smoke coverage.
-- [completed] Repair the residual V0 smoke assertion drift recorded in `BLOCKERS.md`.
-- [completed] Apply the UI system to Admin risk review, data sources, audit, Telegram and report-index screens.
-- [completed] Standardize the remaining Admin label, VP, readiness and channel screens with the same control-room UI system.
-- [blocked] Repair browser screenshot automation and complete desktop/mobile visual regression against Stitch screens. See `BLOCKERS.md`.
-- [completed] Run an end-to-end repository release gate and document residual external dependencies.
+## S0 可信骨架 / 上线代码就绪
+
+- [x] 安全 P0（鉴权 / CORS / Webhook / 限流 / mode+confidence）
+- [x] 总控、GTM 90 天、VP 第二引擎、运维手册
+- [x] 首页 / VP 中心 / Bot 文案对齐定位
+- [x] VP 可兑换权益目录 contract
+- [x] 真检测编排骨架（live path interface）
+- [x] 报告/钱包 mode 条组件 + 分享前缀
+- [x] Bot → API 优先、失败降级 local-mock
+- [x] 定价页对齐 Free/Pro/群版 + VP 抵扣
+- [x] `pnpm launch:check` + `.env.production.example` + launch checklist
+- [x] 全仓 typecheck / test / build 通过
+- [x] Admin 就绪页含代码侧 + 周末上线清单；首页控制台摘要
+- [x] smoke:v0 增加 mode/confidence、VP 权益目录、Bot check 断言
+- [x] 本地 dev 起全套后跑一遍 `pnpm smoke:v0`（2026-07-17：64 checks 全绿；learn GEO / noindex / sitemap 无 CA / 双语）
+- [ ] 周末：外部 key / RPC / Telegram 正式接入
+
+## S1 真检测 MVP（下一优先）
+
+- [ ] 接入至少 1 个 live provider（GoPlus **或** Honeypot **或** BSC/SOL RPC 权限读）
+- [ ] `collectTokenRiskData` 在配置齐全时返回非纯 mock executionMode
+- [ ] 报告页根据 `mode` 切换文案（mock 黄条 / live 绿条）
+- [ ] 失败降级：超时 → mock + fallbackReason 对人话可见
+- [ ] 单测：live 配置 / 缺配置 / 超时降级
+
+## S2 群内分发
+
+- [ ] 生产 Telegram webhook + secret 操作文档（一步步）
+- [ ] Bot `/check` 走 API 真报告（非仅本地 mock builder）
+- [ ] 群主一页纸 PDF/MD 定稿
+- [ ] 5 个试点群名单与反馈表
+
+## S3 VP 第二曲线
+
+- [ ] 积分中心兑换按钮状态机（V0 先 disabled + 说明）
+- [ ] 服务端 confirmed 规则（日 cap、延迟确认）
+- [ ] 第一个真权益：额外查询 **或** CA 监控 7 天
+- [ ] Pro 定价页与 VP 抵扣说明（30% cap）
+- [ ] 群主 growth 结算状态展示
+
+## 工程卫生
+
+- [ ] CI audit 保持 high 门槛
+- [ ] 依赖与 Docker 构建在可联网环境补验
+- [blocked] 浏览器截图回归（见 BLOCKERS）
+
+## 本周建议（自动排期）
+
+1. 选一个 live 数据源拿 key，打通 `data-adapters`  
+2. 改报告页 mode 条  
+3. 约 3 个群主发合作话术  

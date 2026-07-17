@@ -4,6 +4,7 @@ import {
   getMockPointLedgerSummary,
   getPointProgram,
   listMockGrowthChannels,
+  listVpRedemptions,
 } from "./index";
 
 describe("createPendingPointEvent", () => {
@@ -24,8 +25,20 @@ describe("createPendingPointEvent", () => {
     expect(program.pointsName).toBe("哨点");
     expect(program.englishName).toBe("Vigil Points");
     expect(program.shortName).toBe("VP");
-    expect(program.disclaimer).toContain("不承诺固定兑换平台币");
+    expect(program.disclaimer).toContain("不构成代币");
+    expect(program.tagline).toContain("防护权益");
+    expect(program.cashOffsetCapPercent).toBe(30);
     expect(program.rules.REPORT_SHARED.points).toBe(5);
+    expect(program.redemptions.length).toBeGreaterThan(0);
+  });
+
+  it("lists VP redemption catalog as second-engine benefits", () => {
+    const items = listVpRedemptions();
+    items[0]!.title = "mutated";
+
+    expect(listVpRedemptions()[0]?.id).toBe("redeem.extra_checks_10");
+    expect(listVpRedemptions().some((item) => item.highlight)).toBe(true);
+    expect(listVpRedemptions().every((item) => item.costVp > 0)).toBe(true);
   });
 
   it("summarizes mock VP ledger without confirming pending rewards", () => {

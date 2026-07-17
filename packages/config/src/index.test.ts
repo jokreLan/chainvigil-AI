@@ -1,9 +1,15 @@
 import { describe, expect, it } from "vitest";
 import {
+  assertProductionRuntime,
+  allowsUnauthenticatedServiceWrites,
+  constantTimeEqual,
+  getAllowedCorsOrigins,
   getProductionSecurityReadiness,
   getSystemReadiness,
   resolveRuntimeMode,
   validateEnv,
+  verifyBasicAuth,
+  verifyWriteSecret,
 } from "./index";
 
 describe("validateEnv", () => {
@@ -35,6 +41,8 @@ describe("validateEnv", () => {
     expect(result.ok).toBe(false);
     expect(result.missing).toContain("DATABASE_URL");
     expect(result.missing).toContain("ADMIN_BASIC_AUTH_PASSWORD");
+    expect(result.missing).toContain("INTERNAL_WRITE_SECRET");
+    expect(result.missing).toContain("TELEGRAM_WEBHOOK_SECRET");
     expect(result.missing).toContain("GOPLUS_API_KEY");
     expect(result.missing).toContain("RPC_SOLANA_URL");
     expect(result.missing).toContain("RPC_BSC_URL");
@@ -69,6 +77,8 @@ describe("validateEnv", () => {
       ADMIN_SECRET: "replace-me",
       JWT_SECRET: "short",
       TELEGRAM_BOT_TOKEN: "mock",
+      TELEGRAM_WEBHOOK_SECRET: "mock",
+      INTERNAL_WRITE_SECRET: "short",
     });
 
     expect(result.ok).toBe(false);
@@ -78,6 +88,8 @@ describe("validateEnv", () => {
       "ADMIN_SECRET",
       "JWT_SECRET",
       "TELEGRAM_BOT_TOKEN",
+      "TELEGRAM_WEBHOOK_SECRET",
+      "INTERNAL_WRITE_SECRET",
     ]);
     expect(JSON.stringify(result)).not.toContain("replace-me");
     expect(JSON.stringify(result)).not.toContain("short");
@@ -93,8 +105,66 @@ describe("validateEnv", () => {
       ADMIN_SECRET: "admin-secret-32-random",
       JWT_SECRET: "jwt-secret-32-random",
       TELEGRAM_BOT_TOKEN: "telegram-token-32-random",
+      TELEGRAM_WEBHOOK_SECRET: "telegram-webhook-32-random",
+      INTERNAL_WRITE_SECRET: "internal-write-32-random",
     });
 
     expect(result).toEqual({ ok: true, warnings: [] });
+  });
+
+  it("fails closed for incomplete production runtime", () => {
+    expect(() =>
+      assertProductionRuntime({
+        CHAINVIGIL_RUNTIME_MODE: "production",
+        APP_BASE_URL: "https://chainvigil.ai",
+      }),
+    ).toThrow(/production startup blocked/);
+
+    expect(() =>
+      assertProductionRuntime({
+        CHAINVIGIL_RUNTIME_MODE: "mock",
+      }),
+    ).not.toThrow();
+  });
+
+  it("uses constant-time equality helpers for secrets and basic auth", () => {
+    expect(constantTimeEqual("same-secret", "same-secret")).toBe(true);
+    expect(constantTimeEqual("same-secret", "other-secret")).toBe(false);
+    expect(verifyWriteSecret("write-secret-32chars", "write-secret-32chars")).toBe(true);
+    expect(verifyWriteSecret("wrong", "write-secret-32chars")).toBe(false);
+
+    const encoded = Buffer.from("ops:secret-password-32").toString("base64");
+    expect(
+      verifyBasicAuth(`Basic ${encoded}`, {
+        username: "ops",
+        password: "secret-password-32",
+      }),
+    ).toEqual({ enabled: true, ok: true });
+  });
+
+  it("restricts CORS origins and unauthenticated service writes", () => {
+    expect(
+      getAllowedCorsOrigins({
+        CORS_ALLOWED_ORIGINS: "https://chainvigil.ai, https://admin.chainvigil.ai",
+      }),
+    ).toEqual(["https://chainvigil.ai", "https://admin.chainvigil.ai"]);
+
+    expect(
+      allowsUnauthenticatedServiceWrites({
+        CHAINVIGIL_RUNTIME_MODE: "mock",
+      }),
+    ).toBe(true);
+    expect(
+      allowsUnauthenticatedServiceWrites({
+        CHAINVIGIL_RUNTIME_MODE: "mock",
+        INTERNAL_WRITE_SECRET: "internal-write-32-random",
+      }),
+    ).toBe(false);
+    expect(
+      allowsUnauthenticatedServiceWrites({
+        CHAINVIGIL_RUNTIME_MODE: "production",
+        INTERNAL_WRITE_SECRET: "internal-write-32-random",
+      }),
+    ).toBe(false);
   });
 });

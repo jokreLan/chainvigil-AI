@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
+  clearLiveProviderClientsForTests,
   collectTokenRiskData,
   getAdapterHealth,
   getRiskEvidenceProviderStatus,
   lookupTokenSecurity,
+  registerLiveProviderClient,
 } from "./index";
 
 describe("data adapters", () => {
@@ -120,5 +122,53 @@ describe("data adapters", () => {
       confidence: "UNASSESSED",
       missingLiveConfig: ["GOPLUS_API_KEY", "HONEYPOT_API_KEY", "RPC_BASE_URL"],
     });
+  });
+
+  it("prefers registered live provider clients and degrades on failure", async () => {
+    clearLiveProviderClientsForTests();
+    registerLiveProviderClient({
+      id: "goplus-bsc",
+      source: "goplus",
+      isEnabled: (env) => Boolean(env.GOPLUS_API_KEY?.trim()),
+      fetchSnapshot: async (input) => ({
+        source: "goplus",
+        providerId: "goplus-bsc",
+        chain: input.chain,
+        address: input.address,
+        fetchedAt: "2026-07-17T00:00:00.000Z",
+        freshForSeconds: 45,
+        executionMode: "live",
+        data: { honeypot: false, note: "fixture live snapshot" },
+      }),
+    });
+
+    const liveBundle = await collectTokenRiskData(
+      { chain: "bsc", address: "0x1111111111111111111111111111111111111110" },
+      { GOPLUS_API_KEY: "test-key" },
+    );
+    const goplus = liveBundle.snapshots.find((snapshot) => snapshot.providerId === "goplus-bsc");
+    expect(goplus?.executionMode).toBe("live");
+    expect(goplus?.data).toMatchObject({ honeypot: false });
+
+    clearLiveProviderClientsForTests();
+    registerLiveProviderClient({
+      id: "goplus-bsc",
+      source: "goplus",
+      isEnabled: () => true,
+      fetchSnapshot: async () => {
+        throw new Error("upstream timeout");
+      },
+    });
+
+    const degraded = await collectTokenRiskData(
+      { chain: "bsc", address: "0x1111111111111111111111111111111111111110" },
+      { GOPLUS_API_KEY: "test-key" },
+    );
+    const degradedGoplus = degraded.snapshots.find((snapshot) => snapshot.providerId === "goplus-bsc");
+    expect(degradedGoplus?.executionMode).toBe("mock");
+    expect(degradedGoplus?.fallbackReason).toContain("degraded");
+    expect(JSON.stringify(degraded)).not.toContain("upstream timeout");
+
+    clearLiveProviderClientsForTests();
   });
 });

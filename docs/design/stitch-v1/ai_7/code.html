@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>ChainVigil AI - Growth Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "surface-container-low": "#1b1b23",
+                            "on-error": "#690005",
+                            "on-tertiary": "#4f2500",
+                            "background": "#0A0B0F",
+                            "status-unknown": "#6B7280",
+                            "on-tertiary-container": "#452000",
+                            "error-container": "#93000a",
+                            "surface": "#16181D",
+                            "secondary-fixed": "#f0dbff",
+                            "primary-container": "#8083ff",
+                            "surface-container-lowest": "#0d0d15",
+                            "on-primary-container": "#0d0096",
+                            "error": "#ffb4ab",
+                            "secondary": "#ddb7ff",
+                            "primary": "#c0c1ff",
+                            "primary-fixed-dim": "#c0c1ff",
+                            "on-surface-variant": "#c7c4d7",
+                            "text-primary": "#F9FAFB",
+                            "tertiary-fixed-dim": "#ffb783",
+                            "secondary-container": "#6f00be",
+                            "on-secondary-container": "#d6a9ff",
+                            "on-error-container": "#ffdad6",
+                            "inverse-primary": "#494bd6",
+                            "tertiary-container": "#d97721",
+                            "surface-bright": "#393841",
+                            "on-secondary-fixed": "#2c0051",
+                            "status-trial": "#06B6D4",
+                            "primary-fixed": "#e1e0ff",
+                            "text-secondary": "#9CA3AF",
+                            "on-secondary": "#490080",
+                            "status-medium": "#F59E0B",
+                            "accent-vp": "#EAB308",
+                            "status-low": "#10B981",
+                            "inverse-surface": "#e4e1ed",
+                            "surface-variant": "#34343d",
+                            "on-tertiary-fixed": "#301400",
+                            "on-primary-fixed": "#07006c",
+                            "on-surface": "#e4e1ed",
+                            "outline": "#908fa0",
+                            "inverse-on-surface": "#303038",
+                            "tertiary": "#ffb783",
+                            "on-tertiary-fixed-variant": "#703700",
+                            "on-primary-fixed-variant": "#2f2ebe",
+                            "status-high": "#F97316",
+                            "surface-dim": "#13131b",
+                            "surface-container-high": "#292932",
+                            "on-primary": "#1000a9",
+                            "status-block": "#EF4444",
+                            "surface-container-highest": "#34343d",
+                            "secondary-fixed-dim": "#ddb7ff",
+                            "tertiary-fixed": "#ffdcc5",
+                            "outline-variant": "#464554",
+                            "on-secondary-fixed-variant": "#6900b3",
+                            "on-background": "#e4e1ed",
+                            "surface-tint": "#c0c1ff",
+                            "surface-container": "#1f1f27",
+                            "border": "#262932"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "stack-md": "1rem",
+                            "container-max": "1280px",
+                            "stack-lg": "2rem",
+                            "margin-mobile": "1rem",
+                            "stack-sm": "0.5rem",
+                            "gutter": "1.5rem"
+                    },
+                    "fontFamily": {
+                            "display-lg-mobile": ["Geist"],
+                            "body-md": ["Inter"],
+                            "headline-md": ["Geist"],
+                            "code-sm": ["monospace"],
+                            "label-sm": ["Inter"],
+                            "display-lg": ["Geist"],
+                            "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                            "display-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                            "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                            "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                            "code-sm": ["13px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                            "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                            "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .ai-glow {
+            box-shadow: 0 0 20px rgba(192, 193, 255, 0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #c0c1ff 0%, #ddb7ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .vp-gradient-text {
+            background: linear-gradient(135deg, #c0c1ff 0%, #EAB308 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-text-primary font-body-md min-h-screen pb-24 selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-background dark:bg-background">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" data-icon="security" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface">ChainVigil AI</span>
+</div>
+<button class="hover:opacity-80 transition-opacity duration-200">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" data-icon="language">language</span>
+</button>
+</header>
+<main class="pt-20 px-margin-mobile md:px-gutter max-w-container-max mx-auto flex flex-col gap-stack-lg">
+<!-- Header Section -->
+<section class="flex flex-col gap-stack-sm">
+<h1 class="font-display-lg-mobile text-display-lg-mobile md:font-display-lg md:text-display-lg gradient-text">Growth Center</h1>
+<p class="text-text-secondary text-body-lg">Amplify Security. Earn Vigil Points (VP).</p>
+</section>
+<!-- Invite Link Card -->
+<section class="bg-surface rounded-xl border border-border p-6 flex flex-col gap-4 ai-glow relative overflow-hidden group">
+<div class="absolute -right-10 -top-10 w-40 h-40 bg-primary opacity-10 blur-3xl rounded-full pointer-events-none group-hover:opacity-20 transition-opacity duration-500"></div>
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-1">Your Referral Link</h2>
+<p class="text-text-secondary text-sm">Share this link to earn VP for every active user.</p>
+</div>
+<button class="bg-surface-container-high hover:bg-surface-variant p-2 rounded-lg border border-border transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="qr_code">qr_code</span>
+</button>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<div class="flex-1 bg-surface-container-low border border-border rounded-lg px-4 py-3 font-code-sm text-code-sm text-on-surface truncate">
+                    https://chainvigil.ai/ref/vX9k2mP
+                </div>
+<button class="bg-primary-container text-on-primary-container px-6 py-3 rounded-lg font-label-sm text-label-sm hover:opacity-90 transition-opacity flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="content_copy">content_copy</span>
+                    Copy
+                </button>
+</div>
+</section>
+<!-- Stats Grid -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<!-- Confirmed VP -->
+<div class="bg-surface rounded-xl border border-border p-4 flex flex-col gap-2">
+<div class="flex items-center gap-2 text-text-secondary">
+<span class="material-symbols-outlined text-accent-vp" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Confirmed VP</span>
+</div>
+<div class="font-headline-md text-headline-md vp-gradient-text font-bold">12,450</div>
+</div>
+<!-- Pending VP -->
+<div class="bg-surface rounded-xl border border-border p-4 flex flex-col gap-2">
+<div class="flex items-center gap-2 text-text-secondary">
+<span class="material-symbols-outlined text-status-medium" data-icon="schedule">schedule</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Pending VP</span>
+</div>
+<div class="font-headline-md text-headline-md text-status-medium font-bold">1,200</div>
+</div>
+<!-- Total Visits -->
+<div class="bg-surface rounded-xl border border-border p-4 flex flex-col gap-2">
+<div class="flex items-center gap-2 text-text-secondary">
+<span class="material-symbols-outlined text-primary" data-icon="visibility">visibility</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Total Visits</span>
+</div>
+<div class="font-headline-md text-headline-md text-on-surface font-bold">3,492</div>
+</div>
+<!-- Valid Scans -->
+<div class="bg-surface rounded-xl border border-border p-4 flex flex-col gap-2">
+<div class="flex items-center gap-2 text-text-secondary">
+<span class="material-symbols-outlined text-status-low" data-icon="fact_check">fact_check</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Valid Scans</span>
+</div>
+<div class="font-headline-md text-headline-md text-on-surface font-bold">845</div>
+</div>
+</section>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-lg">
+<!-- Tools & Assets -->
+<section class="flex flex-col gap-4">
+<h3 class="font-headline-md text-headline-md text-on-surface">Promotion Tools</h3>
+<div class="bg-surface rounded-xl border border-border p-4 hover:border-outline-variant transition-colors cursor-pointer flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="bg-surface-container-high p-3 rounded-lg text-primary">
+<span class="material-symbols-outlined" data-icon="hub">hub</span>
+</div>
+<div>
+<h4 class="font-body-md text-body-md text-on-surface font-semibold group-hover:text-primary transition-colors">Channel Codes</h4>
+<p class="text-label-sm font-label-sm text-text-secondary">Manage custom tracking links</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="bg-surface rounded-xl border border-border p-4 hover:border-outline-variant transition-colors cursor-pointer flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="bg-surface-container-high p-3 rounded-lg text-secondary">
+<span class="material-symbols-outlined" data-icon="image">image</span>
+</div>
+<div>
+<h4 class="font-body-md text-body-md text-on-surface font-semibold group-hover:text-secondary transition-colors">Asset Library</h4>
+<p class="text-label-sm font-label-sm text-text-secondary">Posters, Templates &amp; TG Copy</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">chevron_right</span>
+</div>
+</section>
+<!-- Leaderboard Preview -->
+<section class="flex flex-col gap-4">
+<div class="flex justify-between items-end">
+<h3 class="font-headline-md text-headline-md text-on-surface">Top Promoters</h3>
+<button class="text-primary font-label-sm text-label-sm hover:underline">View All</button>
+</div>
+<div class="bg-surface rounded-xl border border-border overflow-hidden">
+<div class="flex items-center justify-between p-4 border-b border-border bg-surface-container-low/50">
+<div class="flex items-center gap-4">
+<span class="text-accent-vp font-bold w-6 text-center">1</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface font-code-sm">0x1...</div>
+<span class="font-code-sm text-code-sm text-on-surface">0x1a2b...3c4d</span>
+</div>
+<span class="font-body-md text-body-md text-accent-vp font-semibold">245k VP</span>
+</div>
+<div class="flex items-center justify-between p-4 border-b border-border">
+<div class="flex items-center gap-4">
+<span class="text-on-surface-variant font-bold w-6 text-center">2</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface font-code-sm">0x8...</div>
+<span class="font-code-sm text-code-sm text-on-surface">0x8f9e...2a1b</span>
+</div>
+<span class="font-body-md text-body-md text-accent-vp font-semibold">182k VP</span>
+</div>
+<div class="flex items-center justify-between p-4">
+<div class="flex items-center gap-4">
+<span class="text-tertiary font-bold w-6 text-center">3</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface font-code-sm">0x4...</div>
+<span class="font-code-sm text-code-sm text-on-surface">0x4c5d...6e7f</span>
+</div>
+<span class="font-body-md text-body-md text-accent-vp font-semibold">120k VP</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface-container dark:bg-surface-container shadow-lg rounded-t-xl md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant scale-95 active:scale-90 transition-all rounded-xl px-3 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant scale-95 active:scale-90 transition-all rounded-xl px-3 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-label-sm text-label-sm mt-1">Wallet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant scale-95 active:scale-90 transition-all rounded-xl px-3 py-1" href="#">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+<span class="font-label-sm text-label-sm mt-1">Database</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-3 py-1 hover:bg-surface-variant scale-95 active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="font-label-sm text-label-sm mt-1">Points</span>
+</a>
+</nav>
+</body></html>

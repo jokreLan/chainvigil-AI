@@ -8,7 +8,10 @@ services:
     environment:
       APP_BASE_URL: http://localhost:3000
       API_BASE_URL: http://api:4000
+      NEXT_PUBLIC_APP_BASE_URL: http://localhost:3000
       NEXT_PUBLIC_API_BASE_URL: http://localhost:4000
+      INTERNAL_WRITE_SECRET: ${INTERNAL_WRITE_SECRET:-local-dev-write-secret-32}
+      CHAINVIGIL_RUNTIME_MODE: mock
     ports:
       - "3000:3000"
     depends_on:
@@ -33,6 +36,9 @@ services:
     environment:
       APP_BASE_URL: http://localhost:3000
       API_BASE_URL: http://api:4000
+      ADMIN_BASIC_AUTH_USERNAME: ${ADMIN_BASIC_AUTH_USERNAME:-admin}
+      ADMIN_BASIC_AUTH_PASSWORD: ${ADMIN_BASIC_AUTH_PASSWORD:?Set ADMIN_BASIC_AUTH_PASSWORD before starting admin}
+      CHAINVIGIL_RUNTIME_MODE: mock
     ports:
       - "3001:3001"
     depends_on:
@@ -57,8 +63,14 @@ services:
     environment:
       APP_BASE_URL: http://localhost:3000
       API_PORT: 4000
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/chainvigil_ai
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/chainvigil_ai
       REDIS_URL: redis://redis:6379
+      INTERNAL_WRITE_SECRET: ${INTERNAL_WRITE_SECRET:-local-dev-write-secret-32}
+      ADMIN_BASIC_AUTH_USERNAME: ${ADMIN_BASIC_AUTH_USERNAME:-admin}
+      ADMIN_BASIC_AUTH_PASSWORD: ${ADMIN_BASIC_AUTH_PASSWORD:-}
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:3001
+      TRUST_PROXY: "1"
+      CHAINVIGIL_RUNTIME_MODE: mock
     ports:
       - "4000:4000"
     depends_on:
@@ -84,8 +96,12 @@ services:
     profiles: ["app"]
     environment:
       APP_BASE_URL: http://localhost:3000
+      API_BASE_URL: http://api:4000
       BOT_PORT: 4001
-      TELEGRAM_BOT_TOKEN: mock-local-token
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_WEBHOOK_SECRET: ${TELEGRAM_WEBHOOK_SECRET:-local-dev-telegram-webhook}
+      TRUST_PROXY: "1"
+      CHAINVIGIL_RUNTIME_MODE: mock
     ports:
       - "4001:4001"
     healthcheck:
@@ -110,7 +126,7 @@ services:
       API_BASE_URL: http://api:4000
       NEXT_PUBLIC_APP_BASE_URL: http://localhost:3000
       NEXT_PUBLIC_API_BASE_URL: http://localhost:4000
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/chainvigil_ai
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/chainvigil_ai
       REDIS_URL: redis://redis:6379
       WORKER_HEARTBEAT_MS: 30000
     depends_on:
@@ -125,9 +141,10 @@ services:
     environment:
       POSTGRES_DB: chainvigil_ai
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    # Bind to loopback only — not exposed on the public interface.
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - chainvigil-postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -139,8 +156,10 @@ services:
   redis:
     image: redis:7-alpine
     container_name: chainvigil-redis
+    command: ["redis-server", "--appendonly", "yes", "--protected-mode", "yes"]
+    # Bind to loopback only — not exposed on the public interface.
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     volumes:
       - chainvigil-redis-data:/data
     healthcheck:

@@ -25,6 +25,18 @@ describe("buildMockTokenRiskReport", () => {
     expect(report.riskLevel).toBe("BLOCK");
     expect(report.label).toBe("禁买");
     expect(report.reasons.length).toBeGreaterThan(0);
+    expect(report.mode).toBe("mock");
+    expect(report.confidence).toBe("UNASSESSED");
+    expect(report.confidenceScore).toBe(0);
+  });
+
+  it("returns English mock report copy when locale is en", () => {
+    const report = buildMockTokenRiskReport({
+      input: "0x1111111111111111111111111111111111111113",
+      locale: "en",
+    });
+    expect(report.label).toBe("Block");
+    expect(report.summary).toMatch(/honeypot|sell/i);
   });
 });
 
@@ -37,6 +49,9 @@ describe("buildMockWalletHealthReport", () => {
     expect(report.summary.highRiskApprovals).toBeGreaterThan(0);
     expect(report.approvals.length).toBeGreaterThan(0);
     expect(report.disclaimer).toContain("只读风险提示");
+    expect(report.mode).toBe("mock");
+    expect(report.confidence).toBe("UNASSESSED");
+    expect(report.confidenceScore).toBe(0);
   });
 });
 
@@ -51,6 +66,18 @@ describe("listMockWalletWatchlist", () => {
     });
     expect(listMockWalletWatchlist()[0]?.label).toBe("主钱包");
   });
+
+  it("returns English labels when locale is en", () => {
+    expect(listMockWalletWatchlist("https://x.example", "en")[0]?.label).toBe("Main wallet");
+  });
+});
+
+describe("listMockRiskDatabaseEntries locale", () => {
+  it("returns English plain-language copy when locale is en", () => {
+    const entry = listMockRiskDatabaseEntries("en")[0];
+    expect(entry?.title).toMatch(/honeypot/i);
+    expect(entry?.plainLanguage).toMatch(/buy|sell/i);
+  });
 });
 
 describe("listMockWalletCheckCapabilities", () => {
@@ -64,6 +91,10 @@ describe("listMockWalletCheckCapabilities", () => {
       v0Action: "read_only_check",
     });
     expect(listMockWalletCheckCapabilities()[0]?.prohibitedActions).not.toContain("mutated");
+  });
+
+  it("returns English titles when locale is en", () => {
+    expect(listMockWalletCheckCapabilities("en")[0]?.title).toMatch(/high-risk approvals/i);
   });
 });
 

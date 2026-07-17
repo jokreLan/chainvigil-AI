@@ -12,11 +12,13 @@
     "start": "tsx src/server.ts"
   },
   "dependencies": {
+    "@chainvigil/cache": "workspace:*",
     "@chainvigil/chain": "workspace:*",
     "@chainvigil/config": "workspace:*",
     "@chainvigil/report": "workspace:*",
     "@chainvigil/risk-core": "workspace:*",
     "@chainvigil/telegram": "workspace:*",
+    "@chainvigil/types": "workspace:*",
     "fastify": "^5.4.0"
   },
   "devDependencies": {
