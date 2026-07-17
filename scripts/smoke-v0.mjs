@@ -143,6 +143,12 @@ async function main() {
         "/learn",
         "/learn/honeypot",
         "/learn/how-to-check-ca",
+        "/learn/how-to-reclaim-solana-rent",
+        "/learn/is-it-safe-to-revoke-approvals",
+        "/learn/pump-fun-dev-dump-check",
+        "/learn/close-empty-token-accounts-solana",
+        "/learn/free-solana-rug-check",
+        "/learn/bsc-honeypot-sell-fail",
         "/intel",
       ]);
       if (xml.includes("/token/bsc/") || xml.includes("/wallet/0x")) {
@@ -160,10 +166,12 @@ async function main() {
         '"@type":"FAQPage"',
         "honeypotDetected",
         "/check",
+        "canSell",
       ]);
       assertIncludesAnyGroups(name, html, [
         ["貔貅", "Honeypot", "honeypot"],
         ["Article", "FAQPage", "HowTo"],
+        ["风险信号", "Risk signal", "signalTable", "禁买", "Block"],
       ]);
     }),
   );

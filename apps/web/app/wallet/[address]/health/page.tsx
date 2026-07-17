@@ -4,6 +4,7 @@ import { buildMockWalletHealthReport } from "@chainvigil/risk-core";
 import type { ApprovalRiskLevel } from "@chainvigil/types";
 import { getServerT } from "../../../i18n/server";
 import { CopyValueButton } from "../../../ui/copy-value-button";
+import { HealthScoreRing } from "../../../ui/health-score-ring";
 import { ReportModeBanner } from "../../../ui/report-mode-banner";
 
 interface WalletHealthPageProps {
@@ -53,10 +54,8 @@ export default async function WalletHealthPage({ params }: WalletHealthPageProps
 
       <section className="mx-auto mt-12 grid max-w-7xl gap-8 lg:grid-cols-[22rem_1fr]">
         <aside className="h-fit rounded-lg border border-[#f97316]/40 bg-[#f97316]/10 p-5">
-          <p className="text-sm text-[#fdba74]">{t("walletReport.score")}</p>
-          <p className="mt-3 text-6xl font-semibold text-[#f9fafb]">{report.summary.score}</p>
-          <p className="mt-3 text-xl text-[#fed7aa]">{report.summary.label}</p>
-          <div className="mt-5 flex flex-wrap items-center gap-2">
+          <HealthScoreRing score={report.summary.score} label={report.summary.label} />
+          <div className="mt-6 flex flex-wrap items-center gap-2">
             <p className="break-all font-mono text-sm leading-6 text-[#c7c4d7]">{report.address}</p>
             <CopyValueButton value={report.address} label={t("common.copyAddress")} />
           </div>

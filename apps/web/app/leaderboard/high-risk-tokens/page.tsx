@@ -24,8 +24,11 @@ export default function HighRiskTokensPage() {
       <div className="mx-auto max-w-lg px-4 py-8 md:max-w-xl">
         <section>
           <h1 className="text-3xl font-bold text-[#f9fafb]">{t("board.title")}</h1>
-          <p className="mt-1 text-sm text-[#c0c1ff]">High-Risk Database</p>
+          <p className="mt-1 text-sm text-[#c0c1ff]">Solana &amp; BSC · High-Risk Samples</p>
           <p className="mt-3 text-sm leading-6 text-[#9ca3af]">{t("board.subtitle")}</p>
+          <p className="mt-2 rounded-xl border border-[#eab308]/30 bg-[#eab308]/10 px-3 py-2 text-xs leading-5 text-[#fde68a]">
+            {t("board.honesty")}
+          </p>
         </section>
 
         <nav className="mt-6 flex gap-2 overflow-x-auto pb-1">

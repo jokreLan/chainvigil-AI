@@ -22,7 +22,22 @@ export async function ChainTopicPage({ chain }: ChainTopicPageProps) {
         shortName: "Solana",
         description: t("chain.solDesc"),
         chainLabel: "Solana（SOL）",
+        keywords:
+          locale === "zh"
+            ? ["Solana contract check", "Rent reclaim 租金回收", "Burn junk token / 空账户", "Mint / Freeze"]
+            : ["Solana contract check", "Solana rent reclaim", "Burn junk token SOL", "Mint / Freeze authority"],
         concerns: ["Mint / Freeze Authority", "Liquidity verifiability", "Top-10 concentration"],
+        primaryCta: { href: "/check", label: t("chain.checkCa") },
+        secondaryCtas: [
+          {
+            href: "/app/asset-barber",
+            label: locale === "zh" ? "资产理发师 · 租金/空账户（演示）" : "Asset barber · rent/empty (demo)",
+          },
+          {
+            href: "/learn/how-to-reclaim-solana-rent",
+            label: locale === "zh" ? "科普：如何回收 SOL 租金" : "Guide: reclaim SOL rent",
+          },
+        ],
         faq:
           locale === "zh"
             ? ([
@@ -59,7 +74,26 @@ export async function ChainTopicPage({ chain }: ChainTopicPageProps) {
         shortName: "BNB Smart Chain",
         description: t("chain.bnbDesc"),
         chainLabel: "BNB Smart Chain（BNB / BSC）",
+        keywords:
+          locale === "zh"
+            ? ["BSC honeypot scanner 貔貅", "Revoke approvals 撤销授权", "CA 极速安检", "卖出税 / LP"]
+            : ["BSC honeypot scanner", "Revoke approvals BSC", "Fast CA check", "Sell tax / LP"],
         concerns: ["Buy/sell & high tax", "Owner / blacklist powers", "LP lock & concentration"],
+        primaryCta: { href: "/check", label: t("chain.checkCa") },
+        secondaryCtas: [
+          {
+            href: "/app/approvals",
+            label: locale === "zh" ? "授权清理 · Revoke 演示" : "Approvals · revoke demo",
+          },
+          {
+            href: "/app/approval-cleaner",
+            label: locale === "zh" ? "授权扫描策略" : "Approval cleaner policy",
+          },
+          {
+            href: "/learn/honeypot",
+            label: locale === "zh" ? "科普：什么是貔貅" : "Guide: what is a honeypot",
+          },
+        ],
         faq:
           locale === "zh"
             ? ([
@@ -144,12 +178,33 @@ export async function ChainTopicPage({ chain }: ChainTopicPageProps) {
         </p>
         <h1 className="mt-3 text-4xl font-semibold text-[#f9fafb] sm:text-5xl">{topic.title}</h1>
         <p className="mt-5 max-w-3xl text-lg leading-8 text-[#c7c4d7]">{topic.description}</p>
-        <Link
-          href="/check"
-          className="mt-8 inline-flex min-h-12 items-center rounded-md bg-[#8083ff] px-5 text-sm font-semibold text-[#0d0096] transition hover:bg-[#c0c1ff]"
-        >
-          {t("chain.checkCa")}
-        </Link>
+        <div className="mt-5 flex flex-wrap gap-2">
+          {topic.keywords.map((kw) => (
+            <span
+              key={kw}
+              className="rounded-full border border-[#34343d] bg-[#16181d] px-3 py-1 text-xs text-[#9ca3af]"
+            >
+              {kw}
+            </span>
+          ))}
+        </div>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Link
+            href={topic.primaryCta.href}
+            className="inline-flex min-h-12 items-center rounded-md bg-[#8083ff] px-5 text-sm font-semibold text-[#0d0096] transition hover:bg-[#c0c1ff]"
+          >
+            {topic.primaryCta.label}
+          </Link>
+          {topic.secondaryCtas.map((cta) => (
+            <Link
+              key={cta.href}
+              href={cta.href}
+              className="inline-flex min-h-12 items-center rounded-md border border-[#464554] px-5 text-sm font-semibold text-[#f9fafb] transition hover:border-[#8083ff]/50"
+            >
+              {cta.label}
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section className="mx-auto mt-12 grid max-w-7xl gap-4 md:grid-cols-3">

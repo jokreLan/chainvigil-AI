@@ -101,7 +101,12 @@ pnpm smoke:v0
 - 90 天 GTM：`docs/go-to-market/gtm_90_days.md`
 - VP 第二曲线：`docs/product/vp_second_engine_v1.md`
 - 运维手册：`docs/ops/runbook_v1.md`
-- 任务板：`TASKS.md`
+- 上线清单：`docs/ops/launch_checklist.md`
+- 任务板：`TASKS.md`（**周末只做 S0 收尾；S1+ 冻结**）
+- 决策与红线：`DECISIONS.md`（含周末闸门）
+
+**当前窗口：** 密钥 / live 或书面 mock 上线 / TG / 域名 / 生产 smoke。  
+**先不做：** Redis 热路径、异步队列、Dust 粉碎、VP 加权与治理投票。
 
 **定位一句话：** 买币前，在群里用中文把 CA 查清楚。
 

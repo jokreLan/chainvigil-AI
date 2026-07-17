@@ -121,6 +121,10 @@ input {
   animation: cv-scan-line 2.8s ease-in-out infinite;
 }
 
+.cv-score-ring-transition {
+  transition: stroke-dashoffset 80ms linear;
+}
+
 .cv-bottom-nav-safe {
   padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
 }

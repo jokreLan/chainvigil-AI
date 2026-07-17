@@ -142,6 +142,23 @@ const zh = {
   "wallet.viewApprovals": "查看授权列表",
   "wallet.assetBarber": "资产理发师",
   "wallet.goCheck": "去查 CA",
+  "walletScan.title": "只读钱包体检",
+  "walletScan.subtitle": "渐进扫描授权与可疑资产，无需连接钱包",
+  "walletScan.scanning": "体检中",
+  "walletScan.scoreHint": "健康分预估中",
+  "walletScan.step.parse": "解析钱包地址",
+  "walletScan.step.chain": "扫描 BNB 链上关联状态",
+  "walletScan.step.spenders": "评估 Spender 授权风险",
+  "walletScan.step.assets": "检查可疑资产与粉尘",
+  "walletScan.step.score": "汇总健康分与建议",
+  "walletScan.failedTitle": "钱包体检未能完成",
+  "walletScan.failedHint": "可检查网络 / API，或修改地址后重试。",
+  "walletScan.retry": "重新体检",
+  "walletScan.edit": "修改地址",
+  "walletScan.readonly": "只读 · 不签名",
+  "walletScan.noWallet": "无需连接钱包 · 不会请求私钥",
+  "walletReport.scoreRing": "健康分",
+  "walletReport.scoreOf": "/ 100",
 
   "intel.title": "情报中心",
   "intel.subtitle":
@@ -291,8 +308,9 @@ const zh = {
   "riskDb.title": "风险数据库",
   "riskDb.subtitle": "人话解释风险类型与信号。不是实时高危 CA 榜（见高危榜 / 假币库）。",
 
-  "board.title": "高危 CA 榜单",
-  "board.subtitle": "高危 CA / 假盘样例库。当前为 V0 mock 情报，非 real-time 链上榜单。",
+  "board.title": "最新 Solana & BSC 高危/骗局 CA 榜",
+  "board.subtitle": "固定 URL 的高危样例榜，便于搜索与避坑。内容会随情报更新；当前 V0 为 mock 样例。",
+  "board.honesty": "诚实说明：非全量链上实时榜，亦非「每小时真轮动」承诺。交易前请用 CA 安检重扫。",
   "board.deployers": "高危部署者",
   "board.mockFilter": "BLOCK / HIGH · V0 mock 样例",
   "board.disclaimer":
@@ -321,7 +339,7 @@ const zh = {
   "walletReport.metricDust": "示例粉尘估值",
   "walletReport.approvals": "授权风险",
 
-  "fakeDb.title": "假币数据库",
+  "fakeDb.title": "假 USDT / USDC / Meme 仿盘对照",
   "fakeDb.subtitle":
     "Identify imposters vs official contracts. 名称和 Symbol 可以伪造，买币前请始终从官方渠道核对",
   "fakeDb.search": "输入 CA 或粘贴公开链接开始核验...",
@@ -349,10 +367,10 @@ const zh = {
   "chain.crossCheck":
     "先将这个信号与公开 CA、官方渠道和当前链上信息交叉核对。V0 仅提供 mock 解释，不替代独立尽调。",
   "chain.faqTitle": "安检常见问题",
-  "chain.solTitle": "Solana Token 安全检查",
+  "chain.solTitle": "Solana 合约安检 · 租金回收 · 垃圾币",
   "chain.solDesc":
     "在交易 Solana Token 前，先核对唯一 CA，再阅读代币权限、流动性与集中持仓等基础风险信号。",
-  "chain.bnbTitle": "BNB Smart Chain Token 安全检查",
+  "chain.bnbTitle": "BSC 貔貅扫描 · 撤销授权 · CA 安检",
   "chain.bnbDesc":
     "在交易 BNB Smart Chain Token 前，先核对唯一 CA，再查看买卖限制、税率、权限和 LP 等基础风险信号。",
 
@@ -497,7 +515,19 @@ const zh = {
   "growth.emptyCta": "先去查 CA 生成可分享报告",
 
   "revoke.demoBadge": "V0 演示 · 不会广播交易",
+  "revoke.title": "确认撤销授权",
   "revoke.body": "将授权额度设为 0。资产仍在你的钱包内。本弹窗仅演示二次确认 UX，关闭后授权不会改变。",
+  "revoke.safeTitle": "安全提示（请先阅读）",
+  "revoke.safeOnlyRevoke": "本次签名仅执行【撤销权限 / Revoke】，把额度改成 0。",
+  "revoke.safeNoTransfer": "不会转走您的任何资产；不会授权新的 spender。",
+  "revoke.safeGas": "Gas 为网络费（演示约 0.0001–0.001 链原生币）。平台默认不垫付；若日后有 Gas 券，会单独标明。",
+  "revoke.safeDemo": "当前为演示：点确认也不会真正上链。",
+  "revoke.asset": "资产",
+  "revoke.spender": "授权对象",
+  "revoke.risk": "风险原因",
+  "revoke.gasLabel": "预估 Gas",
+  "revoke.cancel": "取消",
+  "revoke.confirm": "确认撤销（演示）",
   "revoke.understand": "我理解撤销该授权可能影响对应 DApp 的正常使用。",
   "revoke.toast": "演示结束：未发送链上交易，授权未真正撤销",
   "revoke.noBroadcast": "V0 不广播交易",
@@ -666,6 +696,23 @@ const en: Record<MessageKey, string> = {
   "wallet.viewApprovals": "View approvals",
   "wallet.assetBarber": "Asset barber",
   "wallet.goCheck": "Check a CA",
+  "walletScan.title": "Read-only wallet check",
+  "walletScan.subtitle": "Progressive scan of approvals and suspicious assets — no wallet connect",
+  "walletScan.scanning": "Checking",
+  "walletScan.scoreHint": "Health score pending",
+  "walletScan.step.parse": "Parse wallet address",
+  "walletScan.step.chain": "Scan BNB on-chain account state",
+  "walletScan.step.spenders": "Score spender approval risks",
+  "walletScan.step.assets": "Flag suspicious assets & dust",
+  "walletScan.step.score": "Aggregate health score & tips",
+  "walletScan.failedTitle": "Wallet check could not finish",
+  "walletScan.failedHint": "Check network / API, or edit the address and retry.",
+  "walletScan.retry": "Retry check",
+  "walletScan.edit": "Edit address",
+  "walletScan.readonly": "Read-only · no signing",
+  "walletScan.noWallet": "No wallet connect · never asks for keys",
+  "walletReport.scoreRing": "Health score",
+  "walletReport.scoreOf": "/ 100",
 
   "intel.title": "Intel hub",
   "intel.subtitle":
@@ -817,9 +864,11 @@ const en: Record<MessageKey, string> = {
   "riskDb.subtitle":
     "Plain-language risk types and signals. Not a live high-risk CA board (see leaderboard / fake-token DB).",
 
-  "board.title": "High-risk CA board",
+  "board.title": "Latest Solana & BSC scam / high-risk CA list",
   "board.subtitle":
-    "High-risk CA / fake samples. V0 mock intel — not a real-time on-chain leaderboard.",
+    "Fixed-URL high-risk samples for search and education. Content refreshes over time; V0 is mock samples.",
+  "board.honesty":
+    "Honesty: not a full live chain dump, and not a promise of true hourly rotation. Re-scan the CA before trading.",
   "board.deployers": "Risky deployers",
   "board.mockFilter": "BLOCK / HIGH · V0 mock samples",
   "board.disclaimer":
@@ -848,7 +897,7 @@ const en: Record<MessageKey, string> = {
   "walletReport.metricDust": "Sample dust value",
   "walletReport.approvals": "Approval risks",
 
-  "fakeDb.title": "Fake token database",
+  "fakeDb.title": "Fake USDT / USDC & meme impostor contracts",
   "fakeDb.subtitle":
     "Identify imposters vs official contracts. Names and symbols can be faked — always verify from official sources before buying.",
   "fakeDb.search": "Paste a CA or public link to verify...",
@@ -876,10 +925,10 @@ const en: Record<MessageKey, string> = {
   "chain.crossCheck":
     "Cross-check this signal with the public CA, official channels, and current chain data. V0 is mock guidance only.",
   "chain.faqTitle": "FAQ",
-  "chain.solTitle": "Solana token security check",
+  "chain.solTitle": "Solana contract check · rent reclaim · junk tokens",
   "chain.solDesc":
     "Before trading a Solana token, verify the unique CA, then review mint/freeze authority, liquidity, and concentration signals.",
-  "chain.bnbTitle": "BNB Smart Chain token security check",
+  "chain.bnbTitle": "BSC honeypot scanner · revoke · CA check",
   "chain.bnbDesc":
     "Before trading a BNB Smart Chain token, verify the unique CA, then review buy/sell limits, tax, privileges, and LP signals.",
 
@@ -1028,8 +1077,21 @@ const en: Record<MessageKey, string> = {
   "growth.emptyCta": "Scan a CA first to create a shareable report",
 
   "revoke.demoBadge": "V0 demo · will not broadcast",
+  "revoke.title": "Confirm revoke",
   "revoke.body":
     "Sets allowance to 0. Assets stay in your wallet. This modal only demos second-confirm UX — closing leaves approvals unchanged.",
+  "revoke.safeTitle": "Safety notice (read first)",
+  "revoke.safeOnlyRevoke": "This signature only runs a 【Revoke】 — sets allowance to 0.",
+  "revoke.safeNoTransfer": "It will not transfer any of your assets or grant a new spender.",
+  "revoke.safeGas":
+    "Gas is a network fee (demo ~0.0001–0.001 native). Platform does not sponsor gas by default; future gas vouchers will be labeled separately.",
+  "revoke.safeDemo": "Demo mode: confirming still does not broadcast.",
+  "revoke.asset": "Asset",
+  "revoke.spender": "Spender",
+  "revoke.risk": "Risk reason",
+  "revoke.gasLabel": "Est. gas",
+  "revoke.cancel": "Cancel",
+  "revoke.confirm": "Confirm revoke (demo)",
   "revoke.understand": "I understand revoking may break the related DApp until I re-approve.",
   "revoke.toast": "Demo ended: no on-chain tx; approval was not revoked",
   "revoke.noBroadcast": "V0 does not broadcast",

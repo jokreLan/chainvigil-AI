@@ -1,5 +1,31 @@
 # PROGRESS
 
+## 2026-07-17 · 长尾词矩阵 34 条落地
+
+- `long-tail-keywords.ts`：4 类转化路径（租金/防割/BSC 貔貅/授权）
+- GEO 词条扩至 22；learn 首页展示矩阵；#16 部署者历史 + Gas 垫付写冻结
+- 测试/smoke/launch-check 同步
+
+## 2026-07-17 · S0.5 常青 SEO/GEO 可先做内容落地
+
+- metadata：board/fakeDb/solana/bnb 关键词 title（诚实 mock）
+- `geo-articles` 11 词条 + assertion + signalTable；learn 页表格与可引用定义
+- developers TechArticle/APIReference、risk-database Dataset JSON-LD
+- 双链 CTA；sitemap/smoke/launch-check；冻结项写入 DECISIONS/TASKS
+
+## 2026-07-17 · 周末闸门落文档（S0 only / S1+ 冻结）
+
+- `DECISIONS.md`「周末闸门」：允许项、冻结表、解冻条件、状态诚实表。
+- `TASKS.md` 顶部硬约束；S0 拆「代码侧已完成 / 周末收尾」；S1–S4 标冻结。
+- `MASTER_CONTROL.md` 当前窗口 + 阶段状态 + 未做清单。
+- `docs/ops/launch_checklist.md` 周末范围 + 节 F 之后再开。
+
+## 2026-07-17 · 红线决策 + 钱包体检仪轨 UX
+
+- `DECISIONS.md`：三红线（只读免费 / 执行须收据 / VP 非币 + Gas 默认不垫付）；S1 Redis 分层 TTL + pending 双路径合同。
+- `TASKS.md`：S1 缓存/队列项；S1.5 UX 勾选渐进扫描与 Revoke 绿框。
+- Web：`WalletScanProgressOverlay`（阶段文案 + Spender 计数微动效）；`HealthScoreRing` 0→分；`RevokeConfirmModal` 安全绿框白话。
+
 ## 2026-07-17 · OPC 多角色总控推进
 
 - 锁定战略：中文买前安检入口 · SOL/BNB · TG 主分发 · VP 第二曲线（权益非 token）。

@@ -26,14 +26,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL ?? "http://localhost:3000";
   const now = new Date();
 
-  const staticEntries = staticRoutes.map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: now,
-    changeFrequency: (route === "" || route === "/check" ? "daily" : "weekly") as
-      | "daily"
-      | "weekly",
-    priority: route === "" ? 1 : route === "/check" ? 0.9 : route.startsWith("/learn") ? 0.85 : 0.7,
-  }));
+  const staticEntries = staticRoutes.map((route) => {
+    const isHub =
+      route === "/leaderboard/high-risk-tokens" ||
+      route === "/fake-token-database" ||
+      route === "/risk-database";
+    const changeFrequency = (
+      route === "" || route === "/check" || isHub ? "daily" : "weekly"
+    ) as "daily" | "weekly";
+    return {
+      url: `${baseUrl}${route}`,
+      lastModified: now,
+      changeFrequency,
+      priority:
+        route === ""
+          ? 1
+          : route === "/check"
+            ? 0.9
+            : isHub
+              ? 0.85
+              : route.startsWith("/learn")
+                ? 0.85
+                : 0.7,
+    };
+  });
 
   const geoEntries = geoArticleSlugs.map((slug) => ({
     url: `${baseUrl}/learn/${slug}`,

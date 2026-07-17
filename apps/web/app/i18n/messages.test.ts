@@ -28,6 +28,15 @@ describe("i18n dictionaries", () => {
     expect(translate("zh", "home.alertMock")).toBe("V0 MOCK");
   });
 
+  it("covers wallet scan + revoke safety copy", () => {
+    expect(translate("zh", "walletScan.step.spenders")).toMatch(/Spender|授权/);
+    expect(translate("en", "walletScan.step.spenders")).toMatch(/spender/i);
+    expect(translate("zh", "revoke.safeOnlyRevoke")).toMatch(/撤销|Revoke/);
+    expect(translate("en", "revoke.safeNoTransfer")).toMatch(/not transfer|assets/i);
+    expect(translate("zh", "revoke.safeGas")).toMatch(/不垫付|Gas/);
+    expect(translate("en", "revoke.safeGas")).toMatch(/does not sponsor|gas/i);
+  });
+
   it("falls back when key missing for a locale object", () => {
     const key = "brand.name" as MessageKey;
     expect(translate("zh", key)).toBe("ChainVigil AI");

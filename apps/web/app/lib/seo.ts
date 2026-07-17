@@ -68,12 +68,14 @@ const copy: Record<PageSeoKey, Record<Locale, { title: string; description: stri
   },
   learn: {
     zh: {
-      title: "风险百科｜ChainVigil AI",
-      description: "人话解释貔貅、LP 未锁、无限授权、假币与授权风险。先理解，再决定是否查 CA。",
+      title: "风险百科 · Solana 租金 / 貔貅 / 授权长尾词｜ChainVigil AI",
+      description:
+        "长尾搜索矩阵：Solana rent reclaim、pump.fun 防割、BSC 貔貅税率、撤销授权。固定 URL + GEO 结构化词条，导向 CA 安检与钱包体检。",
     },
     en: {
-      title: "Risk encyclopedia｜ChainVigil AI",
-      description: "Plain guides on honeypots, unlocked LP, unlimited approvals, fakes. Learn first, then scan a CA.",
+      title: "Risk encyclopedia · Solana rent, rugs, BSC honeypot, revoke｜ChainVigil AI",
+      description:
+        "Long-tail matrix: Solana rent reclaim, pump.fun rug checks, BSC honeypot/tax, approval revoke. Fixed URLs + GEO articles → CA check & wallet health.",
     },
   },
   riskDb: {
@@ -88,22 +90,26 @@ const copy: Record<PageSeoKey, Record<Locale, { title: string; description: stri
   },
   board: {
     zh: {
-      title: "高危 CA 榜单｜ChainVigil AI",
-      description: "高危/禁买样例榜（教育与联调）。非实时全量链上榜，交易前请独立复核。",
+      title: "最新 Solana & BSC 高危/骗局 CA 榜单｜ChainVigil AI",
+      description:
+        "教育向高危与禁买样例榜（SOL/BNB）。固定 URL、内容会更新；当前 V0 为 mock 样例，非全量链上实时榜。交易前请重新 CA 安检。",
     },
     en: {
-      title: "High-risk CA board｜ChainVigil AI",
-      description: "Sample high-risk/block list for education. Not a full live chain board — re-verify before trading.",
+      title: "Latest Solana & BSC Scam / High-Risk Tokens List｜ChainVigil AI",
+      description:
+        "Sample high-risk & block CAs for SOL/BNB education. Fixed URL, content refreshes over time. V0 is mock samples — not a full live chain dump. Re-scan before trading.",
     },
   },
   fakeDb: {
     zh: {
-      title: "假币数据库｜ChainVigil AI",
-      description: "官方 vs 仿盘对照：名称可伪造，买前务必核对唯一 CA。",
+      title: "假 USDT / USDC / Meme 仿盘合约对照库｜ChainVigil AI",
+      description:
+        "活跃仿盘与假稳定币模式对照：名称可伪造，买前务必核对唯一 CA。教育向样例，请独立复核。",
     },
     en: {
-      title: "Fake token database｜ChainVigil AI",
-      description: "Official vs impostor patterns. Names can be faked — always verify the unique CA.",
+      title: "Active Fake USDT, USDC & Meme Impostor Contracts｜ChainVigil AI",
+      description:
+        "Official vs impostor patterns for stablecoins and memes. Names can be faked — always verify the unique CA. Educational samples; re-verify independently.",
     },
   },
   bot: {
@@ -148,22 +154,26 @@ const copy: Record<PageSeoKey, Record<Locale, { title: string; description: stri
   },
   solana: {
     zh: {
-      title: "Solana Token 安全检查｜ChainVigil AI",
-      description: "买 Solana Token 前先查 CA。权限、流动性与持仓集中度等人话信号。",
+      title: "Solana 合约安检 · 租金回收 · 垃圾币｜ChainVigil AI",
+      description:
+        "Solana contract check、rent reclaim（租金/空账户）、junk token 风险教育。买前查 CA；资产清理入口见资产理发师（V0 只读演示）。",
     },
     en: {
-      title: "Solana token security check｜ChainVigil AI",
-      description: "Check the CA before trading Solana tokens. Authority, liquidity, concentration signals.",
+      title: "Solana Contract Check, Rent Reclaim & Junk Tokens｜ChainVigil AI",
+      description:
+        "Solana CA scan, rent reclaim education, and junk-token risk. Check CA before buy; asset barber for cleanup UX (V0 read-only demo).",
     },
   },
   bnb: {
     zh: {
-      title: "BNB Smart Chain Token 安全检查｜ChainVigil AI",
-      description: "买 BNB Token 前先查 CA。买卖限制、税率、权限与 LP 信号。",
+      title: "BSC 貔貅扫描 · 撤销授权 · CA 安检｜ChainVigil AI",
+      description:
+        "BNB Smart Chain honeypot scanner 教育、Revoke approvals 说明与 CA 极速安检入口。买前查 CA，授权清理见工作台（V0 不广播交易）。",
     },
     en: {
-      title: "BNB Smart Chain token security check｜ChainVigil AI",
-      description: "Check the CA before trading BNB tokens. Buy/sell limits, tax, privileges, LP.",
+      title: "BSC Honeypot Scanner, Revoke Approvals & CA Check｜ChainVigil AI",
+      description:
+        "BNB Smart Chain honeypot education, approval revoke guidance, and fast CA check. Cleanup UX is demo-only — no broadcast in V0.",
     },
   },
 };
@@ -269,5 +279,73 @@ export function buildBreadcrumbJsonLd(items: Array<{ name: string; path: string 
       name: item.name,
       item: `${site}${item.path === "/" ? "" : item.path}`,
     })),
+  };
+}
+
+/** TechArticle + APIReference for /developers — AI/GEO citation surface. */
+export function buildDevelopersJsonLd(locale: Locale = "zh") {
+  const site = getSiteUrl();
+  const isZh = locale === "zh";
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "TechArticle",
+        headline: isZh ? "ChainVigil AI 开发者中心" : "ChainVigil AI Developers",
+        description: isZh
+          ? "Token / Wallet / Intel 风险检测 API 入口与 mock 契约。可用于扫描 Solana / BNB 合约安全信号。"
+          : "Token, wallet, and intel risk APIs with mock contracts for Solana/BNB safety signals.",
+        url: `${site}/developers`,
+        inLanguage: isZh ? "zh-CN" : "en",
+        author: { "@type": "Organization", name: "ChainVigil AI" },
+        publisher: { "@type": "Organization", name: "ChainVigil AI" },
+        about: [
+          { "@type": "Thing", name: "Solana token security API" },
+          { "@type": "Thing", name: "BNB Smart Chain honeypot scan API" },
+        ],
+      },
+      {
+        "@type": "APIReference",
+        name: "POST /api/v1/token/check",
+        description: isZh
+          ? "提交 CA 或链接，返回含 mode/confidence 的人话风险报告（V0 可为 mock）。"
+          : "Submit a CA or link; returns a plain-language risk report with mode/confidence (V0 may be mock).",
+        url: `${site}/api`,
+        documentation: `${site}/developers`,
+        provider: { "@type": "Organization", name: "ChainVigil AI" },
+      },
+      {
+        "@type": "APIReference",
+        name: "POST /api/v1/wallet/health",
+        description: isZh
+          ? "只读钱包体检：高危授权与可疑资产摘要，不请求签名。"
+          : "Read-only wallet health: high-risk approvals and suspicious assets. No signing.",
+        url: `${site}/api`,
+        documentation: `${site}/developers`,
+        provider: { "@type": "Organization", name: "ChainVigil AI" },
+      },
+    ],
+  };
+}
+
+/** Dataset JSON-LD for /risk-database — educational catalog, not a live dump claim. */
+export function buildRiskDatasetJsonLd(locale: Locale = "zh") {
+  const site = getSiteUrl();
+  const isZh = locale === "zh";
+  return {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: isZh ? "ChainVigil 风险类型与信号目录" : "ChainVigil risk type & signal catalog",
+    description: isZh
+      ? "教育向风险类型、人话解释与链上信号清单（貔貅、LP、无限授权等）。V0 含 mock 样例，不是全网黑名单实时库。"
+      : "Educational risk types, plain-language explanations, and on-chain signal labels (honeypot, LP, unlimited approval). V0 includes mock samples — not a full live blacklist dump.",
+    url: `${site}/risk-database`,
+    license: "https://creativecommons.org/licenses/by/4.0/",
+    creator: { "@type": "Organization", name: "ChainVigil AI", url: site },
+    keywords: isZh
+      ? ["貔貅", "honeypot", "LP 未锁", "无限授权", "假 USDT", "CA 安检"]
+      : ["honeypot", "unlocked LP", "unlimited approval", "fake USDT", "CA check", "Solana", "BSC"],
+    isAccessibleForFree: true,
+    inLanguage: isZh ? ["zh-CN", "en"] : ["en", "zh-CN"],
   };
 }

@@ -1,5 +1,115 @@
 # DECISIONS
 
+## 2026-07-17 · S0.5 常青 SEO/GEO：已做 vs 冻结
+
+### 已落地（内容层 · 可先做）
+
+- 榜单/假币库/SOL/BNB **metadata title** 关键词强化（诚实标明 mock/非全量实时）
+- `/learn` GEO 词条 **22**（核心 + long-tail extra）：断言-证据 + 信号对照表
+- **长尾矩阵 34 条**（`lib/long-tail-keywords.ts`）：4 类转化路径；`/learn` 首页分类展示
+  - Solana 租金/清理 → 资产理发师  
+  - pump.fun 防割 → CA 安检  
+  - BSC 貔貅/税率 → CA 安检  
+  - 授权/被盗 → 钱包体检  
+- `/developers` TechArticle + APIReference JSON-LD；`/risk-database` Dataset JSON-LD
+- 双链页关键词 chips + CTA
+- sitemap：榜单类 daily；learn 词条自动进 sitemap
+- **保持** `/token/*` **noindex**
+
+### 长尾诚实边界（产品红线对齐）
+
+- 「没 SOL 也能清理 / 平台垫付 Gas」→ **仅文档与词条说明默认不垫付**；权益开关后置（S3）
+- 「一键清理/一键撤销」→ **演示 UX**，不广播交易
+- 部署者历史扫描器（矩阵 #16）→ **deferred**，需 live 图数据
+
+### 明确冻结（live / 运维就绪后再做）
+
+| 项 | 原因 |
+|----|------|
+| 榜单「真·每小时链上轮动」 | 依赖 live 情报与 worker 刷新；现 mock 不得假装实时 |
+| 对每个 `/token/{ca}` 做 SEO 收录 | 与 CA noindex 决策冲突；meme 热点寿命短 |
+| IndexNow / Google Indexing 对随机 CA 强推 | 同上；若做仅限**人工精选案例白名单**或耐久页 |
+| 查询频次破百自动推送 | 依赖 Redis 计数 + 运营策略（S1+） |
+| 宣称「权威全网黑名单 Dataset」 | Dataset 文案已写「教育/mock」；全量权威需真数据与治理 |
+| 部署者地址历史扫描专页 | 矩阵 #16 deferred |
+| 真·Gas 垫付清理 | 成本与羊毛风险；须活动开关 |
+
+### 与 AI 时效路径的诚实关系
+
+- Token 页 **SSR 已具备**：AI 爬虫可读 HTML 结论；靠分享与提问引用，**不靠** Google 索引每个 CA。
+- 新币 10 分钟窗口：主路径仍是 **群内查 CA / Web /check**，不是等收录。
+
+## 2026-07-17 · 周末闸门：只做 S0 收尾，S1+ 冻结
+
+**拍板：** 周末上线窗口 **只允许 S0 未完成项**；S1 / S1.5 剩余 / S2 / S3 / S4 **一律先不补实现**（文档合同可先写，代码与运营动作冻结）。
+
+### 周末 = S0 收尾（允许做）
+
+1. 填 `.env.production`（对照 `.env.production.example`）  
+2. 至少一个 live provider **或** 明确「仍 mock 上线 + 全站 mode 诚实」并接受风险  
+3. Telegram 正式 webhook + `TELEGRAM_WEBHOOK_SECRET`  
+4. HTTPS 域名 + 反代 `TRUST_PROXY`  
+5. 生产 `readiness` 绿 + 对生产域名跑 `pnpm smoke:v0`  
+6. 上线前再跑 `pnpm build`（若尚未在目标环境验过）
+
+### 周末明确冻结（先不补）
+
+| 域 | 冻结项 |
+|----|--------|
+| DevOps / S1 | Redis 热路径分层 TTL、共享限流、BullMQ/pending 双路径、爬虫级限流加固 |
+| UX / S1.5 | Dust 粉碎动效、省钱英雄区、真签名/垫付 Gas 文案开关 |
+| 群 / S2 | 试点群规模化运营、群主 PDF 定稿冲刺（可准备话术草稿，不挡 S0） |
+| VP / S3 | 推荐质量加权、真兑换、Gas 券、纠错投票 |
+| 规模 / S4 | 反作弊深水、渠道结算自动化、API 商业套餐 |
+
+### 解冻条件
+
+- **S0 收尾完成**（密钥 + 可访问生产 + smoke/readiness 绿，或书面接受「纯 mock 上线」）后，才开启 **S1 真检测**。  
+- **S1 有 live 信号且出现额度/脉冲问题时**，才优先解冻 Redis/限流（不必等满 S1 全部勾选）。  
+- S1.5 剩余 UX、S2–S4 按 `TASKS.md` / `MASTER_CONTROL.md` 阶段闸门推进，**禁止与周末 S0 并行开坑**。
+
+### 状态诚实（避免「都搞定了」误判）
+
+| 块 | 文档 | 代码/运营 |
+|----|------|-----------|
+| 产品三红线 | ✅ | 文案/mode 已对齐原则 |
+| S1 缓存/异步合同 | ✅ 已写入 | ❌ 未实现（冻结） |
+| 钱包渐进扫描 + Revoke 绿框 | ✅ | ✅ 演示已做 |
+| Dust 爽感 / VP 加权 / 治理投票 | 仅排期 | ❌ 冻结 |
+| S0 外部 key / 生产 smoke | 清单已有 | ❌ 周末主线 |
+
+SSOT 任务勾选：`TASKS.md`。上线勾选：`docs/ops/launch_checklist.md`。
+
+## 2026-07-17 · 产品红线：只读 / 诚实执行 / 无平台币叙事
+
+1. **只读安检永远免费、永远可不连钱包。** 连接钱包只为未来的 Revoke / 租金回收 / 高级权益；V0 主路径（CA 安检、钱包体检、报告分享）不要求连接或签名。
+2. **任何「已帮你省钱 / 已撤销 / 已回收」必须对应链上成功收据。** 演示与预览态强制 `mode=mock|preview`（或 UI 明示「演示 · 未上链」）。Dust「粉碎回收」动效可先做视觉，禁止在未广播时写成已到账。
+3. **激励与治理只用 VP / 声誉，不引入可交易平台币叙事。** 禁止用 `$VIGIL` 做投票或挖矿对外文案。Gas 补贴（若有）必须是 **可关的活动/权益开关**，默认文案写「仅消耗网络 Gas，平台不默认垫付」。
+
+## 2026-07-17 · S1 缓存与异步检测合同
+
+### 多级缓存（Redis 落地，memory 仅本地）
+
+- **L1 进程内：** 热点 CA 短 TTL（约 30–120s），降延迟。
+- **L2 Redis：** `token:{chain}:{addr}` 报告摘要；高危/貔貅/已确认锁 LP 等 **长 TTL（小时～天）**；未知/新币 **短 TTL（分钟）**；非法地址/超时 **负缓存短 TTL** 防穿透。
+- **误标出口：** 长 TTL 结果必须可被 Admin 纠错或证据版本 bump 失效；禁止「永久拒 RPC」无失效通道。
+- **限流：** 生产共享限流键走 Redis `incrWithWindow`；与 `@chainvigil/cache` 现有 contract 对齐。
+
+### 异步队列与 pending（Worker / BullMQ 语义）
+
+- **用户主动查（Web/Bot）：** 优先缓存 hit 同步 200；miss 可短等 settle（约 ≤2.5s），超时转 `status=pending` + `jobId`，前端轮询；V1 不强制 WebSocket。
+- **冷启动深链 / 爬虫扫 `/token/*`：** 可直接 202/pending 入队，禁止 HTTP 长时间挂死等仿真。
+- **`/token/*`：** 保持 **noindex**；另加严格 rate limit（未登录可叠加 CAPTCHA/指纹弱化，S1+）。
+- Worker 保留现有 job 名称语义；接 BullMQ 时 **不改 job id 合同**。
+
+### 与产品路径的关系
+
+| 路径 | 体验目标 | 实现 |
+|------|----------|------|
+| 主动 CA/钱包安检 | 数秒内可读结论 | 缓存 + 短同步 / 短轮询 |
+| 随机深链 / 爬虫 | 不拖垮 API | pending + 队列 + 限流 |
+| 历史确定高危 CA | 省 RPC/额度 | L2 长 TTL |
+
 ## 2026-07-17 · Token CA 不做 SEO（分享工具页）
 
 - **原则：** 山寨/meme 热点寿命短，单 CA 报告不是长期 SEO 资产。

@@ -31,7 +31,7 @@ export function ApprovalsClient({ report }: { report: WalletHealthReport }) {
       spenderLabel: approval.spenderLabel,
       spenderAddressShort: shortAddr(approval.spenderAddress),
       riskReason: approval.riskReasons[0] ?? approval.recommendedAction,
-      gasEstimateLabel: "~ $1.20 (demo)",
+      gasEstimateLabel: "~ 0.0005 BNB (demo)",
     });
   }
 

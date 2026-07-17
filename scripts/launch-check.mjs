@@ -65,11 +65,18 @@ fileIncludes("apps/web/app/i18n/messages.ts", "可兑换防护权益");
 fileIncludes("apps/web/app/layout.tsx", "LocaleProvider");
 fileIncludes("apps/web/app/layout.tsx", "buildWebsiteJsonLd");
 fileIncludes("apps/web/app/lib/geo-articles.ts", "honeypot");
+fileIncludes("apps/web/app/lib/geo-articles.ts", "how-to-reclaim-solana-rent");
+fileIncludes("apps/web/app/lib/geo-articles.ts", "assertion");
+fileIncludes("apps/web/app/lib/long-tail-keywords.ts", "how to reclaim rent on solana wallet");
+fileIncludes("apps/web/app/lib/geo-articles-extra.ts", "close-empty-token-accounts-solana");
+fileIncludes("apps/web/app/lib/seo.ts", "buildDevelopersJsonLd");
+fileIncludes("apps/web/app/lib/seo.ts", "buildRiskDatasetJsonLd");
 fileIncludes("apps/web/app/token/[chain]/[address]/page.tsx", "index: false");
 fileIncludes("apps/admin/app/system-readiness/page.tsx", "上线清单");
 fileIncludes("apps/bot/src/resolve-report.ts", "local-mock");
 fileIncludes("scripts/smoke-v0.mjs", "learn/honeypot");
 fileIncludes("scripts/smoke-v0.mjs", "noindex");
+fileIncludes("scripts/smoke-v0.mjs", "how-to-reclaim-solana-rent");
 
 // Security headers / CORS not wide open
 fileIncludes("apps/api/src/app.ts", "getAllowedCorsOrigins");

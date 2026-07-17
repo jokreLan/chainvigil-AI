@@ -44,5 +44,19 @@ describe("Web style build contract", () => {
     expect(globals).toContain("--cv-primary-container");
     expect(globals).toContain("ai-gradient-text");
     expect(globals).toContain("cv-scan-line");
+    expect(globals).toContain("cv-score-ring-transition");
+  });
+
+  it("wires wallet progressive scan and revoke safety green box", () => {
+    const walletForm = readFileSync(resolve(webRoot, "app/ui/wallet-check-form.tsx"), "utf8");
+    const walletScan = readFileSync(resolve(webRoot, "app/ui/wallet-scan-progress.tsx"), "utf8");
+    const revoke = readFileSync(resolve(webRoot, "app/ui/revoke-confirm-modal.tsx"), "utf8");
+    const health = readFileSync(resolve(webRoot, "app/wallet/[address]/health/page.tsx"), "utf8");
+
+    expect(walletForm).toContain("WalletScanProgressOverlay");
+    expect(walletScan).toContain("walletScan.step.spenders");
+    expect(revoke).toContain("revoke.safeOnlyRevoke");
+    expect(revoke).toContain("#10b981");
+    expect(health).toContain("HealthScoreRing");
   });
 });

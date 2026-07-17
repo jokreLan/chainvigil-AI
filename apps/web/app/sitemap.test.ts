@@ -19,7 +19,15 @@ describe("public discovery contracts", () => {
         "http://localhost:3000/learn",
         "http://localhost:3000/learn/honeypot",
         "http://localhost:3000/learn/how-to-check-ca",
+        "http://localhost:3000/learn/how-to-reclaim-solana-rent",
+        "http://localhost:3000/learn/is-it-safe-to-revoke-approvals",
+        "http://localhost:3000/learn/pump-fun-dev-dump-check",
+        "http://localhost:3000/learn/close-empty-token-accounts-solana",
+        "http://localhost:3000/learn/free-solana-rug-check",
+        "http://localhost:3000/learn/bsc-honeypot-sell-fail",
         "http://localhost:3000/intel",
+        "http://localhost:3000/leaderboard/high-risk-tokens",
+        "http://localhost:3000/fake-token-database",
       ]),
     );
     // Per-CA and per-wallet pages must never become sitemap SEO assets.
