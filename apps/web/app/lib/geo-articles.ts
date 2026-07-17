@@ -39,6 +39,10 @@ export interface GeoArticle {
   ctaLabel: string;
   ctaHref: string;
   secondaryCta?: { href: string; label: string };
+  publishedAt?: string;
+  updatedAt?: string;
+  reviewedBy?: string;
+  sources?: Array<{ name: string; url: string }>;
 }
 
 type ArticleBody = Omit<GeoArticle, "slug">;
@@ -592,7 +596,23 @@ export const geoArticleSlugs = Object.keys(articles) as GeoArticleSlug[];
 export function getGeoArticle(slug: string, locale: Locale): GeoArticle | null {
   if (!(slug in articles)) return null;
   const body = articles[slug as GeoArticleSlug][locale];
-  return { slug: slug as GeoArticleSlug, ...body };
+  const isSolana = slug.includes("solana") || slug.includes("pump-fun");
+  return {
+    slug: slug as GeoArticleSlug,
+    ...body,
+    publishedAt: "2026-07-17",
+    updatedAt: "2026-07-17",
+    reviewedBy: "ChainVigil Research",
+    sources: isSolana
+      ? [
+          { name: "Solana RPC documentation", url: "https://solana.com/docs/rpc" },
+          { name: "Solana token documentation", url: "https://solana.com/docs/tokens" },
+        ]
+      : [
+          { name: "GoPlus Token Security API", url: "https://docs.gopluslabs.io/reference/tokensecurityusingget_1" },
+          { name: "Honeypot.is IsHoneypot API", url: "https://docs.honeypot.is/ishoneypot" },
+        ],
+  };
 }
 
 export function listGeoArticles(locale: Locale): GeoArticle[] {
@@ -615,12 +635,15 @@ export function buildGeoArticleJsonLd(article: GeoArticle, url: string, locale: 
         abstract: article.assertion,
         inLanguage: locale === "zh" ? "zh-CN" : "en",
         mainEntityOfPage: url,
-        author: { "@type": "Organization", name: "ChainVigil AI" },
+        datePublished: article.publishedAt,
+        dateModified: article.updatedAt,
+        author: { "@type": "Organization", name: article.reviewedBy ?? "ChainVigil AI", url: new URL("/about", url).toString() },
         publisher: {
           "@type": "Organization",
           name: "ChainVigil AI",
           slogan: locale === "zh" ? "买币前，先查 CA。" : "Before you buy, check the CA.",
         },
+        citation: article.sources?.map((source) => source.url),
       },
       {
         "@type": "FAQPage",

@@ -11,10 +11,10 @@ ChainVigil AI 是一个 Web3 交易安全工具。V0 聚焦免费 CA 安检、To
 已纳入：
 
 - Web DApp 首页与 `/check`
-- `/token/[chain]/[address]` mock 风险报告页
+- `/token/[chain]/[address]` 风险报告页（真实 provider 优先，逐源降级到明确标记的 mock）
 - 钱包体检入口 `/wallet-check` 与 `/wallet/[address]/health` mock 报告页
 - Fastify API：Token、Wallet/check capabilities/watchlist、user settings、risk database/high-risk tokens/fake token examples/risk education lessons/monitor rules、asset cleanup policies、VP rules/ledger、growth channels、Telegram groups、Referral、readiness、meta、只读 Admin audit/risk review/risk labels/token reports mock 与 OpenAPI skeleton
-- Telegram Bot skeleton：`/telegram/webhook` 可 mock 调用
+- Telegram Bot：`/telegram/webhook` 返回 Telegram `sendMessage` webhook payload，优先调用内部 API
 - Admin skeleton
 - Prisma schema、VP 积分事件模型与 Admin 审计事件 contract
 - 基础 SEO/GEO 页面结构
@@ -211,7 +211,7 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
 
 进入生产或真实风险检测时，需要补齐 `.env.example` 中的 PostgreSQL、Redis、Telegram、`RPC_SOLANA_URL`、`RPC_BSC_URL`、GoPlus/Honeypot 或等价数据源配置。当前契约由 `@chainvigil/config` 的 `validateEnv` 测试固定。
 
-`/api/v1/risk/evidence-providers` 会列出 SOL/BNB 所需的证据 Provider、环境变量和降级策略。即使环境变量已配置，V0 仍明确返回 `UNASSESSED` 置信度并使用 mock 快照，直到真实 provider client 与证据校验完成。
+`/api/v1/risk/evidence-providers` 会列出 SOL/BNB 所需的证据 Provider、环境变量和降级策略。生产或 `CHAINVIGIL_LIVE_PROVIDERS=true` 时会执行内置 GoPlus、Honeypot.is、BSC RPC、Solana RPC 客户端；只有真实请求成功后才产生置信度，失败来源逐项降级。
 
 API 提供只读 readiness 端点：
 

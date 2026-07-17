@@ -27,7 +27,7 @@ docker compose up -d postgres redis
 export CHAINVIGIL_RUNTIME_MODE=production
 # 必须：HTTPS URL、ADMIN 密码、INTERNAL_WRITE_SECRET、
 # TELEGRAM_*、DATABASE_URL、REDIS_URL、主链 RPC、数据源 key
-# assertProductionRuntime() 会在 api/bot 启动时 fail-closed
+# 各服务 production gate 会按职责 fail-closed
 ```
 
 ## 发布检查清单
@@ -53,9 +53,8 @@ export CHAINVIGIL_RUNTIME_MODE=production
 
 ## 备份
 
-- Postgres：日备（上生产后）  
-- 不备份：mock 内存限流状态  
-- Redis：可重建，注意限流短暂失效  
+- Postgres：上线即启用日备，并执行一次恢复演练
+- Redis：可重建；生产不可静默回退内存，故障时服务应明确不健康
 
 ## 监控最小集
 
@@ -63,3 +62,5 @@ export CHAINVIGIL_RUNTIME_MODE=production
 2. 429 比率  
 3. 外部 provider 错误率  
 4. 磁盘与容器重启次数  
+5. Redis/Postgres readiness 与连接池错误
+6. `mode=live` 比率、provider 降级率与 P95 检测耗时

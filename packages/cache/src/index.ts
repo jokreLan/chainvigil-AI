@@ -19,6 +19,8 @@ export interface CacheStore {
     windowSeconds: number,
     nowMs?: number,
   ): Promise<{ count: number; resetAtMs: number }>;
+  ping?(): Promise<boolean>;
+  close?(): Promise<void>;
 }
 
 interface MemoryEntry {
@@ -26,15 +28,29 @@ interface MemoryEntry {
   expiresAt: number | null;
 }
 
-export function getCacheHealth(env: Record<string, string | undefined> = process.env): CacheHealth {
-  if (env.REDIS_URL?.trim()) {
+export function getCacheHealth(
+  env: Record<string, string | undefined> = process.env,
+  backend?: "memory" | "redis",
+): CacheHealth {
+  const redisConfigured = Boolean(env.REDIS_URL?.trim());
+
+  if (backend === "redis") {
     return {
       name: "redis",
       mode: "live",
-      // Configuration present; connectivity is validated when the store is constructed.
       ready: true,
       requiredEnv: "REDIS_URL",
-      note: "REDIS_URL configured; runtime store may fall back to memory if connect fails.",
+      note: "Redis connection established and PING verified.",
+    };
+  }
+
+  if (redisConfigured) {
+    return {
+      name: "memory",
+      mode: "mock",
+      ready: false,
+      requiredEnv: "REDIS_URL",
+      note: "REDIS_URL is configured, but this process is not using Redis.",
     };
   }
 
@@ -106,176 +122,26 @@ export function createNoopCache(): CacheStore {
   };
 }
 
-/**
- * Minimal Redis-backed cache using the RESP protocol over TCP.
- * Supports GET/SET/DEL/INCR+PEXPIRE for rate limiting without extra deps.
- */
 export async function createRedisCache(
   redisUrl: string,
   options?: { connectTimeoutMs?: number },
 ): Promise<CacheStore> {
-  const url = new URL(redisUrl);
-  const host = url.hostname || "127.0.0.1";
-  const port = Number(url.port || 6379);
-  const password = url.password ? decodeURIComponent(url.password) : undefined;
-  const db = url.pathname && url.pathname !== "/" ? Number(url.pathname.slice(1)) : 0;
+  const { createClient } = await import("redis");
   const connectTimeoutMs = options?.connectTimeoutMs ?? 1500;
-
-  const { createConnection } = await import("node:net");
-
-  type Pending = {
-    resolve: (value: unknown) => void;
-    reject: (error: Error) => void;
-  };
-
-  const queue: Pending[] = [];
-  let buffer: Buffer = Buffer.alloc(0);
-  let connected = false;
-
-  const socket = createConnection({ host, port });
-  socket.setNoDelay(true);
-
-  await new Promise<void>((resolve, reject) => {
-    const timer = setTimeout(() => {
-      socket.destroy();
-      reject(new Error("Redis connect timeout"));
-    }, connectTimeoutMs);
-
-    socket.once("connect", () => {
-      clearTimeout(timer);
-      connected = true;
-      resolve();
-    });
-    socket.once("error", (error) => {
-      clearTimeout(timer);
-      reject(error instanceof Error ? error : new Error(String(error)));
-    });
+  const client = createClient({
+    url: redisUrl,
+    socket: {
+      connectTimeout: connectTimeoutMs,
+      reconnectStrategy: (retries) => Math.min(50 * 2 ** retries, 3000),
+    },
   });
-
-  socket.on("data", (chunk) => {
-    buffer = Buffer.concat([buffer, chunk]);
-    drain();
-  });
-
-  socket.on("error", (error) => {
-    while (queue.length > 0) {
-      queue.shift()?.reject(error instanceof Error ? error : new Error(String(error)));
-    }
-  });
-
-  socket.on("close", () => {
-    connected = false;
-    while (queue.length > 0) {
-      queue.shift()?.reject(new Error("Redis connection closed"));
-    }
-  });
-
-  function drain() {
-    while (queue.length > 0) {
-      const parsed = tryParse(buffer);
-
-      if (!parsed) {
-        return;
-      }
-
-      buffer = parsed.rest;
-      const pending = queue.shift();
-
-      if (!pending) {
-        return;
-      }
-
-      if (parsed.error) {
-        pending.reject(new Error(parsed.error));
-      } else {
-        pending.resolve(parsed.value);
-      }
-    }
-  }
-
-  function tryParse(input: Buffer): { value?: unknown; error?: string; rest: Buffer } | null {
-    if (input.length === 0) {
-      return null;
-    }
-
-    const type = String.fromCharCode(input[0]!);
-
-    if (type === "+" || type === "-" || type === ":" || type === "$") {
-      const lineEnd = input.indexOf("\r\n");
-
-      if (lineEnd < 0) {
-        return null;
-      }
-
-      const line = input.subarray(1, lineEnd).toString("utf8");
-      const restAfterLine = input.subarray(lineEnd + 2);
-
-      if (type === "+") {
-        return { value: line, rest: restAfterLine };
-      }
-
-      if (type === "-") {
-        return { error: line, rest: restAfterLine };
-      }
-
-      if (type === ":") {
-        return { value: Number(line), rest: restAfterLine };
-      }
-
-      // bulk string
-      const length = Number(line);
-
-      if (length === -1) {
-        return { value: null, rest: restAfterLine };
-      }
-
-      if (restAfterLine.length < length + 2) {
-        return null;
-      }
-
-      const value = restAfterLine.subarray(0, length).toString("utf8");
-      return { value, rest: restAfterLine.subarray(length + 2) };
-    }
-
-    return { error: `Unsupported RESP type: ${type}`, rest: input.subarray(1) };
-  }
-
-  function encodeCommand(args: Array<string | number>): Buffer {
-    const parts = [`*${args.length}\r\n`];
-
-    for (const arg of args) {
-      const text = String(arg);
-      parts.push(`$${Buffer.byteLength(text)}\r\n${text}\r\n`);
-    }
-
-    return Buffer.from(parts.join(""), "utf8");
-  }
-
-  async function send<T>(args: Array<string | number>): Promise<T> {
-    if (!connected) {
-      throw new Error("Redis not connected");
-    }
-
-    return new Promise<T>((resolve, reject) => {
-      queue.push({
-        resolve: (value) => resolve(value as T),
-        reject,
-      });
-      socket.write(encodeCommand(args));
-    });
-  }
-
-  if (password) {
-    await send(["AUTH", password]);
-  }
-
-  if (db > 0) {
-    await send(["SELECT", db]);
-  }
+  client.on("error", () => undefined);
+  await client.connect();
+  await client.ping();
 
   return {
     async get<T>(key: string) {
-      const raw = await send<string | null>(["GET", key]);
+      const raw = await client.get(key);
 
       if (raw == null) {
         return null;
@@ -289,30 +155,36 @@ export async function createRedisCache(
     },
     async set<T>(key: string, value: T, options?: { ttlSeconds?: number }) {
       const payload = JSON.stringify(value);
-
       if (options?.ttlSeconds && options.ttlSeconds > 0) {
-        await send(["SET", key, payload, "EX", options.ttlSeconds]);
+        await client.set(key, payload, { EX: options.ttlSeconds });
       } else {
-        await send(["SET", key, payload]);
+        await client.set(key, payload);
       }
     },
     async delete(key: string) {
-      await send(["DEL", key]);
+      await client.del(key);
     },
     async incrWithWindow(key: string, windowSeconds: number, nowMs = Date.now()) {
-      const count = await send<number>(["INCR", key]);
-
-      if (count === 1) {
-        await send(["EXPIRE", key, windowSeconds]);
+      const result = await client.multi().incr(key).ttl(key).exec();
+      const count = Number(result[0]);
+      let ttlSeconds = Number(result[1]);
+      if (count === 1 || ttlSeconds < 0) {
+        await client.expire(key, windowSeconds);
+        ttlSeconds = windowSeconds;
       }
-
-      const ttlSeconds = await send<number>(["TTL", key]);
-      const remaining = ttlSeconds > 0 ? ttlSeconds : windowSeconds;
 
       return {
         count,
-        resetAtMs: nowMs + remaining * 1000,
+        resetAtMs: nowMs + ttlSeconds * 1000,
       };
+    },
+    async ping() {
+      return (await client.ping()) === "PONG";
+    },
+    async close() {
+      if (client.isOpen) {
+        await client.quit();
+      }
     },
   };
 }
@@ -329,7 +201,14 @@ export async function createCacheStore(
   try {
     const store = await createRedisCache(redisUrl);
     return { store, backend: "redis" };
-  } catch {
+  } catch (error) {
+    if (env.CHAINVIGIL_RUNTIME_MODE === "production") {
+      throw new Error(
+        `Redis is required in production but unavailable: ${
+          error instanceof Error ? error.message : "unknown connection error"
+        }`,
+      );
+    }
     return { store: createMemoryCache(), backend: "memory" };
   }
 }

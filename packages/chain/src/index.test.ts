@@ -31,4 +31,38 @@ describe("parseTokenInput", () => {
 
     expect(parsed.chain).toBe("solana");
   });
+
+  it("does not match chain aliases inside unrelated words", () => {
+    expect(
+      parseTokenInput("copy 0x1111111111111111111111111111111111111111").chain,
+    ).toBe("bsc");
+    expect(
+      parseTokenInput(
+        "https://example.com/baseball/0x1111111111111111111111111111111111111111",
+      ).chain,
+    ).toBe("bsc");
+  });
+
+  it("recognizes explorer hostnames without confusing optimism and ethereum", () => {
+    expect(
+      parseTokenInput(
+        "https://optimistic.etherscan.io/token/0x1111111111111111111111111111111111111111",
+      ).chain,
+    ).toBe("optimism");
+    expect(
+      parseTokenInput(
+        "https://etherscan.io/token/0x1111111111111111111111111111111111111111",
+      ).chain,
+    ).toBe("ethereum");
+  });
+
+  it("honors an explicit chain hint", () => {
+    expect(
+      parseTokenInput("0x1111111111111111111111111111111111111111", "base").chain,
+    ).toBe("base");
+  });
+
+  it("rejects base58 strings that do not decode to a 32-byte Solana public key", () => {
+    expect(() => parseTokenInput("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")).toThrow();
+  });
 });

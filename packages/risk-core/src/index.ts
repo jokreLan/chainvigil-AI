@@ -903,7 +903,7 @@ export function buildMockTokenRiskReport({
   locale,
 }: MockRiskInput): TokenRiskReport {
   const lang = normalizeContentLocale(locale);
-  const parsed = parseTokenInput(input, chain ?? "bsc");
+  const parsed = parseTokenInput(input, chain);
   const normalizedAddress = parsed.chain === "solana" ? parsed.address : parsed.address.toLowerCase();
   const addressSeed = [...normalizedAddress].reduce((sum, char) => sum + char.charCodeAt(0), 0);
   const isCritical = addressSeed % 5 === 0;

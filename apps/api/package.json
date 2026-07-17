@@ -17,6 +17,7 @@
     "@chainvigil/cache": "workspace:*",
     "@chainvigil/chain": "workspace:*",
     "@chainvigil/data-adapters": "workspace:*",
+    "@chainvigil/db": "workspace:*",
     "@chainvigil/points": "workspace:*",
     "@chainvigil/risk-core": "workspace:*",
     "@chainvigil/telegram": "workspace:*",

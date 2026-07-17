@@ -6,6 +6,10 @@ export function getSiteUrl(): string {
   return (process.env.NEXT_PUBLIC_APP_BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 }
 
+export function localizedPath(locale: Locale, path: string): string {
+  return `/${locale}${path === "/" ? "" : path}`;
+}
+
 export type PageSeoKey =
   | "home"
   | "check"
@@ -200,12 +204,18 @@ export async function buildPageMetadata(key: PageSeoKey, extra?: Partial<Metadat
   const site = getSiteUrl();
   const { title, description } = copy[key][locale];
   const path = pathByKey[key];
-  const url = `${site}${path === "/" ? "" : path}`;
+  const url = `${site}${localizedPath(locale, path)}`;
+  const languages = {
+    "zh-CN": `${site}${localizedPath("zh", path)}`,
+    en: `${site}${localizedPath("en", path)}`,
+    "x-default": `${site}${localizedPath("zh", path)}`,
+  };
 
   return {
+    metadataBase: new URL(site),
     title,
     description,
-    alternates: { canonical: url },
+    alternates: { canonical: url, languages },
     openGraph: {
       title,
       description,
@@ -249,7 +259,7 @@ export function buildWebsiteJsonLd(locale: Locale = "zh") {
         publisher: { "@id": `${site}/#organization` },
         potentialAction: {
           "@type": "SearchAction",
-          target: `${site}/check`,
+          target: `${site}${localizedPath(locale, "/check")}`,
           "query-input": "required name=ca",
         },
       },
@@ -262,7 +272,7 @@ export function buildWebsiteJsonLd(locale: Locale = "zh") {
         description: isZh
           ? "粘贴合约地址获取人话风险结论（含检测模式说明）。"
           : "Paste a contract address for plain-language risk conclusions with detection mode honesty.",
-        url: `${site}/check`,
+        url: `${site}${localizedPath(locale, "/check")}`,
       },
     ],
   };
@@ -295,7 +305,7 @@ export function buildDevelopersJsonLd(locale: Locale = "zh") {
         description: isZh
           ? "Token / Wallet / Intel 风险检测 API 入口与 mock 契约。可用于扫描 Solana / BNB 合约安全信号。"
           : "Token, wallet, and intel risk APIs with mock contracts for Solana/BNB safety signals.",
-        url: `${site}/developers`,
+        url: `${site}${localizedPath(locale, "/developers")}`,
         inLanguage: isZh ? "zh-CN" : "en",
         author: { "@type": "Organization", name: "ChainVigil AI" },
         publisher: { "@type": "Organization", name: "ChainVigil AI" },
@@ -310,8 +320,8 @@ export function buildDevelopersJsonLd(locale: Locale = "zh") {
         description: isZh
           ? "提交 CA 或链接，返回含 mode/confidence 的人话风险报告（V0 可为 mock）。"
           : "Submit a CA or link; returns a plain-language risk report with mode/confidence (V0 may be mock).",
-        url: `${site}/api`,
-        documentation: `${site}/developers`,
+        url: `${site}${localizedPath(locale, "/api")}`,
+        documentation: `${site}${localizedPath(locale, "/developers")}`,
         provider: { "@type": "Organization", name: "ChainVigil AI" },
       },
       {
@@ -320,8 +330,8 @@ export function buildDevelopersJsonLd(locale: Locale = "zh") {
         description: isZh
           ? "只读钱包体检：高危授权与可疑资产摘要，不请求签名。"
           : "Read-only wallet health: high-risk approvals and suspicious assets. No signing.",
-        url: `${site}/api`,
-        documentation: `${site}/developers`,
+        url: `${site}${localizedPath(locale, "/api")}`,
+        documentation: `${site}${localizedPath(locale, "/developers")}`,
         provider: { "@type": "Organization", name: "ChainVigil AI" },
       },
     ],
@@ -339,7 +349,7 @@ export function buildRiskDatasetJsonLd(locale: Locale = "zh") {
     description: isZh
       ? "教育向风险类型、人话解释与链上信号清单（貔貅、LP、无限授权等）。V0 含 mock 样例，不是全网黑名单实时库。"
       : "Educational risk types, plain-language explanations, and on-chain signal labels (honeypot, LP, unlimited approval). V0 includes mock samples — not a full live blacklist dump.",
-    url: `${site}/risk-database`,
+    url: `${site}${localizedPath(locale, "/risk-database")}`,
     license: "https://creativecommons.org/licenses/by/4.0/",
     creator: { "@type": "Organization", name: "ChainVigil AI", url: site },
     keywords: isZh

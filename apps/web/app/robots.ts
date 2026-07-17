@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Discovery policy:
  * - Index/crawl durable tools & education (check, chain guides, intel, learn, bot, pricing).
@@ -8,7 +10,7 @@ import type { MetadataRoute } from "next";
  * - /app/* workspaces stay private.
  */
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL ?? "http://localhost:3000";
+  const baseUrl = (process.env.NEXT_PUBLIC_APP_BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 
   return {
     rules: [
@@ -31,7 +33,7 @@ export default function robots(): MetadataRoute.Robots {
           "/bot",
           "/api",
         ],
-        disallow: ["/app/", "/login", "/admin"],
+        disallow: ["/zh/app/", "/en/app/", "/login", "/admin"],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

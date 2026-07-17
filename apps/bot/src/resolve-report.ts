@@ -7,6 +7,7 @@ export interface ResolveReportOptions {
   apiBaseUrl?: string;
   fetchImpl?: typeof fetch;
   timeoutMs?: number;
+  locale?: "zh" | "en";
 }
 
 /**
@@ -47,7 +48,8 @@ export async function resolveTokenRiskReport(
   return {
     report: buildMockTokenRiskReport({
       input: options.input,
-      appBaseUrl: options.appBaseUrl,
+      appBaseUrl: `${options.appBaseUrl.replace(/\/$/, "")}/${options.locale ?? "zh"}`,
+      locale: options.locale,
     }),
     source: "local-mock",
   };

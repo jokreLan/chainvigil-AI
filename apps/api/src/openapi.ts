@@ -4,7 +4,7 @@ export const openApiDocument = {
     title: "ChainVigil AI API",
     version: "0.1.0",
     description:
-      "ChainVigil AI V0 internal API contract. Responses are mock-safe until live data adapters are connected.",
+      "ChainVigil AI API contract. Token checks execute configured live providers and explicitly mark any mock/degraded fallback.",
   },
   servers: [
     {
@@ -351,6 +351,19 @@ export const openApiDocument = {
           },
           "429": {
             description: "Rate limited",
+          },
+        },
+      },
+    },
+    "/api/v1/admin/metrics/north-star": {
+      get: {
+        summary: "Read persisted launch metrics for the requested day window",
+        responses: {
+          "200": {
+            description: "Scan, unique token, referral, and point-event totals",
+          },
+          "401": {
+            description: "Admin authentication required",
           },
         },
       },

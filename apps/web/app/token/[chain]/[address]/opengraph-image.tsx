@@ -1,8 +1,7 @@
 import { ImageResponse } from "next/og";
-import { buildMockTokenRiskReport } from "@chainvigil/risk-core";
 import type { ChainId } from "@chainvigil/types";
+import { getTokenRiskReport } from "../../../lib/reports";
 
-export const runtime = "edge";
 export const size = {
   width: 1200,
   height: 630,
@@ -18,12 +17,12 @@ interface OpenGraphImageProps {
 
 export default async function OpenGraphImage({ params }: OpenGraphImageProps) {
   const { chain, address } = await params;
-  const report = buildMockTokenRiskReport({ input: address, chain });
+  const report = await getTokenRiskReport(chain, address, "en");
   const chips = ["Contract risk", "Liquidity signal", "Holder pattern"];
   const shortAddress = `${report.tokenAddress.slice(0, 10)}...${report.tokenAddress.slice(-6)}`;
   const riskCopy = {
     UNKNOWN: "More data is needed before this CA can be trusted.",
-    LOW: "Looks clean in the current mock scan.",
+    LOW: "No explicit high-risk signal found in the current scan.",
     MEDIUM: "Review contract and liquidity signals before buying.",
     HIGH: "High-risk signals found. Treat this CA with caution.",
     BLOCK: "Critical risk signals found. Do not rush into this CA.",
@@ -53,7 +52,9 @@ export default async function OpenGraphImage({ params }: OpenGraphImageProps) {
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 32 }}>
           <div style={{ display: "flex", fontSize: 32, fontWeight: 700 }}>ChainVigil AI</div>
-          <div style={{ display: "flex", color: "#a7f3d0", fontSize: 24 }}>Check the CA before you buy.</div>
+          <div style={{ display: "flex", color: "#a7f3d0", fontSize: 24 }}>
+            {report.mode === "live" ? "LIVE DATA" : "DEMO · MOCK / NOT LIVE"}
+          </div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -94,7 +95,7 @@ export default async function OpenGraphImage({ params }: OpenGraphImageProps) {
 
         <div style={{ display: "flex", justifyContent: "space-between", color: "#d1fae5", fontSize: 24 }}>
           <div style={{ display: "flex" }}>{`${report.chain} / ${report.tokenSymbol} / ${shortAddress}`}</div>
-          <div>Checked by ChainVigil AI</div>
+          <div>{report.mode === "live" ? "Live provider scan" : "Illustrative mock result"}</div>
         </div>
       </div>
     ),

@@ -3,15 +3,18 @@ services:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_APP_BASE_URL: ${NEXT_PUBLIC_APP_BASE_URL:-http://localhost:3000}
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:4000}
     container_name: chainvigil-web
     profiles: ["app"]
     environment:
-      APP_BASE_URL: http://localhost:3000
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:3000}
       API_BASE_URL: http://api:4000
-      NEXT_PUBLIC_APP_BASE_URL: http://localhost:3000
-      NEXT_PUBLIC_API_BASE_URL: http://localhost:4000
+      NEXT_PUBLIC_APP_BASE_URL: ${NEXT_PUBLIC_APP_BASE_URL:-http://localhost:3000}
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:4000}
       INTERNAL_WRITE_SECRET: ${INTERNAL_WRITE_SECRET:-local-dev-write-secret-32}
-      CHAINVIGIL_RUNTIME_MODE: mock
+      CHAINVIGIL_RUNTIME_MODE: ${CHAINVIGIL_RUNTIME_MODE:-mock}
     ports:
       - "3000:3000"
     depends_on:
@@ -34,11 +37,12 @@ services:
     container_name: chainvigil-admin
     profiles: ["app"]
     environment:
-      APP_BASE_URL: http://localhost:3000
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:3000}
       API_BASE_URL: http://api:4000
+      ADMIN_BASE_URL: ${ADMIN_BASE_URL:-http://localhost:3001}
       ADMIN_BASIC_AUTH_USERNAME: ${ADMIN_BASIC_AUTH_USERNAME:-admin}
       ADMIN_BASIC_AUTH_PASSWORD: ${ADMIN_BASIC_AUTH_PASSWORD:?Set ADMIN_BASIC_AUTH_PASSWORD before starting admin}
-      CHAINVIGIL_RUNTIME_MODE: mock
+      CHAINVIGIL_RUNTIME_MODE: ${CHAINVIGIL_RUNTIME_MODE:-mock}
     ports:
       - "3001:3001"
     depends_on:
@@ -48,7 +52,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "node -e \"fetch('http://127.0.0.1:3001').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\"",
+          "node -e \"fetch('http://127.0.0.1:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\"",
         ]
       interval: 10s
       timeout: 5s
@@ -61,7 +65,10 @@ services:
     container_name: chainvigil-api
     profiles: ["app"]
     environment:
-      APP_BASE_URL: http://localhost:3000
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:3000}
+      NEXT_PUBLIC_APP_BASE_URL: ${NEXT_PUBLIC_APP_BASE_URL:-http://localhost:3000}
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:4000}
+      API_BASE_URL: ${API_BASE_URL:-https://api.chainvigil.ai}
       API_PORT: 4000
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/chainvigil_ai
       REDIS_URL: redis://redis:6379
@@ -70,7 +77,14 @@ services:
       ADMIN_BASIC_AUTH_PASSWORD: ${ADMIN_BASIC_AUTH_PASSWORD:-}
       CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:3001
       TRUST_PROXY: "1"
-      CHAINVIGIL_RUNTIME_MODE: mock
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_WEBHOOK_SECRET: ${TELEGRAM_WEBHOOK_SECRET:-}
+      GOPLUS_API_KEY: ${GOPLUS_API_KEY:-}
+      HONEYPOT_API_KEY: ${HONEYPOT_API_KEY:-}
+      RPC_SOLANA_URL: ${RPC_SOLANA_URL:-}
+      RPC_BSC_URL: ${RPC_BSC_URL:-}
+      CHAINVIGIL_LIVE_PROVIDERS: ${CHAINVIGIL_LIVE_PROVIDERS:-false}
+      CHAINVIGIL_RUNTIME_MODE: ${CHAINVIGIL_RUNTIME_MODE:-mock}
     ports:
       - "4000:4000"
     depends_on:
@@ -95,13 +109,14 @@ services:
     container_name: chainvigil-bot
     profiles: ["app"]
     environment:
-      APP_BASE_URL: http://localhost:3000
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:3000}
       API_BASE_URL: http://api:4000
       BOT_PORT: 4001
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
       TELEGRAM_WEBHOOK_SECRET: ${TELEGRAM_WEBHOOK_SECRET:-local-dev-telegram-webhook}
+      REDIS_URL: redis://redis:6379
       TRUST_PROXY: "1"
-      CHAINVIGIL_RUNTIME_MODE: mock
+      CHAINVIGIL_RUNTIME_MODE: ${CHAINVIGIL_RUNTIME_MODE:-mock}
     ports:
       - "4001:4001"
     healthcheck:
@@ -113,6 +128,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+    depends_on:
+      redis:
+        condition: service_healthy
 
   worker:
     build:
@@ -121,8 +139,8 @@ services:
     container_name: chainvigil-worker
     profiles: ["app"]
     environment:
-      CHAINVIGIL_RUNTIME_MODE: mock
-      APP_BASE_URL: http://localhost:3000
+      CHAINVIGIL_RUNTIME_MODE: ${CHAINVIGIL_RUNTIME_MODE:-mock}
+      APP_BASE_URL: ${APP_BASE_URL:-http://localhost:3000}
       API_BASE_URL: http://api:4000
       NEXT_PUBLIC_APP_BASE_URL: http://localhost:3000
       NEXT_PUBLIC_API_BASE_URL: http://localhost:4000

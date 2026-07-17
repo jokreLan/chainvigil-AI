@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   clearLiveProviderClientsForTests,
   collectTokenRiskData,
@@ -9,6 +9,10 @@ import {
 } from "./index";
 
 describe("data adapters", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    clearLiveProviderClientsForTests();
+  });
   it("exposes provider readiness without live credentials", () => {
     expect(getAdapterHealth({})).toEqual(
       expect.arrayContaining([
@@ -76,7 +80,7 @@ describe("data adapters", () => {
       "dex-market",
       "internal-risk-db",
     ]);
-    expect(bundle.missingLiveConfig).toEqual(["RPC_BSC_URL", "HONEYPOT_API_KEY"]);
+    expect(bundle.missingLiveConfig).toEqual(["RPC_BSC_URL"]);
     expect(bundle.coverage).toMatchObject({
       chain: "bsc",
       status: "live_configured",
@@ -170,5 +174,29 @@ describe("data adapters", () => {
     expect(JSON.stringify(degraded)).not.toContain("upstream timeout");
 
     clearLiveProviderClientsForTests();
+  });
+
+  it("executes the built-in Honeypot client only when live mode is enabled", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        ok: true,
+        json: async () => ({
+          honeypotResult: { isHoneypot: false },
+          simulationResult: { buyTax: 1, sellTax: 2 },
+        }),
+      })),
+    );
+    const bundle = await collectTokenRiskData(
+      { chain: "bsc", address: "0x1111111111111111111111111111111111111110" },
+      { CHAINVIGIL_LIVE_PROVIDERS: "true" },
+    );
+    const snapshot = bundle.snapshots.find((item) => item.providerId === "honeypot-bsc");
+    expect(snapshot?.executionMode).toBe("live");
+    expect(bundle.coverage).toMatchObject({
+      status: "mixed",
+      confidence: "MEDIUM",
+      fallbackActive: true,
+    });
   });
 });

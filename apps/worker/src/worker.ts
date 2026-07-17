@@ -1,5 +1,7 @@
 import { getWorkerHealth } from "./jobs.js";
+import { assertWorkerProductionRuntime } from "@chainvigil/config";
 
+assertWorkerProductionRuntime();
 const heartbeatMs = Number(process.env.WORKER_HEARTBEAT_MS ?? 30_000);
 
 function logHeartbeat() {

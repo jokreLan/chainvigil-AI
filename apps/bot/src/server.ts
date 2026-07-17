@@ -1,7 +1,7 @@
-import { assertProductionRuntime, readEnv } from "@chainvigil/config";
+import { assertBotProductionRuntime, readEnv } from "@chainvigil/config";
 import { buildBotApp } from "./app.js";
 
-assertProductionRuntime();
+assertBotProductionRuntime();
 
 const port = Number(readEnv("BOT_PORT", "4001"));
 const host = readEnv("BOT_HOST", "0.0.0.0");

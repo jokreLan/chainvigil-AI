@@ -9,7 +9,7 @@ import {
   type GeoArticleSlug,
   type SignalSeverity,
 } from "../../lib/geo-articles";
-import { buildBreadcrumbJsonLd, getSiteUrl } from "../../lib/seo";
+import { buildBreadcrumbJsonLd, getSiteUrl, localizedPath } from "../../lib/seo";
 import { JsonLd } from "../../ui/json-ld";
 import { MobileNav } from "../../ui/mobile-nav";
 import { SiteHeader } from "../../ui/site-header";
@@ -34,11 +34,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const article = getGeoArticle(slug, locale);
   if (!article) return {};
 
-  const url = `${getSiteUrl()}/learn/${slug}`;
+  const site = getSiteUrl();
+  const url = `${site}${localizedPath(locale, `/learn/${slug}`)}`;
   return {
     title: `${article.title}｜ChainVigil AI`,
     description: article.description,
-    alternates: { canonical: url },
+    alternates: {
+      canonical: url,
+      languages: {
+        "zh-CN": `${site}${localizedPath("zh", `/learn/${slug}`)}`,
+        en: `${site}${localizedPath("en", `/learn/${slug}`)}`,
+      },
+    },
     openGraph: {
       title: article.title,
       description: article.description,
@@ -62,7 +69,7 @@ export default async function GeoArticlePage({ params }: Props) {
   if (!article) notFound();
 
   const site = getSiteUrl();
-  const url = `${site}/learn/${slug}`;
+  const url = `${site}${localizedPath(locale, `/learn/${slug}`)}`;
   const isZh = locale === "zh";
   const jsonLd = buildGeoArticleJsonLd(article, url, locale);
   const crumbs = buildBreadcrumbJsonLd([
@@ -88,6 +95,12 @@ export default async function GeoArticlePage({ params }: Props) {
         </p>
         <h1 className="mt-2 text-3xl font-bold text-[#f9fafb] md:text-4xl">{article.title}</h1>
         <p className="mt-4 text-base leading-7 text-[#c7c4d7]">{article.description}</p>
+        <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#9ca3af]">
+          <span>{isZh ? "审阅" : "Reviewed by"}: {article.reviewedBy}</span>
+          <time dateTime={article.updatedAt}>
+            {isZh ? "更新" : "Updated"}: {article.updatedAt}
+          </time>
+        </div>
 
         {/* Assertion-first block for AI extractors */}
         <section className="mt-8 rounded-2xl border border-[#8083ff]/40 bg-[#8083ff]/10 p-5">
@@ -109,6 +122,21 @@ export default async function GeoArticlePage({ params }: Props) {
         <section className="mt-4 rounded-2xl border border-[#262932] bg-[#16181d] p-5">
           <h2 className="text-lg font-semibold text-[#f9fafb]">{isZh ? "定义" : "Definition"}</h2>
           <p className="mt-3 leading-7 text-[#c7c4d7]">{article.definition}</p>
+        </section>
+
+        <section className="mt-4 rounded-2xl border border-[#262932] bg-[#16181d] p-5">
+          <h2 className="text-lg font-semibold text-[#f9fafb]">
+            {isZh ? "参考来源" : "Sources"}
+          </h2>
+          <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-[#c0c1ff]">
+            {article.sources?.map((source) => (
+              <li key={source.url}>
+                <a href={source.url} rel="noreferrer" target="_blank" className="underline">
+                  {source.name}
+                </a>
+              </li>
+            ))}
+          </ul>
         </section>
 
         <section className="mt-4 rounded-2xl border border-[#f59e0b]/30 bg-[#16181d] p-5">

@@ -3,11 +3,21 @@ import type { AdminAuditAction, AdminAuditLog, ChainId } from "@chainvigil/types
 const redacted = "[redacted]";
 const secretKeyPattern = /(api[_-]?key|secret|token|password|authorization|private[_-]?key)/i;
 
+function redactValue(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(redactValue);
+  }
+  if (typeof value === "object" && value !== null) {
+    return redactAuditMetadata(value as Record<string, unknown>);
+  }
+  return value;
+}
+
 export function redactAuditMetadata(metadata: Record<string, unknown>): Record<string, unknown> {
   return Object.fromEntries(
     Object.entries(metadata).map(([key, value]) => [
       key,
-      secretKeyPattern.test(key) ? redacted : value,
+      secretKeyPattern.test(key) ? redacted : redactValue(value),
     ]),
   );
 }

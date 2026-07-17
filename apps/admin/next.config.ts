@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
+import { assertAdminProductionRuntime } from "@chainvigil/config";
 
 const isProduction = process.env.CHAINVIGIL_RUNTIME_MODE === "production";
+assertAdminProductionRuntime();
 
 const contentSecurityPolicy = [
   "default-src 'self'",
@@ -11,7 +13,7 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  `script-src 'self' 'unsafe-inline'${isProduction ? "" : " 'unsafe-eval'"}`,
   "connect-src 'self' https: http://localhost:* http://127.0.0.1:*",
 ].join("; ");
 

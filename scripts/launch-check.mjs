@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Launch readiness checks that do NOT require external API keys or running services.
- * Weekend keys / live providers are out of scope here.
+ * Real credentials and external connectivity are validated separately on staging.
  */
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -46,7 +46,8 @@ function fileIncludes(rel, needle, label = needle) {
 
 // Fail-closed production gates present
 fileIncludes("apps/api/src/server.ts", "assertProductionRuntime");
-fileIncludes("apps/bot/src/server.ts", "assertProductionRuntime");
+fileIncludes("apps/bot/src/server.ts", "assertBotProductionRuntime");
+fileIncludes("apps/worker/src/worker.ts", "assertWorkerProductionRuntime");
 fileIncludes("packages/config/src/index.ts", "INTERNAL_WRITE_SECRET");
 fileIncludes("packages/config/src/index.ts", "TELEGRAM_WEBHOOK_SECRET");
 
@@ -118,4 +119,4 @@ if (errors.length) {
 }
 
 console.log("OK: static launch contracts present.");
-console.log("Next (weekend): wire live provider keys, then re-run readiness + smoke.");
+console.log("Next (weekend): load real credentials, verify provider fixtures, then run production readiness + smoke.");

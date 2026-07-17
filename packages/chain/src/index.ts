@@ -42,7 +42,26 @@ export const supportedChains: Record<
   },
 };
 
-const chainAliases: Record<string, ChainId> = {
+export interface ParsedTokenInput {
+  chain: ChainId;
+  address: string;
+  rawInput: string;
+}
+
+const evmAddressPattern = /(?<![a-fA-F0-9])0x[a-fA-F0-9]{40}(?![a-fA-F0-9])/;
+const solanaAddressPattern = /(?<![1-9A-HJ-NP-Za-km-z])[1-9A-HJ-NP-Za-km-z]{32,44}(?![1-9A-HJ-NP-Za-km-z])/;
+
+const hostnameChains: Array<[RegExp, ChainId]> = [
+  [/(^|\.)solscan\.io$/i, "solana"],
+  [/(^|\.)bscscan\.com$/i, "bsc"],
+  [/(^|\.)basescan\.org$/i, "base"],
+  [/(^|\.)arbiscan\.io$/i, "arbitrum"],
+  [/(^|\.)polygonscan\.com$/i, "polygon"],
+  [/(^|\.)optimistic\.etherscan\.io$/i, "optimism"],
+  [/(^|\.)etherscan\.io$/i, "ethereum"],
+];
+
+const pathSegmentChains: Record<string, ChainId> = {
   sol: "solana",
   solana: "solana",
   eth: "ethereum",
@@ -58,24 +77,64 @@ const chainAliases: Record<string, ChainId> = {
   op: "optimism",
 };
 
-export interface ParsedTokenInput {
-  chain: ChainId;
-  address: string;
-  rawInput: string;
+function decodeBase58Length(value: string): number {
+  const alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+  let bytes = [0];
+
+  for (const character of value) {
+    const digit = alphabet.indexOf(character);
+    if (digit < 0) return -1;
+
+    let carry = digit;
+    for (let index = 0; index < bytes.length; index += 1) {
+      const current = bytes[index]! * 58 + carry;
+      bytes[index] = current & 0xff;
+      carry = current >> 8;
+    }
+    while (carry > 0) {
+      bytes.push(carry & 0xff);
+      carry >>= 8;
+    }
+  }
+
+  for (let index = 0; index < value.length - 1 && value[index] === "1"; index += 1) {
+    bytes.push(0);
+  }
+
+  return bytes.length;
 }
 
-const solanaAddressPattern = /[1-9A-HJ-NP-Za-km-z]{32,44}/;
+export function isValidSolanaAddress(value: string): boolean {
+  return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(value) && decodeBase58Length(value) === 32;
+}
 
-export function parseTokenInput(input: string, fallbackChain: ChainId = "bsc"): ParsedTokenInput {
+function detectChainFromUrl(rawInput: string): ChainId | undefined {
+  try {
+    const url = new URL(rawInput);
+    const hostnameMatch = hostnameChains.find(([pattern]) => pattern.test(url.hostname));
+    if (hostnameMatch) return hostnameMatch[1];
+
+    const segments = url.pathname
+      .toLowerCase()
+      .split("/")
+      .filter(Boolean);
+    return segments.map((segment) => pathSegmentChains[segment]).find(Boolean);
+  } catch {
+    return undefined;
+  }
+}
+
+export function parseTokenInput(input: string, chainHint?: ChainId): ParsedTokenInput {
   const rawInput = input.trim();
-  const lowered = rawInput.toLowerCase();
-  const evmAddress = rawInput.match(/0x[a-fA-F0-9]{40}/)?.[0];
+  const evmAddress = rawInput.match(evmAddressPattern)?.[0];
   const solanaAddress = rawInput.match(solanaAddressPattern)?.[0];
-  const aliasChain = Object.entries(chainAliases).find(([alias]) => lowered.includes(alias))?.[1];
-  const detectedChain = aliasChain ?? (!evmAddress && solanaAddress ? "solana" : fallbackChain);
+  const detectedChain =
+    chainHint ??
+    detectChainFromUrl(rawInput) ??
+    (!evmAddress && solanaAddress && isValidSolanaAddress(solanaAddress) ? "solana" : "bsc");
 
   if (detectedChain === "solana") {
-    if (!solanaAddress) {
+    if (!solanaAddress || !isValidSolanaAddress(solanaAddress)) {
       throw new Error("请输入有效的 Solana Token 地址。");
     }
 

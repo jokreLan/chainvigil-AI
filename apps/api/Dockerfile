@@ -19,4 +19,4 @@ RUN corepack enable \
 COPY --from=build --chown=chainvigil:chainvigil /app /app
 USER chainvigil
 EXPOSE 4000
-CMD ["pnpm", "--filter", "@chainvigil/api", "start"]
+CMD ["sh", "-c", "pnpm db:deploy && pnpm --filter @chainvigil/api start"]

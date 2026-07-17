@@ -1,5 +1,3 @@
-import { timingSafeEqual } from "node:crypto";
-
 export function readEnv(name: string, fallback?: string): string {
   const value = process.env[name] ?? fallback;
 
@@ -162,6 +160,16 @@ function isUnsafeProductionUrl(value: string | undefined): boolean {
   return !normalized || !normalized.startsWith("https://") || normalized.includes("localhost");
 }
 
+function isInvalidServiceUrl(value: string | undefined): boolean {
+  if (!value?.trim() || value.toLowerCase().includes("localhost")) return true;
+  try {
+    const url = new URL(value);
+    return url.protocol !== "http:" && url.protocol !== "https:";
+  } catch {
+    return true;
+  }
+}
+
 export function getProductionSecurityReadiness(
   env: Record<string, string | undefined> = process.env,
 ): ProductionSecurityReadiness {
@@ -183,8 +191,6 @@ export function getProductionSecurityReadiness(
 
   for (const name of [
     "ADMIN_BASIC_AUTH_PASSWORD",
-    "ADMIN_SECRET",
-    "JWT_SECRET",
     "TELEGRAM_BOT_TOKEN",
     "TELEGRAM_WEBHOOK_SECRET",
     "INTERNAL_WRITE_SECRET",
@@ -193,6 +199,14 @@ export function getProductionSecurityReadiness(
       warnings.push({
         name,
         reason: "生产密钥不能留空、不能使用示例值，且长度至少需要 16 个字符。",
+      });
+    }
+  }
+  for (const name of ["ADMIN_SECRET", "JWT_SECRET"]) {
+    if (env[name]?.trim() && isUnsafeSecretValue(env[name])) {
+      warnings.push({
+        name,
+        reason: "已配置的生产密钥不能使用示例值，且长度至少需要 16 个字符。",
       });
     }
   }
@@ -264,17 +278,89 @@ export function assertProductionRuntime(
   }
 }
 
-export function constantTimeEqual(left: string, right: string): boolean {
-  const leftBuffer = Buffer.from(left);
-  const rightBuffer = Buffer.from(right);
-
-  if (leftBuffer.length !== rightBuffer.length) {
-    // Compare against self to keep roughly constant work on length mismatch.
-    timingSafeEqual(leftBuffer, leftBuffer);
-    return false;
+export function assertWebProductionRuntime(
+  env: Record<string, string | undefined> = process.env,
+): void {
+  if (resolveRuntimeMode(env) !== "production") {
+    return;
   }
 
-  return timingSafeEqual(leftBuffer, rightBuffer);
+  const invalid = ["APP_BASE_URL", "NEXT_PUBLIC_APP_BASE_URL", "NEXT_PUBLIC_API_BASE_URL"].filter(
+    (name) => isUnsafeProductionUrl(env[name]),
+  );
+
+  if (invalid.length > 0) {
+    throw new Error(
+      `ChainVigil web production startup blocked. Invalid HTTPS URL env: ${invalid.join(", ")}.`,
+    );
+  }
+}
+
+export function assertAdminProductionRuntime(
+  env: Record<string, string | undefined> = process.env,
+): void {
+  if (resolveRuntimeMode(env) !== "production") {
+    return;
+  }
+
+  const problems: string[] = [];
+  if (isUnsafeSecretValue(env.ADMIN_BASIC_AUTH_PASSWORD)) {
+    problems.push("ADMIN_BASIC_AUTH_PASSWORD");
+  }
+  if (isUnsafeProductionUrl(env.ADMIN_BASE_URL)) {
+    problems.push("ADMIN_BASE_URL");
+  }
+  if (isInvalidServiceUrl(env.API_BASE_URL)) {
+    problems.push("API_BASE_URL");
+  }
+
+  if (problems.length > 0) {
+    throw new Error(
+      `ChainVigil admin production startup blocked. Invalid or missing env: ${problems.join(", ")}.`,
+    );
+  }
+}
+
+export function assertBotProductionRuntime(
+  env: Record<string, string | undefined> = process.env,
+): void {
+  if (resolveRuntimeMode(env) !== "production") return;
+  const problems: string[] = [];
+  if (isUnsafeProductionUrl(env.APP_BASE_URL)) problems.push("APP_BASE_URL");
+  if (isInvalidServiceUrl(env.API_BASE_URL)) problems.push("API_BASE_URL");
+  for (const name of ["TELEGRAM_BOT_TOKEN", "TELEGRAM_WEBHOOK_SECRET"]) {
+    if (isUnsafeSecretValue(env[name])) problems.push(name);
+  }
+  if (!env.REDIS_URL?.trim()) problems.push("REDIS_URL");
+  if (problems.length > 0) {
+    throw new Error(
+      `ChainVigil bot production startup blocked. Invalid or missing env: ${problems.join(", ")}.`,
+    );
+  }
+}
+
+export function assertWorkerProductionRuntime(
+  env: Record<string, string | undefined> = process.env,
+): void {
+  if (resolveRuntimeMode(env) !== "production") return;
+  const missing = ["DATABASE_URL", "REDIS_URL"].filter((name) => !env[name]?.trim());
+  if (missing.length > 0) {
+    throw new Error(
+      `ChainVigil worker production startup blocked. Missing env: ${missing.join(", ")}.`,
+    );
+  }
+}
+
+export function constantTimeEqual(left: string, right: string): boolean {
+  const encoder = new TextEncoder();
+  const leftBytes = encoder.encode(left);
+  const rightBytes = encoder.encode(right);
+  const length = Math.max(leftBytes.length, rightBytes.length);
+  let mismatch = leftBytes.length ^ rightBytes.length;
+  for (let index = 0; index < length; index += 1) {
+    mismatch |= (leftBytes[index] ?? 0) ^ (rightBytes[index] ?? 0);
+  }
+  return mismatch === 0;
 }
 
 export interface BasicAuthConfig {

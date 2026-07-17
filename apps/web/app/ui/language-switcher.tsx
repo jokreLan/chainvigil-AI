@@ -1,17 +1,23 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useLocale } from "../i18n/locale-context";
 import type { Locale } from "../i18n/config";
 
 export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   const { locale, setLocale, t } = useLocale();
-  const router = useRouter();
+  const pathname = usePathname();
 
   function switchTo(next: Locale) {
     if (next === locale) return;
     setLocale(next);
-    router.refresh();
+    const segments = pathname.split("/");
+    const currentPrefix = segments[1];
+    const nextPath =
+      currentPrefix === "zh" || currentPrefix === "en"
+        ? `/${next}/${segments.slice(2).join("/")}`
+        : `/${next}${pathname === "/" ? "" : pathname}`;
+    window.location.assign(nextPath.replace(/\/+$/, "") || `/${next}`);
   }
 
   return (

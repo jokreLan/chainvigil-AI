@@ -60,7 +60,7 @@ describe("api app", () => {
     expect(body.readiness.productionSecurity.warnings).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          name: "ADMIN_SECRET",
+          name: "ADMIN_BASIC_AUTH_PASSWORD",
         }),
       ]),
     );
@@ -468,7 +468,7 @@ describe("api app", () => {
     expect(response.json().data).toMatchObject({
       chain: "bsc",
       address: "0x1111111111111111111111111111111111111110",
-      missingLiveConfig: expect.arrayContaining(["RPC_BSC_URL", "GOPLUS_API_KEY", "HONEYPOT_API_KEY"]),
+      missingLiveConfig: expect.arrayContaining(["RPC_BSC_URL", "GOPLUS_API_KEY"]),
       coverage: expect.objectContaining({ confidence: "UNASSESSED", fallbackActive: true }),
     });
     expect(response.json().data.snapshots.length).toBeGreaterThanOrEqual(5);

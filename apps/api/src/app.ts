@@ -17,10 +17,12 @@ import {
   verifyWriteSecret,
 } from "@chainvigil/config";
 import {
+  applyLiveRiskData,
   collectTokenRiskData,
   getAdapterHealth,
   getRiskEvidenceProviderStatus,
 } from "@chainvigil/data-adapters";
+import { createDatabaseStore } from "@chainvigil/db";
 import { getWorkerHealth } from "@chainvigil/worker";
 import {
   createPendingPointEvent,
@@ -173,7 +175,7 @@ function parseTokenCheckBody(body: unknown): TokenCheckRequest {
   const chain = optionalChain(record.chain);
 
   try {
-    parseTokenInput(input, chain ?? "bsc");
+    parseTokenInput(input, chain);
   } catch {
     throw new ApiInputError("请输入有效的 SOL 或 BNB Token 合约地址。", "input");
   }
@@ -219,10 +221,14 @@ function parseWalletHealthBody(body: unknown): WalletHealthRequest {
   const address = requiredString(record, "address", 128);
   const chain = optionalChain(record.chain);
 
+  if (chain === "solana") {
+    throw new ApiInputError("钱包体检当前仅支持 EVM 地址；Solana 钱包体检将在真实 RPC 验证后开放。", "chain");
+  }
+
   try {
     parseTokenInput(address, chain ?? "bsc");
   } catch {
-    throw new ApiInputError("请输入有效的钱包地址。", "address");
+    throw new ApiInputError("请输入有效的 EVM 钱包地址。", "address");
   }
 
   const parsed: WalletHealthRequest = {
@@ -329,14 +335,23 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
   const env = options.env ?? process.env;
   const trustProxy = resolveTrustProxy(env);
   const app = Fastify({
-    logger: false,
+    logger:
+      resolveRuntimeMode(env) === "production"
+        ? { level: env.LOG_LEVEL?.trim() || "info" }
+        : false,
     trustProxy,
     bodyLimit: 32 * 1024,
     requestTimeout: 30_000,
   });
-  const cache =
-    options.rateLimit?.cache ??
-    (await createCacheStore(env)).store;
+  const cacheRuntime = options.rateLimit?.cache
+    ? { store: options.rateLimit.cache, backend: "memory" as const }
+    : await createCacheStore(env);
+  const cache = cacheRuntime.store;
+  const database = createDatabaseStore(env);
+  app.addHook("onClose", async () => {
+    await cache.close?.();
+    await database?.close();
+  });
   const checkRateLimit = createRateLimiter({
     ...options.rateLimit,
     cache,
@@ -420,7 +435,7 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
     throw new ApiForbiddenError("缺少有效的服务写密钥或管理员认证。");
   }
 
-  app.setErrorHandler((error, _request, reply) => {
+  app.setErrorHandler((error, request, reply) => {
     if (error instanceof ApiInputError) {
       return reply.status(error.statusCode).send({
         error: {
@@ -462,21 +477,30 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
       });
     }
 
-    throw error;
+    request.log.error({ err: error }, "Unhandled API request error");
+    return reply.status(500).send({
+      error: {
+        code: "INTERNAL_ERROR",
+        message: "服务暂时不可用，请稍后重试。",
+      },
+    });
   });
 
   app.get("/health", async () => ({
     ok: true,
     service: "chainvigil-api",
     adapters: getAdapterHealth(env),
-    cache: getCacheHealth(env),
+    cache: getCacheHealth(env, cacheRuntime.backend),
+    database: database
+      ? { name: "postgresql", mode: "live", ready: await database.ping() }
+      : { name: "none", mode: "mock", ready: resolveRuntimeMode(env) !== "production" },
   }));
 
   app.get("/api/v1/system/readiness", async () => ({
     service: "chainvigil-api",
     readiness: getSystemReadiness(env),
     adapters: getAdapterHealth(env),
-    cache: getCacheHealth(env),
+    cache: getCacheHealth(env, cacheRuntime.backend),
   }));
 
   app.get("/api/v1/data-sources/adapters", async (request) => {
@@ -627,21 +651,31 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
     const body = parseTokenCheckBody(request.body);
     const locale = resolveRequestLocale(request, body.locale);
     const appBaseUrl = readEnv("APP_BASE_URL", "http://localhost:3000");
-    const report = buildMockTokenRiskReport({
+    const localizedAppBaseUrl = `${appBaseUrl.replace(/\/$/, "")}/${locale}`;
+    const baselineReport = buildMockTokenRiskReport({
       input: body.input,
       chain: body.chain,
-      appBaseUrl,
+      appBaseUrl: localizedAppBaseUrl,
       locale,
     });
+    const liveData = await collectTokenRiskData(
+      { chain: baselineReport.chain, address: baselineReport.tokenAddress },
+      env,
+    );
+    const report = applyLiveRiskData(baselineReport, liveData, locale);
     const pointEvent = createPendingPointEvent({
       type: "FIRST_CA_CHECK",
       subjectId: `${report.chain}:${report.tokenAddress}`,
       idempotencyKey: `mock:first-ca-check:${report.chain}:${report.tokenAddress}`,
     });
+    await database?.persistTokenReport(report, liveData);
+    const storedPointEvent = database
+      ? await database.persistPointEvent(pointEvent)
+      : pointEvent;
 
     return {
       report,
-      pointEvent,
+      pointEvent: storedPointEvent,
       mode: report.mode,
       confidence: report.confidence,
       locale,
@@ -655,12 +689,19 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
       const params = parseTokenPathParams(request.params);
       const locale = resolveRequestLocale(request);
       const appBaseUrl = readEnv("APP_BASE_URL", "http://localhost:3000");
-      const report = buildMockTokenRiskReport({
+      const localizedAppBaseUrl = `${appBaseUrl.replace(/\/$/, "")}/${locale}`;
+      const baselineReport = buildMockTokenRiskReport({
         input: params.input,
         chain: params.chain,
-        appBaseUrl,
+        appBaseUrl: localizedAppBaseUrl,
         locale,
       });
+      const liveData = await collectTokenRiskData(
+        { chain: baselineReport.chain, address: baselineReport.tokenAddress },
+        env,
+      );
+      const report = applyLiveRiskData(baselineReport, liveData, locale);
+      await database?.persistTokenReport(report, liveData);
 
       return { report, mode: report.mode, confidence: report.confidence, locale };
     },
@@ -679,7 +720,13 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
         env,
       );
 
-      return { data, mode: "mock", confidence: data.coverage.confidence };
+      return {
+        data,
+        mode: data.coverage.status === "mock_only" || data.coverage.status === "live_configured"
+          ? "mock"
+          : "live",
+        confidence: data.coverage.confidence,
+      };
     },
   );
 
@@ -688,10 +735,11 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
     const body = parseWalletHealthBody(request.body);
     const locale = resolveRequestLocale(request, body.locale);
     const appBaseUrl = readEnv("APP_BASE_URL", "http://localhost:3000");
+    const localizedAppBaseUrl = `${appBaseUrl.replace(/\/$/, "")}/${locale}`;
     const report = buildMockWalletHealthReport({
       address: body.address,
       chain: body.chain,
-      appBaseUrl,
+      appBaseUrl: localizedAppBaseUrl,
       locale,
     });
 
@@ -709,9 +757,10 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
 
     const locale = resolveRequestLocale(request);
     const appBaseUrl = readEnv("APP_BASE_URL", "http://localhost:3000");
+    const localizedAppBaseUrl = `${appBaseUrl.replace(/\/$/, "")}/${locale}`;
     const report = buildMockWalletHealthReport({
       address: request.params.address,
-      appBaseUrl,
+      appBaseUrl: localizedAppBaseUrl,
       locale,
     });
 
@@ -799,8 +848,11 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
     }
 
     const event = createPendingPointEvent(pointEventInput);
+    const storedEvent = database
+      ? await database.persistPointEvent(event)
+      : event;
 
-    return { event, mode: "mock" };
+    return { event: storedEvent, mode: database ? "live" : "mock" };
   });
 
   app.post<{
@@ -815,18 +867,34 @@ export async function buildApiApp(options: BuildApiAppOptions = {}) {
     requireServiceWrite(request);
     const body = parseReferralEventBody(request.body);
 
+    const stored = database
+      ? await database.persistReferralEvent(body)
+      : { id: crypto.randomUUID(), createdAt: new Date().toISOString() };
     return {
       event: {
-        id: crypto.randomUUID(),
+        id: stored.id,
         referralCode: body.referralCode,
         source: body.source,
         action: body.action,
         subjectId: body.subjectId ?? null,
-        status: "recorded",
-        createdAt: new Date().toISOString(),
+        status: database ? "recorded" : "accepted_demo",
+        createdAt: stored.createdAt,
       },
-      mode: "mock",
+      mode: database ? "live" : "mock",
     };
+  });
+
+  app.get<{ Querystring: { days?: string } }>("/api/v1/admin/metrics/north-star", async (request) => {
+    requireAdmin(request);
+    if (!database) {
+      return {
+        mode: "mock",
+        metrics: { days: 7, scans: 0, uniqueTokens: 0, referrals: 0, pointEvents: 0 },
+      };
+    }
+    const rawDays = Number(request.query.days ?? 7);
+    const days = Number.isFinite(rawDays) ? Math.min(90, Math.max(1, Math.round(rawDays))) : 7;
+    return { mode: "live", metrics: await database.getNorthStarMetrics(days) };
   });
 
   return app;

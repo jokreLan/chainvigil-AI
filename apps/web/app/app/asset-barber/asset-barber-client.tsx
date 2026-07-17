@@ -17,13 +17,6 @@ import {
 type Screen = "setup" | "scanning" | "result" | "failed";
 type Modal = "action" | "upgrade" | null;
 
-const metricCards = [
-  { icon: "⚠", label: "Risky Approvals", badge: "12 Found", value: "$4,200", suffix: "at risk", tone: "#F97316" },
-  { icon: "♻", label: "Dust Assets", badge: "8 Found", value: "$12.45", suffix: "total", tone: "#c0c1ff" },
-  { icon: "⌫", label: "Spam Tokens", badge: "45 Found", value: "Hide All", suffix: "", tone: "#F59E0B" },
-  { icon: "▧", label: "Spam NFTs", badge: "128 Found", value: "Airdrops", suffix: "", tone: "#6B7280" },
-];
-
 const recoverable = [
   { symbol: "UNI", name: "Uniswap Dust", amount: "0.12 UNI", value: "~$0.85" },
   { symbol: "LINK", name: "Chainlink Dust", amount: "0.05 LINK", value: "~$0.70" },
@@ -43,7 +36,7 @@ export function AssetBarberClient() {
   const { locale, t } = useLocale();
   const contentLocale = locale === "en" ? "en" : "zh";
   const scanSteps = scanStepsFor(contentLocale);
-  const [screen, setScreen] = useState<Screen>("result");
+  const [screen, setScreen] = useState<Screen>("setup");
   const [profile, setProfile] = useState<ScanProfile>("risk");
   const [address, setAddress] = useState(demoAddresses.risk);
   const [scope, setScope] = useState<ChainScope>("all");
@@ -173,6 +166,9 @@ function Results({
   return (
     <div className="space-y-8">
       <section className="space-y-2">
+        <p className="inline-flex rounded-full border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-3 py-1 text-xs font-semibold text-[#fde68a]">
+          {isZh ? "演示模式 · 不读取真实钱包、不执行清理" : "Demo mode · no live wallet reads or cleanup"}
+        </p>
         <div className="flex items-center gap-3">
           <span className="text-3xl text-[#c0c1ff]">✂</span>
           <h1 className="bg-gradient-to-r from-[#c0c1ff] to-[#ddb7ff] bg-clip-text text-4xl font-bold leading-tight text-transparent md:text-5xl">
@@ -203,18 +199,17 @@ function Results({
         </article>
 
         <div className="grid grid-cols-2 gap-4 md:col-span-8 lg:grid-cols-4">
-          {metricCards.map((metric) => (
+          {report.metrics.slice(0, 4).map((metric, index) => (
             <article key={metric.label} className="flex min-h-[150px] flex-col justify-between rounded-xl border border-[#262932] bg-[#16181D] p-5 transition hover:border-[#908fa0]">
               <div className="flex items-start justify-between gap-2">
-                <span className="text-2xl" style={{ color: metric.tone }}>{metric.icon}</span>
-                <span className="rounded bg-white/5 px-2 py-1 text-xs font-semibold" style={{ color: metric.tone }}>{metric.badge}</span>
+                <span className="text-2xl" style={{ color: metric.tone }}>{["⚠", "♻", "⌫", "▧"][index]}</span>
+                <span className="rounded bg-white/5 px-2 py-1 text-xs font-semibold" style={{ color: metric.tone }}>
+                  DEMO
+                </span>
               </div>
               <div className="mt-4">
                 <h2 className="mb-1 text-xs font-semibold uppercase tracking-[0.05em] text-[#c7c4d7]">{metric.label}</h2>
-                <p className="text-2xl font-semibold text-[#F9FAFB]">
-                  {metric.value}
-                  {metric.suffix && <span className="text-base font-normal text-[#c7c4d7]"> {metric.suffix}</span>}
-                </p>
+                <p className="text-2xl font-semibold text-[#F9FAFB]">{metric.value}</p>
               </div>
             </article>
           ))}
@@ -227,7 +222,7 @@ function Results({
           <div>
             <h2 className="mb-2 text-2xl font-semibold text-[#e1e0ff]">AI Cleanup Strategy Recommended</h2>
             <p className="max-w-4xl leading-7 text-[#c7c4d7]">
-              Based on our scan, your wallet has accumulated significant digital cruft. We recommend immediately revoking the <strong>12 high-risk approvals</strong> connected to inactive DEXs. Additionally, converting your dust assets across 8 tokens could recover approximately $12.45 while reducing cognitive load. We advise against interacting with the 45 flagged spam tokens to avoid potential honeypots.
+              {report.summary}
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
               <button type="button" onClick={onScan} className="flex min-h-12 items-center gap-2 rounded-lg bg-[#c0c1ff] px-6 text-sm font-semibold text-[#1000a9] shadow-lg shadow-[#c0c1ff]/20 transition hover:opacity-90">

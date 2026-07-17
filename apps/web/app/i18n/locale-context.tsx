@@ -40,6 +40,11 @@ export function LocaleProvider({
   const [locale, setLocaleState] = useState<Locale>(initialLocale ?? defaultLocale);
 
   useEffect(() => {
+    if (initialLocale) {
+      setLocaleState(initialLocale);
+      writeLocale(initialLocale);
+      return;
+    }
     try {
       const stored = window.localStorage.getItem(localeCookieName);
       if (stored) {
@@ -52,7 +57,7 @@ export function LocaleProvider({
       // ignore
     }
     writeLocale(locale);
-  }, []);
+  }, [initialLocale]);
 
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);

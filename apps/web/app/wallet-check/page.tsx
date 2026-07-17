@@ -50,7 +50,7 @@ export default function WalletCheckPage() {
 
         <section className="mt-8 rounded-2xl border border-[#262932] bg-[#16181d] p-5">
           <div className="mb-4 flex justify-center gap-3">
-            {["ETH", "BNB", "SOL", "BASE"].map((chain, i) => (
+            {["EVM", "BNB", "BASE", "ARB"].map((chain, i) => (
               <span
                 key={chain}
                 className={`flex size-10 items-center justify-center rounded-full border text-[10px] font-semibold ${

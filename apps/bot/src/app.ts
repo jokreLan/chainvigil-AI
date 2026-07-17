@@ -34,6 +34,31 @@ interface TelegramWebhookBody {
   };
 }
 
+function webhookReply(
+  chatId: number | string | undefined,
+  text: string,
+  debug?: Record<string, unknown>,
+) {
+  if (chatId === undefined) {
+    return {
+      ok: true,
+      reply: text,
+      ...debug,
+    };
+  }
+
+  // Telegram supports making a Bot API call directly from the webhook response.
+  // Keep this payload free of custom fields: unknown Bot API parameters can reject the reply.
+  return {
+    method: "sendMessage",
+    chat_id: chatId,
+    text,
+    link_preview_options: {
+      is_disabled: true,
+    },
+  };
+}
+
 class BotAuthError extends Error {
   statusCode = 401;
 
@@ -51,12 +76,18 @@ export async function buildBotApp(options: BuildBotAppOptions = {}) {
   const env = options.env ?? process.env;
   const trustProxy = resolveTrustProxy(env);
   const app = Fastify({
-    logger: false,
+    logger:
+      resolveRuntimeMode(env) === "production"
+        ? { level: env.LOG_LEVEL?.trim() || "info" }
+        : false,
     trustProxy,
     bodyLimit: 64 * 1024,
     requestTimeout: 30_000,
   });
   const cache = options.rateLimit?.cache ?? (await createCacheStore(env)).store;
+  app.addHook("onClose", async () => {
+    await cache.close?.();
+  });
   const checkRateLimit = createRateLimiter({
     maxRequests: 30,
     windowSeconds: 60,
@@ -74,7 +105,7 @@ export async function buildBotApp(options: BuildBotAppOptions = {}) {
     }
   });
 
-  app.setErrorHandler((error, _request, reply) => {
+  app.setErrorHandler((error, request, reply) => {
     if (error instanceof BotAuthError) {
       return reply.status(error.statusCode).send({
         ok: false,
@@ -96,7 +127,11 @@ export async function buildBotApp(options: BuildBotAppOptions = {}) {
       });
     }
 
-    throw error;
+    request.log.error({ err: error }, "Unhandled bot request error");
+    return reply.status(500).send({
+      ok: false,
+      error: { code: "INTERNAL_ERROR", message: "Bot service temporarily unavailable." },
+    });
   });
 
   function requireWebhookSecret(request: {
@@ -136,45 +171,25 @@ export async function buildBotApp(options: BuildBotAppOptions = {}) {
     const locale = getMockTelegramGroup(chatId).language === "en" ? "en" : "zh";
 
     if (normalizedText.startsWith("/start")) {
-      return {
-        ok: true,
-        mode: "mock",
-        reply: buildTelegramStartReply(locale),
-      };
+      return webhookReply(chatId, buildTelegramStartReply(locale), { mode: "mock" });
     }
 
     if (normalizedText.startsWith("/help")) {
-      return {
-        ok: true,
-        mode: "mock",
-        reply: buildTelegramHelpReply(locale),
-      };
+      return webhookReply(chatId, buildTelegramHelpReply(locale), { mode: "mock" });
     }
 
     if (normalizedText.startsWith("/top")) {
-      return {
-        ok: true,
-        mode: "mock",
-        reply: buildTelegramTopReply(locale),
-      };
+      return webhookReply(chatId, buildTelegramTopReply(locale), { mode: "mock" });
     }
 
     if (normalizedText.startsWith("/settings")) {
-      return {
-        ok: true,
-        mode: "mock",
-        reply: buildTelegramSettingsReply(chatId, locale),
-      };
+      return webhookReply(chatId, buildTelegramSettingsReply(chatId, locale), { mode: "mock" });
     }
 
     const match = text.match(/\/check\s+(.+)/i);
 
     if (!match?.[1]) {
-      return {
-        ok: true,
-        mode: "mock",
-        reply: buildTelegramCheckUsageReply(locale),
-      };
+      return webhookReply(chatId, buildTelegramCheckUsageReply(locale), { mode: "mock" });
     }
 
     let input: string;
@@ -182,14 +197,13 @@ export async function buildBotApp(options: BuildBotAppOptions = {}) {
     try {
       input = parseTokenInput(match[1]).address;
     } catch {
-      return {
-        ok: true,
-        mode: "mock",
-        reply:
-          locale === "en"
-            ? "Enter a valid SOL or BNB token CA. Example: /check So11111111111111111111111111111111111111112"
-            : "请输入有效的 SOL 或 BNB Token 合约地址。例如：/check So11111111111111111111111111111111111111112",
-      };
+      return webhookReply(
+        chatId,
+        locale === "en"
+          ? "Enter a valid SOL or BNB token CA. Example: /check So11111111111111111111111111111111111111112"
+          : "请输入有效的 SOL 或 BNB Token 合约地址。例如：/check So11111111111111111111111111111111111111112",
+        { mode: "mock" },
+      );
     }
 
     const appBaseUrl = readEnv("APP_BASE_URL", "http://localhost:3000");
@@ -198,16 +212,14 @@ export async function buildBotApp(options: BuildBotAppOptions = {}) {
       input,
       appBaseUrl,
       ...(apiBaseUrl ? { apiBaseUrl } : {}),
+      locale,
     });
 
-    return {
-      ok: true,
+    return webhookReply(chatId, buildTelegramCheckReply(report, locale), {
       mode: report.mode,
       confidence: report.confidence,
       source,
-      chatId: request.body?.message?.chat?.id,
-      reply: buildTelegramCheckReply(report, locale),
-    };
+    });
   });
 
   return app;

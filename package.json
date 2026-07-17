@@ -11,6 +11,7 @@
     "db:validate": "pnpm --filter @chainvigil/db prisma:validate",
     "db:generate": "pnpm --filter @chainvigil/db prisma:generate",
     "db:migrate": "pnpm --filter @chainvigil/db prisma:migrate",
+    "db:deploy": "pnpm --filter @chainvigil/db prisma:deploy",
     "format": "prettier --write .",
     "smoke:v0": "node scripts/smoke-v0.mjs",
     "launch:check": "node scripts/launch-check.mjs"
@@ -21,5 +22,10 @@
     "turbo": "^2.5.4",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"
+  },
+  "pnpm": {
+    "overrides": {
+      "postcss": "8.5.10"
+    }
   }
 }

@@ -6,6 +6,7 @@ import { buildPageMetadata, buildWebsiteJsonLd } from "./lib/seo";
 import { ApiStatusBanner } from "./ui/api-status-banner";
 import { JsonLd } from "./ui/json-ld";
 import { ToastProvider } from "./ui/toast";
+import { TrustFooter } from "./ui/trust-footer";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata("home");
@@ -23,6 +24,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <ToastProvider>
             <ApiStatusBanner />
             {children}
+            <TrustFooter />
           </ToastProvider>
         </LocaleProvider>
       </body>

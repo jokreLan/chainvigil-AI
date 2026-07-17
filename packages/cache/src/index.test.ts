@@ -11,13 +11,16 @@ describe("cache skeleton", () => {
     });
   });
 
-  it("reports redis live-ready when REDIS_URL exists", () => {
+  it("does not claim Redis readiness until a connection is established", () => {
     expect(getCacheHealth({ REDIS_URL: "redis://localhost:6379" })).toMatchObject({
-      name: "redis",
-      mode: "live",
-      ready: true,
+      name: "memory",
+      mode: "mock",
+      ready: false,
       requiredEnv: "REDIS_URL",
     });
+    expect(
+      getCacheHealth({ REDIS_URL: "redis://localhost:6379" }, "redis"),
+    ).toMatchObject({ name: "redis", mode: "live", ready: true });
   });
 
   it("stores and expires memory cache values", async () => {

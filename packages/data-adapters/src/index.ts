@@ -1,4 +1,9 @@
-import type { ChainId } from "@chainvigil/types";
+import type {
+  ChainId,
+  RiskReason,
+  TokenRiskEvidence,
+  TokenRiskReport,
+} from "@chainvigil/types";
 
 export interface AdapterHealth {
   name: string;
@@ -52,10 +57,10 @@ export interface RiskEvidenceProviderStatus {
 
 export interface RiskEvidenceCoverage {
   chain: ChainId;
-  status: "mock_only" | "live_configured";
-  confidence: "UNASSESSED";
-  confidenceScore: 0;
-  fallbackActive: true;
+  status: "mock_only" | "live_configured" | "live_executed" | "mixed";
+  confidence: "UNASSESSED" | "LOW" | "MEDIUM" | "HIGH";
+  confidenceScore: number;
+  fallbackActive: boolean;
   missingLiveConfig: string[];
   plainLanguage: string;
 }
@@ -77,6 +82,197 @@ export interface TokenRiskDataBundle {
   snapshots: TokenSecuritySnapshot[];
   missingLiveConfig: string[];
   coverage: RiskEvidenceCoverage;
+}
+
+function asRecord(value: unknown): Record<string, unknown> | undefined {
+  return typeof value === "object" && value !== null
+    ? (value as Record<string, unknown>)
+    : undefined;
+}
+
+function asBoolean(value: unknown): boolean | undefined {
+  if (typeof value === "boolean") return value;
+  if (value === "1" || value === 1 || value === "true") return true;
+  if (value === "0" || value === 0 || value === "false") return false;
+  return undefined;
+}
+
+function asNumber(value: unknown): number | undefined {
+  const number = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(number) ? number : undefined;
+}
+
+export function applyLiveRiskData(
+  report: TokenRiskReport,
+  bundle: TokenRiskDataBundle,
+  locale: "zh" | "en" = "zh",
+): TokenRiskReport {
+  const live = bundle.snapshots.filter((snapshot) => snapshot.executionMode === "live");
+  if (live.length === 0) {
+    return report;
+  }
+
+  const evidence: TokenRiskEvidence = {};
+  let tokenName = report.tokenName;
+  let tokenSymbol = report.tokenSymbol;
+  const reasons: RiskReason[] = [];
+  const pick = (zh: string, en: string) => (locale === "en" ? en : zh);
+
+  const honeypot = live.find((snapshot) => snapshot.providerId === "honeypot-bsc");
+  if (honeypot) {
+    const hpResult = asRecord(honeypot.data.honeypotResult);
+    const simulation = asRecord(honeypot.data.simulationResult);
+    const token = asRecord(honeypot.data.token);
+    const pair = asRecord(honeypot.data.pair);
+    const hpDetected = asBoolean(hpResult?.isHoneypot);
+    const buyTax = asNumber(simulation?.buyTax);
+    const sellTax = asNumber(simulation?.sellTax);
+    const transferTax = asNumber(simulation?.transferTax);
+    const liquidity = asNumber(pair?.liquidity);
+    if (hpDetected !== undefined) {
+      evidence.honeypotDetected = hpDetected;
+      evidence.canSell = !hpDetected;
+    }
+    if (buyTax !== undefined) evidence.buyTaxPercent = buyTax;
+    if (sellTax !== undefined) evidence.sellTaxPercent = sellTax;
+    if (transferTax !== undefined) evidence.transferTaxPercent = transferTax;
+    if (liquidity !== undefined) evidence.lpValueUsd = liquidity;
+    if (typeof token?.name === "string" && token.name.trim()) tokenName = token.name.trim();
+    if (typeof token?.symbol === "string" && token.symbol.trim()) tokenSymbol = token.symbol.trim();
+
+    if (hpDetected) {
+      reasons.push({
+        severity: "critical",
+        title: pick("真实卖出仿真判定为貔貅", "Live simulation detected a honeypot"),
+        explanation: pick(
+          "Honeypot.is 的真实交易仿真返回无法正常卖出信号。",
+          "Honeypot.is live trading simulation indicates the token cannot be sold normally.",
+        ),
+        evidence: { honeypotDetected: true },
+      });
+    }
+    if ((evidence.sellTaxPercent ?? 0) >= 20) {
+      reasons.push({
+        severity: (evidence.sellTaxPercent ?? 0) >= 50 ? "critical" : "high",
+        title: pick("卖出税率异常", "Abnormal sell tax"),
+        explanation: pick(
+          `真实仿真卖出税约为 ${evidence.sellTaxPercent}%。`,
+          `Live simulation reports an estimated ${evidence.sellTaxPercent}% sell tax.`,
+        ),
+        evidence: { sellTaxPercent: evidence.sellTaxPercent },
+      });
+    }
+  }
+
+  const goplus = live.find((snapshot) => snapshot.providerId === "goplus-bsc");
+  if (goplus) {
+    const result = asRecord(goplus.data.result);
+    const token = asRecord(result?.[report.tokenAddress.toLowerCase()]);
+    if (token) {
+      if (typeof token.token_name === "string" && token.token_name.trim()) tokenName = token.token_name.trim();
+      if (typeof token.token_symbol === "string" && token.token_symbol.trim()) tokenSymbol = token.token_symbol.trim();
+      const buyTax = asNumber(token.buy_tax);
+      const sellTax = asNumber(token.sell_tax);
+      const hpDetected = asBoolean(token.is_honeypot);
+      const mintable = asBoolean(token.is_mintable);
+      const blacklist = asBoolean(token.is_blacklisted);
+      const proxy = asBoolean(token.is_proxy);
+      const holderCount = asNumber(token.holder_count);
+      if (evidence.buyTaxPercent === undefined && buyTax !== undefined) evidence.buyTaxPercent = buyTax;
+      if (evidence.sellTaxPercent === undefined && sellTax !== undefined) evidence.sellTaxPercent = sellTax;
+      if (evidence.honeypotDetected === undefined && hpDetected !== undefined) evidence.honeypotDetected = hpDetected;
+      if (mintable !== undefined) evidence.mintable = mintable;
+      if (blacklist !== undefined) evidence.blacklistFunction = blacklist;
+      if (proxy !== undefined) evidence.proxyContract = proxy;
+      const openSource = asBoolean(token.is_open_source);
+      if (openSource !== undefined) evidence.sourceVerified = openSource;
+      if (holderCount !== undefined) evidence.holderCount = holderCount;
+      const privilegeSignals = [
+        asBoolean(token.slippage_modifiable),
+        asBoolean(token.owner_change_balance),
+        asBoolean(token.can_take_back_ownership),
+      ];
+      if (privilegeSignals.some((value) => value !== undefined)) {
+        evidence.ownerCanModifyTax = privilegeSignals.some(Boolean);
+      }
+
+      const riskyPrivileges = [
+        evidence.ownerCanModifyTax,
+        evidence.mintable,
+        evidence.blacklistFunction,
+      ].filter(Boolean).length;
+      if (riskyPrivileges > 0) {
+        reasons.push({
+          severity: riskyPrivileges >= 2 ? "high" : "medium",
+          title: pick("合约仍保留高风险权限", "Contract retains risky privileges"),
+          explanation: pick(
+            "GoPlus 实时结果显示合约可能保留改税、增发或黑名单等权限。",
+            "GoPlus live data indicates tax, minting, or blacklist privileges may remain.",
+          ),
+          evidence: {
+            ownerCanModifyTax: evidence.ownerCanModifyTax,
+            mintable: evidence.mintable,
+            blacklistFunction: evidence.blacklistFunction,
+          },
+        });
+      }
+    }
+  }
+
+  if (reasons.length === 0) {
+    reasons.push({
+      severity: "low",
+      title: pick("已执行真实数据源检测", "Live data sources executed"),
+      explanation: pick(
+        `已执行 ${live.length} 个真实数据源；未命中当前规则中的明确高危项，但不代表绝对安全。`,
+        `${live.length} live source(s) executed. No explicit high-risk rule matched, but this is not a safety guarantee.`,
+      ),
+    });
+  }
+
+  const critical = reasons.some((reason) => reason.severity === "critical");
+  const high = reasons.some((reason) => reason.severity === "high");
+  const medium = reasons.some((reason) => reason.severity === "medium");
+  const riskLevel = critical ? "BLOCK" : high ? "HIGH" : medium ? "MEDIUM" : "LOW";
+  const score = critical ? 10 : high ? 35 : medium ? 58 : 78;
+  const label =
+    locale === "en"
+      ? critical ? "Block" : high ? "High risk" : medium ? "Caution" : "Lower observed risk"
+      : critical ? "禁买" : high ? "高危" : medium ? "谨慎" : "当前低风险";
+  const summary = pick(
+    `已执行 ${live.length} 个真实数据源；风险等级为${label}。${
+      bundle.coverage.fallbackActive ? "部分证据源降级，仍需复核。" : ""
+    }`,
+    `${live.length} live source(s) executed; observed risk is ${label}.${
+      bundle.coverage.fallbackActive ? " Some evidence sources degraded; verify independently." : ""
+    }`,
+  );
+  const recommendation = critical
+    ? pick("建议不要买入；如已持有，仅尝试极小额卖出验证。", "Do not buy. If held, test only a tiny sell.")
+    : pick(
+        "不构成投资建议。交易前仍应核对合约、流动性与权限，并使用可承受损失的小额资金。",
+        "Not investment advice. Re-check contract, liquidity, and privileges; use only a small amount you can lose.",
+      );
+
+  return {
+    ...report,
+    tokenName,
+    tokenSymbol,
+    score,
+    riskLevel,
+    label,
+    summary,
+    recommendation,
+    reasons,
+    evidence,
+    mode: "live",
+    confidence: bundle.coverage.confidence,
+    confidenceScore: bundle.coverage.confidenceScore,
+    shareText:
+      locale === "en"
+        ? `ChainVigil AI live result: ${label}｜${summary} ${report.reportUrl}`
+        : `ChainVigil AI 真实检测：${label}｜${summary} ${report.reportUrl}`,
+  };
 }
 
 const providerConfig = [
@@ -120,8 +316,7 @@ const riskEvidenceProviderConfig: readonly RiskEvidenceProviderConfig[] = [
     source: "honeypot",
     chains: ["bsc"],
     evidenceTypes: ["trading_simulation", "tax_analysis"],
-    requiredEnv: "HONEYPOT_API_KEY",
-    note: "用于补充买卖仿真和税率证据。",
+    note: "用于补充买卖仿真和税率证据；公开接口当前可无密钥调用，可选 HONEYPOT_API_KEY。",
   },
   {
     id: "dex-market",
@@ -170,7 +365,10 @@ export function getRiskEvidenceProviderStatus(
   return riskEvidenceProviderConfig
     .filter((provider) => !chain || provider.chains.includes(chain))
     .map((provider) => {
-      const ready = provider.requiredEnv ? Boolean(env[provider.requiredEnv]?.trim()) : provider.id === "internal-risk-db";
+      const ready = provider.requiredEnv
+        ? Boolean(env[provider.requiredEnv]?.trim())
+        : provider.id === "internal-risk-db" || provider.id === "honeypot-bsc";
+      const isLiveReady = ready && provider.id !== "internal-risk-db";
 
       return {
         id: provider.id,
@@ -178,7 +376,7 @@ export function getRiskEvidenceProviderStatus(
         source: provider.source,
         chains: [...provider.chains],
         evidenceTypes: [...provider.evidenceTypes],
-        mode: ready && provider.requiredEnv ? "live-ready" : "mock",
+        mode: isLiveReady ? "live-ready" : "mock",
         ready,
         ...(provider.requiredEnv ? { requiredEnv: provider.requiredEnv } : {}),
         fallback: "mock_snapshot",
@@ -286,6 +484,153 @@ export function clearLiveProviderClientsForTests(): void {
   liveProviderClients.length = 0;
 }
 
+function requestHeaders(apiKey?: string): Record<string, string> {
+  return apiKey?.trim()
+    ? {
+        accept: "application/json",
+        authorization: `Bearer ${apiKey.trim()}`,
+        "x-api-key": apiKey.trim(),
+      }
+    : { accept: "application/json" };
+}
+
+async function fetchJson(
+  url: string,
+  init: RequestInit = {},
+  timeoutMs = 8_000,
+): Promise<Record<string, unknown>> {
+  const response = await fetch(url, {
+    ...init,
+    signal: AbortSignal.timeout(timeoutMs),
+  });
+  if (!response.ok) {
+    throw new Error(`provider HTTP ${response.status}`);
+  }
+  const payload: unknown = await response.json();
+  if (typeof payload !== "object" || payload === null) {
+    throw new Error("provider returned invalid JSON");
+  }
+  return payload as Record<string, unknown>;
+}
+
+function builtInLiveProviderClients(
+  env: Record<string, string | undefined>,
+): LiveProviderClient[] {
+  const liveEnabled =
+    env.CHAINVIGIL_RUNTIME_MODE === "production" ||
+    env.CHAINVIGIL_LIVE_PROVIDERS === "true";
+  if (!liveEnabled) {
+    return [];
+  }
+  const clients: LiveProviderClient[] = [];
+  const goplusKey = env.GOPLUS_API_KEY?.trim();
+  const honeypotKey = env.HONEYPOT_API_KEY?.trim();
+  const bscRpcUrl = env.RPC_BSC_URL?.trim();
+  const solanaRpcUrl = env.RPC_SOLANA_URL?.trim();
+
+  clients.push({
+    id: "honeypot-bsc",
+    source: "honeypot",
+    isEnabled: () => true,
+    async fetchSnapshot(input) {
+      if (input.chain !== "bsc") {
+        throw new Error("unsupported chain");
+      }
+      const payload = await fetchJson(
+        `https://api.honeypot.is/v2/IsHoneypot?address=${encodeURIComponent(input.address)}&chainID=56`,
+        { headers: requestHeaders(honeypotKey) },
+      );
+      return {
+        source: "honeypot",
+        providerId: "honeypot-bsc",
+        chain: input.chain,
+        address: input.address,
+        fetchedAt: new Date().toISOString(),
+        freshForSeconds: 60,
+        executionMode: "live",
+        evidenceTypes: ["trading_simulation", "tax_analysis", "liquidity"],
+        data: payload,
+      };
+    },
+  });
+
+  if (goplusKey) {
+    clients.push({
+      id: "goplus-bsc",
+      source: "goplus",
+      isEnabled: () => true,
+      async fetchSnapshot(input) {
+        if (input.chain !== "bsc") {
+          throw new Error("unsupported chain");
+        }
+        const payload = await fetchJson(
+          `https://api.gopluslabs.io/api/v1/token_security/56?contract_addresses=${encodeURIComponent(input.address)}`,
+          { headers: requestHeaders(goplusKey) },
+        );
+        return {
+          source: "goplus",
+          providerId: "goplus-bsc",
+          chain: input.chain,
+          address: input.address,
+          fetchedAt: new Date().toISOString(),
+          freshForSeconds: 120,
+          executionMode: "live",
+          evidenceTypes: ["contract_privileges", "holder_concentration", "label_intelligence"],
+          data: payload,
+        };
+      },
+    });
+  }
+
+  const addRpcClient = (
+    id: "bsc-rpc" | "solana-rpc",
+    chain: "bsc" | "solana",
+    rpcUrl: string,
+  ) => {
+    clients.push({
+      id,
+      source: "rpc",
+      isEnabled: () => true,
+      async fetchSnapshot(input) {
+        if (input.chain !== chain) {
+          throw new Error("unsupported chain");
+        }
+        const method = chain === "solana" ? "getAccountInfo" : "eth_getCode";
+        const params =
+          chain === "solana"
+            ? [input.address, { encoding: "jsonParsed", commitment: "confirmed" }]
+            : [input.address, "latest"];
+        const payload = await fetchJson(rpcUrl, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
+        });
+        if (payload.error) {
+          throw new Error("RPC returned an error");
+        }
+        return {
+          source: "rpc",
+          providerId: id,
+          chain: input.chain,
+          address: input.address,
+          fetchedAt: new Date().toISOString(),
+          freshForSeconds: 30,
+          executionMode: "live",
+          evidenceTypes:
+            chain === "solana"
+              ? ["token_authority", "token_metadata"]
+              : ["contract_privileges", "token_metadata"],
+          data: payload,
+        };
+      },
+    });
+  };
+
+  if (bscRpcUrl) addRpcClient("bsc-rpc", "bsc", bscRpcUrl);
+  if (solanaRpcUrl) addRpcClient("solana-rpc", "solana", solanaRpcUrl);
+  return clients;
+}
+
 export async function lookupTokenSecurity(_input: TokenSecurityLookupInput) {
   const normalizedAddress = _input.chain === "solana" ? _input.address : _input.address.toLowerCase();
   const snapshot: TokenSecuritySnapshot = {
@@ -311,9 +656,15 @@ export async function collectTokenRiskData(
   const providers = getRiskEvidenceProviderStatus(env, input.chain);
   const primaryCoverage = buildRiskEvidenceCoverage(input.chain, providers);
 
-  // S1 path: prefer registered live clients when enabled; always keep mock fallback per provider.
+  // Execute built-in clients plus optional registered clients, with per-provider degradation.
   const liveSnapshots: TokenSecuritySnapshot[] = [];
-  for (const client of liveProviderClients) {
+  const availableClients = [
+    ...liveProviderClients,
+    ...builtInLiveProviderClients(env),
+  ].filter(
+    (client, index, all) => all.findIndex((candidate) => candidate.id === client.id) === index,
+  );
+  for (const client of availableClients) {
     if (!client.isEnabled(env)) {
       continue;
     }
@@ -379,19 +730,34 @@ export async function collectTokenRiskData(
   const legacyBundle = providers.length === 0
     ? collectLegacyEvmMockSnapshots(input, normalizedAddress, fetchedAt, env)
     : undefined;
+  const resolvedSnapshots = legacyBundle?.snapshots ?? primarySnapshots;
+  const liveCount = resolvedSnapshots.filter((snapshot) => snapshot.executionMode === "live").length;
+  const fallbackCount = resolvedSnapshots.length - liveCount;
   const coverage: RiskEvidenceCoverage = legacyBundle
     ? {
         ...primaryCoverage,
         missingLiveConfig: legacyBundle.missingLiveConfig,
         plainLanguage: "该链保留 V0 mock 兼容；真实风险 Provider 当前仅优先建设 SOL 和 BNB，不产生风险置信度。",
       }
-    : primaryCoverage;
+    : liveCount > 0
+      ? {
+          ...primaryCoverage,
+          status: fallbackCount > 0 ? "mixed" : "live_executed",
+          confidence: liveCount >= 2 ? "HIGH" : "MEDIUM",
+          confidenceScore: Math.min(95, 55 + liveCount * 15),
+          fallbackActive: fallbackCount > 0,
+          plainLanguage:
+            fallbackCount > 0
+              ? `已执行 ${liveCount} 个真实数据源，另有 ${fallbackCount} 个数据源降级；结论需结合缺失项复核。`
+              : `已执行 ${liveCount} 个真实数据源，当前没有 mock 降级。`,
+        }
+      : primaryCoverage;
 
   return {
     chain: input.chain,
     address: normalizedAddress,
     fetchedAt,
-    snapshots: legacyBundle?.snapshots ?? primarySnapshots,
+    snapshots: resolvedSnapshots,
     missingLiveConfig: coverage.missingLiveConfig,
     coverage,
   };

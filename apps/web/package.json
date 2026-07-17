@@ -12,6 +12,7 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@chainvigil/config": "workspace:*",
     "@chainvigil/points": "workspace:*",
     "@chainvigil/report": "workspace:*",
     "@chainvigil/risk-core": "workspace:*",

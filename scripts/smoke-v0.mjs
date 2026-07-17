@@ -367,8 +367,8 @@ async function main() {
       const html = await response.text();
       assertIncludesAnyGroups(name, html, [
         ["资产理发师", "Asset barber", "Asset Barber"],
-        ["可回收", "Recoverable"],
-        ["禁止处理", "Do not touch", "Do Not Touch"],
+        ["连接钱包", "Connect wallet", "开始扫描", "Start scan"],
+        ["演示", "Demo", "只读", "read-only"],
       ]);
     }),
   );
@@ -549,7 +549,7 @@ async function main() {
       await assertStatus(name, response, 200);
       const body = await response.json();
       const warnings = body.readiness?.productionSecurity?.warnings;
-      if (!Array.isArray(warnings) || !warnings.some((w) => w.name === "ADMIN_SECRET")) {
+      if (!Array.isArray(warnings) || !warnings.some((w) => w.name === "ADMIN_BASIC_AUTH_PASSWORD")) {
         throw new Error(`${name} expected non-secret production security warnings`);
       }
       if (JSON.stringify(body).includes("replace-me")) {
@@ -828,7 +828,7 @@ async function main() {
     }).then(async ({ name, response }) => {
       await assertStatus(name, response, 200);
       const body = await response.json();
-      assertIncludesAnyGroups(name, body.reply ?? "", [
+      assertIncludesAnyGroups(name, body.text ?? body.reply ?? "", [
         ["ChainVigil AI"],
         ["买币前，先查 CA", "Before you buy, check the CA"],
         ["SOL", "BNB"],
@@ -846,10 +846,10 @@ async function main() {
     }).then(async ({ name, response }) => {
       await assertStatus(name, response, 200);
       const body = await response.json();
-      if (body.mode !== "mock" || body.confidence !== "UNASSESSED") {
-        throw new Error(`${name} expected check reply with mode/confidence`);
+      if (body.method !== "sendMessage" || body.chat_id !== 1) {
+        throw new Error(`${name} expected Telegram sendMessage webhook response`);
       }
-      assertIncludesAnyGroups(name, body.reply ?? "", [
+      assertIncludesAnyGroups(name, body.text ?? body.reply ?? "", [
         ["模式：", "Mode:"],
         ["完整报告", "Full report"],
       ]);
@@ -865,7 +865,7 @@ async function main() {
       await assertStatus(name, response, 200);
       await assertHeader(name, response, "x-frame-options", "DENY");
       const body = await response.json();
-      assertIncludesAnyGroups(name, body.reply ?? "", [
+      assertIncludesAnyGroups(name, body.text ?? body.reply ?? "", [
         ["请输入有效的 SOL 或 BNB", "Enter a valid SOL or BNB"],
       ]);
     }),

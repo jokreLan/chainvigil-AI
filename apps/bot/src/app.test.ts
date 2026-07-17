@@ -72,10 +72,11 @@ describe("bot app", () => {
 
     const body = response.json();
     expect(response.statusCode).toBe(200);
-    expect(body.mode).toBe("mock");
-    expect(body.confidence).toBe("UNASSESSED");
-    expect(body.reply).toContain("ChainVigil AI｜链哨 AI 检测结果：高危");
-    expect(body.reply).toContain("/token/bsc/0x1111111111111111111111111111111111111110");
+    expect(body.method).toBe("sendMessage");
+    expect(body.chat_id).toBe(1);
+    expect(body.text).toContain("ChainVigil AI｜链哨 AI 检测结果：高危");
+    expect(body.text).toContain("模式：MOCK · 置信：UNASSESSED");
+    expect(body.text).toContain("/token/bsc/0x1111111111111111111111111111111111111110");
 
     await app.close();
   });
@@ -97,7 +98,8 @@ describe("bot app", () => {
 
     const body = response.json();
     expect(response.statusCode).toBe(200);
-    expect(body.reply).toContain("/token/solana/So11111111111111111111111111111111111111112");
+    expect(body.method).toBe("sendMessage");
+    expect(body.text).toContain("/token/solana/So11111111111111111111111111111111111111112");
 
     await app.close();
   });
@@ -140,8 +142,8 @@ describe("bot app", () => {
     expect(topResponse.json().reply).toContain("高危 CA 榜单");
     expect(topResponse.json().reply).toContain("SOL So111");
     expect(topResponse.json().reply).toContain("BNB 0x2222");
-    expect(settingsResponse.json().reply).toContain("群设置 skeleton");
-    expect(settingsResponse.json().reply).toContain("Meme Watch CN");
+    expect(settingsResponse.json().text).toContain("群设置 skeleton");
+    expect(settingsResponse.json().text).toContain("Meme Watch CN");
 
     await app.close();
   });

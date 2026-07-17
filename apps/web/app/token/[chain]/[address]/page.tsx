@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import {
   buildSeoDescription,
   buildSeoTitle,
   buildSharePrefix,
   buildTokenReportJsonLd,
 } from "@chainvigil/report";
-import { buildMockTokenRiskReport } from "@chainvigil/risk-core";
 import type { ChainId, RiskLevel, RiskReasonSeverity } from "@chainvigil/types";
 import { getServerT } from "../../../i18n/server";
 import { appendReferralParam, buildTrackedShareText } from "../../../lib/share";
@@ -15,6 +15,7 @@ import { MobileNav } from "../../../ui/mobile-nav";
 import { CopyValueButton } from "../../../ui/copy-value-button";
 import { ReportModeBanner } from "../../../ui/report-mode-banner";
 import { ReportActionBar } from "../../../ui/report-action-bar";
+import { getTokenRiskReport } from "../../../lib/reports";
 
 interface TokenReportPageProps {
   params: Promise<{
@@ -73,7 +74,12 @@ const reasonSeverityStyles: Record<RiskReasonSeverity, string> = {
 export async function generateMetadata({ params }: TokenReportPageProps): Promise<Metadata> {
   const { chain, address } = await params;
   const { locale } = await getServerT();
-  const report = buildMockTokenRiskReport({ input: address, chain, locale });
+  let report;
+  try {
+    report = await getTokenRiskReport(chain, address, locale);
+  } catch {
+    return { robots: { index: false, follow: false } };
+  }
 
   return {
     title: buildSeoTitle(report, locale),
@@ -110,7 +116,12 @@ export default async function TokenReportPage({ params, searchParams }: TokenRep
   const { chain, address } = await params;
   const { ref, from } = (await searchParams) ?? {};
   const { t, locale } = await getServerT();
-  const report = buildMockTokenRiskReport({ input: address, chain, locale });
+  let report;
+  try {
+    report = await getTokenRiskReport(chain, address, locale);
+  } catch {
+    notFound();
+  }
   const referralCode = ref?.trim() || "share";
   const trackedReportUrl = appendReferralParam(report.reportUrl, referralCode);
   const trackedShareText = `${buildSharePrefix(report, locale)}${buildTrackedShareText(report.shareText, report.reportUrl, trackedReportUrl)}`;

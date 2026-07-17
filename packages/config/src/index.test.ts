@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  assertAdminProductionRuntime,
   assertProductionRuntime,
+  assertWebProductionRuntime,
   allowsUnauthenticatedServiceWrites,
   constantTimeEqual,
   getAllowedCorsOrigins,
@@ -85,11 +87,11 @@ describe("validateEnv", () => {
     expect(result.warnings.map((warning) => warning.name)).toEqual([
       "APP_BASE_URL",
       "ADMIN_BASIC_AUTH_PASSWORD",
-      "ADMIN_SECRET",
-      "JWT_SECRET",
       "TELEGRAM_BOT_TOKEN",
       "TELEGRAM_WEBHOOK_SECRET",
       "INTERNAL_WRITE_SECRET",
+      "ADMIN_SECRET",
+      "JWT_SECRET",
     ]);
     expect(JSON.stringify(result)).not.toContain("replace-me");
     expect(JSON.stringify(result)).not.toContain("short");
@@ -125,6 +127,23 @@ describe("validateEnv", () => {
         CHAINVIGIL_RUNTIME_MODE: "mock",
       }),
     ).not.toThrow();
+  });
+
+  it("fails closed for unsafe web and admin production surfaces", () => {
+    expect(() =>
+      assertWebProductionRuntime({
+        CHAINVIGIL_RUNTIME_MODE: "production",
+        APP_BASE_URL: "http://localhost:3000",
+      }),
+    ).toThrow(/web production startup blocked/);
+
+    expect(() =>
+      assertAdminProductionRuntime({
+        CHAINVIGIL_RUNTIME_MODE: "production",
+        ADMIN_BASE_URL: "https://admin.chainvigil.ai",
+        API_BASE_URL: "https://api.chainvigil.ai",
+      }),
+    ).toThrow(/ADMIN_BASIC_AUTH_PASSWORD/);
   });
 
   it("uses constant-time equality helpers for secrets and basic auth", () => {
