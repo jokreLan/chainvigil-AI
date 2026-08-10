@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { listTelegramCommands } from "@chainvigil/telegram";
 import { useLocale } from "../i18n/locale-context";
-import { SiteHeader } from "../ui/site-header";
-import { MobileNav } from "../ui/mobile-nav";
+import { DeveloperSubnav } from "../ui/developer-subnav";
+import { WebsiteFooter } from "../ui/website-footer";
+import { WebsiteHeader } from "../ui/website-header";
 
 export default function BotPage() {
   const { locale, t } = useLocale();
@@ -12,57 +13,86 @@ export default function BotPage() {
   const botUsername = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME?.trim();
 
   return (
-    <main className="min-h-screen bg-[#0a0b0f] px-5 py-0 pb-28 md:px-8">
-      <SiteHeader active="bot" />
-      <div className="mx-auto max-w-5xl py-6">
-        <section className="mx-auto mt-12 max-w-5xl">
-          <p className="text-sm font-semibold text-[#c0c1ff]">{t("bot.kicker")}</p>
-          <h1 className="mt-3 text-4xl font-semibold text-[#f9fafb]">{t("bot.title")}</h1>
-          <p className="mt-4 max-w-3xl leading-8 text-[#c7c4d7]">{t("bot.body")}</p>
+    <main className="cv-website-page min-h-screen text-[#dce4e5]">
+      <WebsiteHeader active="bot" />
+      <DeveloperSubnav active="bot" />
+      <div className="mx-auto max-w-[1180px] px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
+        <section className="max-w-4xl">
+          <p className="cv-font-mono text-xs font-semibold uppercase tracking-[0.14em] text-[#00d9f2]">
+            {t("bot.kicker")} · Config-gated
+          </p>
+          <h1 className="mt-3 cv-font-display text-4xl font-semibold tracking-[-0.04em] text-[#dce4e5] sm:text-5xl lg:text-6xl">
+            {t("bot.title")}
+          </h1>
+          <p className="mt-5 max-w-3xl text-base leading-8 text-[#9dacad] sm:text-lg">
+            {t("bot.body")}
+          </p>
           {botUsername ? (
             <a
               href={`https://t.me/${botUsername.replace(/^@/, "")}`}
               target="_blank"
               rel="noreferrer"
-              className="mt-5 inline-flex min-h-11 items-center rounded-xl bg-[#8083ff] px-5 text-sm font-semibold text-[#0d0096]"
+              className="mt-6 inline-flex min-h-11 items-center bg-[#00d9f2] px-5 cv-font-mono text-xs font-semibold uppercase text-[#002b31]"
             >
               {t("bot.open")}
             </a>
           ) : (
-            <p className="mt-5 rounded-xl border border-[#f59e0b]/30 bg-[#f59e0b]/10 px-3 py-2 text-sm text-[#fde68a]">
+            <p className="mt-6 max-w-3xl [overflow-wrap:anywhere] border border-[#e7b900]/30 bg-[#e7b900]/6 px-4 py-3 text-sm leading-6 text-[#f3d36b]">
               {t("bot.unconfigured")}
             </p>
           )}
         </section>
         <section className="mx-auto mt-8 grid max-w-5xl gap-4 lg:grid-cols-[minmax(0,1fr)_17rem]">
-          <div className="rounded-lg border border-[#34343d] bg-[#16181d] p-5">
-            <h2 className="text-xl font-semibold text-[#f9fafb]">{t("bot.commands")}</h2>
+          <div className="cv-website-panel border border-[#3b494c]/70 bg-[#0d1516]/88 p-5 sm:p-6">
+            <h2 className="cv-font-display text-2xl font-semibold text-[#dce4e5]">
+              {t("bot.commands")}
+            </h2>
             <div className="mt-4 space-y-3">
               {commands.map((item) => (
-                <article key={item.command} className="rounded-md border border-[#262932] bg-[#0d0d15] p-4">
-                  <code className="font-mono text-[#c0c1ff]">{item.command}</code>
-                  <p className="mt-2 text-sm leading-6 text-[#c7c4d7]">{item.description}</p>
+                <article
+                  key={item.command}
+                  className="border border-[#3b494c]/55 bg-[#071012] p-4"
+                >
+                  <code className="cv-font-mono text-[#c3f5ff]">
+                    {item.command}
+                  </code>
+                  <p className="mt-2 text-sm leading-6 text-[#9dacad]">
+                    {item.description}
+                  </p>
                 </article>
               ))}
             </div>
           </div>
           <aside className="space-y-4">
-            <div className="rounded-lg border border-[#262932] bg-[#16181d] p-5">
-              <p className="text-xs font-semibold text-[#9ca3af]">{t("bot.statusLabel")}</p>
-              <p className="mt-3 text-lg font-semibold text-[#f9fafb]">{t("bot.statusTitle")}</p>
-              <p className="mt-3 text-sm leading-6 text-[#c7c4d7]">{t("bot.statusBody")}</p>
+            <div className="cv-website-panel border border-[#3b494c]/70 bg-[#0d1516]/88 p-5">
+              <p className="text-xs font-semibold text-[#9ca3af]">
+                {t("bot.statusLabel")}
+              </p>
+              <p className="mt-3 cv-font-display text-lg font-semibold text-[#dce4e5]">
+                {t("bot.statusTitle")}
+              </p>
+              <p className="mt-3 text-sm leading-6 text-[#9dacad]">
+                {t("bot.statusBody")}
+              </p>
             </div>
-            <div className="rounded-lg border border-[#eab308]/25 bg-[#16181d] p-5">
-              <p className="text-xs font-semibold text-[#eab308]">{t("bot.ownerLabel")}</p>
-              <p className="mt-2 text-sm leading-6 text-[#c7c4d7]">{t("bot.ownerBody")}</p>
-              <Link href="/app/points" className="mt-3 inline-block text-sm font-semibold text-[#eab308]">
+            <div className="border border-[#e7b900]/25 bg-[#071012] p-5">
+              <p className="cv-font-mono text-xs font-semibold uppercase text-[#f3d36b]">
+                {t("bot.ownerLabel")}
+              </p>
+              <p className="mt-2 text-sm leading-6 text-[#9dacad]">
+                {t("bot.ownerBody")}
+              </p>
+              <Link
+                href="/app/points"
+                className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-[#f3d36b]"
+              >
                 {t("nav.points")}
               </Link>
             </div>
           </aside>
         </section>
       </div>
-      <MobileNav active="home" />
+      <WebsiteFooter />
     </main>
   );
 }

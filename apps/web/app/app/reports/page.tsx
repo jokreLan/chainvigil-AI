@@ -3,26 +3,26 @@
 import Link from "next/link";
 import { listMockTokenReportIndex } from "@chainvigil/risk-core";
 import { useLocale } from "../../i18n/locale-context";
-import { MobileNav } from "../../ui/mobile-nav";
+import { WorkspaceHeader } from "../../ui/workspace-header";
+import { WorkspaceMobileNav } from "../../ui/workspace-mobile-nav";
 import { RiskBadge } from "../../ui/risk-badge";
-import { SiteHeader } from "../../ui/site-header";
 
 export default function AppReportsPage() {
   const { locale, t } = useLocale();
   const reports = listMockTokenReportIndex("http://localhost:3000", locale);
 
   return (
-    <main className="min-h-screen bg-[#0a0b0f] pb-24 text-[#e4e1ed] md:pb-10">
-      <SiteHeader active="intel" />
+    <main className="cv-workspace-page min-h-screen pb-24 text-[#e4e1ed] md:pb-10">
+      <WorkspaceHeader desktopActive="reports" />
       <div className="mx-auto max-w-6xl px-5 py-9 md:px-8">
         <section>
-          <p className="text-sm font-semibold text-[#c0c1ff]">Read-only index</p>
+          <p className="cv-font-mono text-xs font-semibold uppercase tracking-[0.1em] text-[#00e5ff]">Sample report index · Read-only</p>
           <h1 className="mt-3 text-3xl font-semibold text-[#f9fafb] md:text-5xl">{t("reports.title")}</h1>
           <p className="mt-4 max-w-2xl leading-7 text-[#9ca3af]">{t("reports.subtitle")}</p>
         </section>
         <section className="mt-8 grid gap-4 md:grid-cols-3">
           {[
-            [t("reports.statSamples"), reports.length],
+            [t("reports.statSamples"), "MOCK SET"],
             [t("reports.statChains"), "SOL / BNB"],
             [t("reports.statStatus"), "V0 mock"],
           ].map(([label, value]) => (
@@ -59,7 +59,7 @@ export default function AppReportsPage() {
               <div className="mt-4 flex flex-wrap justify-between gap-3 border-t border-[#262932] pt-4 text-sm">
                 <span className="text-[#9ca3af]">
                   {t("common.source")}
-                  {report.source} · {t("common.score")} {report.score ?? "--"}
+                  {report.source} · {locale === "zh" ? "样例证据" : "Sample evidence"}
                 </span>
                 <span className="font-semibold text-[#c0c1ff]">{t("common.viewReport")}</span>
               </div>
@@ -67,7 +67,7 @@ export default function AppReportsPage() {
           ))}
         </section>
       </div>
-      <MobileNav active="database" />
+      <WorkspaceMobileNav active="reports" />
     </main>
   );
 }

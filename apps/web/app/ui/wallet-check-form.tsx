@@ -7,7 +7,7 @@ import { useLocale } from "../i18n/locale-context";
 import { readApiErrorMessage } from "../lib/api-error";
 import { WalletScanProgressOverlay, useWalletScanStepProgress } from "./wallet-scan-progress";
 
-export function WalletCheckForm() {
+export function WalletCheckForm({ variant = "default" }: { variant?: "default" | "dapp" }) {
   const { locale, t } = useLocale();
   const router = useRouter();
   const [address, setAddress] = useState("");
@@ -18,6 +18,7 @@ export function WalletCheckForm() {
   const inputRef = useRef<HTMLInputElement>(null);
   const errorId = "wallet-address-error";
   const scanStep = useWalletScanStepProgress(isChecking && !scanFailed);
+  const isDapp = variant === "dapp";
 
   async function runCheck() {
     const normalizedAddress = address.trim();
@@ -93,7 +94,7 @@ export function WalletCheckForm() {
         />
       )}
       <form onSubmit={onSubmit} className="space-y-3">
-        <div className="flex gap-2">
+        <div className={isDapp ? "space-y-3" : "flex gap-2"}>
           <input
             ref={inputRef}
             aria-label={t("wallet.placeholder")}
@@ -103,12 +104,20 @@ export function WalletCheckForm() {
             value={address}
             onChange={(event) => setAddress(event.target.value)}
             placeholder={t("wallet.placeholder")}
-            className="min-h-14 min-w-0 flex-1 rounded-xl border border-[#464554] bg-[#0d0d15] px-4 font-mono text-sm text-[#f9fafb] outline-none transition placeholder:text-[#6b7280] focus:border-[#8083ff] focus:ring-2 focus:ring-[#8083ff]/20"
+            className={`min-h-14 min-w-0 flex-1 border px-4 cv-font-mono text-sm outline-none transition ${
+              isDapp
+                ? "w-full rounded-lg border-[#3b494c]/70 bg-[#242b2d] text-[#dce4e5] placeholder:text-[#849396] focus:border-[#00e5ff] focus:ring-2 focus:ring-[#00e5ff]/15"
+                : "rounded-xl border-[#464554] bg-[#0d0d15] text-[#f9fafb] placeholder:text-[#6b7280] focus:border-[#8083ff] focus:ring-2 focus:ring-[#8083ff]/20"
+            }`}
           />
           <button
             type="submit"
             disabled={isChecking && !scanFailed}
-            className="min-h-14 shrink-0 rounded-xl bg-gradient-to-r from-[#8083ff] to-[#8500d4] px-5 font-semibold text-[#0d0096] transition hover:from-[#c0c1ff] hover:to-[#a855f7] disabled:cursor-not-allowed disabled:opacity-60"
+            className={`min-h-14 shrink-0 px-5 font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
+              isDapp
+                ? "w-full rounded-lg bg-[#c3f5ff] cv-font-display text-[#00363d] hover:bg-[#9cf0ff]"
+                : "rounded-xl bg-gradient-to-r from-[#8083ff] to-[#8500d4] text-[#0d0096] hover:from-[#c0c1ff] hover:to-[#a855f7]"
+            }`}
           >
             {isChecking && !scanFailed ? t("wallet.checking") : t("wallet.start")}
           </button>

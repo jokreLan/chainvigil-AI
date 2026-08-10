@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getSystemReadiness } from "@chainvigil/config";
 import { listRegisteredLiveProviderClients } from "@chainvigil/data-adapters";
 
+export const metadata = { title: "总览｜ChainVigil Admin" };
+
 const modules = [
   {
     title: "系统就绪 / 上线清单",
@@ -9,9 +11,17 @@ const modules = [
     note: "代码侧 done + 周末外部依赖清单",
     priority: true,
   },
-  { title: "数据源状态", href: "/data-sources", note: "Provider readiness，不含密钥" },
+  {
+    title: "数据源状态",
+    href: "/data-sources",
+    note: "Provider readiness，不含密钥",
+  },
   { title: "Token 报告索引", href: "/reports", note: "只读 mock 报告目录" },
-  { title: "高危 CA 审核", href: "/risk-review", note: "人工复核队列 skeleton" },
+  {
+    title: "高危 CA 审核",
+    href: "/risk-review",
+    note: "人工复核队列 skeleton",
+  },
   { title: "风险标签", href: "/risk-labels", note: "标签目录，写入待权限" },
   { title: "后台审计日志", href: "/audit", note: "脱敏 metadata 只读" },
   { title: "哨点 VP", href: "/points", note: "第二曲线账本审核入口" },
@@ -24,27 +34,30 @@ export default function AdminHomePage() {
   const liveClients = listRegisteredLiveProviderClients().length;
 
   return (
-    <main className="min-h-screen px-5 py-8 md:px-8 md:py-10">
-      <p className="text-sm font-semibold text-[#c0c1ff]">CONTROL ROOM</p>
-      <h1 className="mt-2 text-3xl font-semibold text-white">ChainVigil AI Admin</h1>
-      <p className="mt-3 max-w-2xl text-[#c7c4d7]">
+    <main className="admin-page min-h-screen">
+      <p className="admin-kicker">CONTROL ROOM · READ-ONLY</p>
+      <h1 className="admin-title">ChainVigil Admin</h1>
+      <p className="admin-lead">
         控制台聚焦上线与运营只读视图。人工修正必须记录操作人、对象和理由；生产写操作仍关闭。
       </p>
 
       <section className="mt-8 grid gap-3 sm:grid-cols-3">
-        <div className="rounded-lg border border-[#262932] bg-[#16181d] p-4">
+        <div className="admin-panel p-4">
           <p className="text-xs text-[#8f8b9e]">当前运行模式</p>
-          <p className="mt-2 text-xl font-semibold text-white">{readiness.current.mode}</p>
+          <p className="mt-2 text-xl font-semibold text-white">
+            {readiness.current.mode}
+          </p>
         </div>
-        <div className="rounded-lg border border-[#262932] bg-[#16181d] p-4">
+        <div className="admin-panel p-4">
           <p className="text-xs text-[#8f8b9e]">生产安全预检</p>
           <p className="mt-2 text-xl font-semibold text-white">
             {readiness.productionSecurity.ok ? "ready" : "needs review"}
           </p>
         </div>
-        <div className="rounded-lg border border-[#262932] bg-[#16181d] p-4">
-          <p className="text-xs text-[#8f8b9e]">Live clients</p>
+        <div className="admin-panel p-4">
+          <p className="text-xs text-[#8f8b9e]">已注册 Live client 实现</p>
           <p className="mt-2 text-xl font-semibold text-white">{liveClients}</p>
+          <p className="mt-1 text-xs text-[#8f8b9e]">非在线数量或可用率</p>
         </div>
       </section>
 
@@ -52,15 +65,15 @@ export default function AdminHomePage() {
         {modules.map((module) => (
           <section
             key={module.title}
-            className={`rounded-lg border bg-[#16181d] p-5 ${
-              module.priority ? "border-[#8083ff]/45" : "border-[#262932]"
+            className={`admin-panel border p-5 ${
+              module.priority ? "border-[#00d9f2]/45" : "border-[#334649]/70"
             }`}
           >
             <h2 className="font-semibold text-white">{module.title}</h2>
             <p className="mt-2 text-sm text-[#8f8b9e]">{module.note}</p>
             <Link
               href={module.href}
-              className="mt-4 inline-block text-sm font-semibold text-[#c0c1ff] hover:text-white"
+              className="admin-action mt-4 font-mono text-xs font-semibold uppercase text-[#c3f5ff] hover:text-white"
             >
               打开
             </Link>

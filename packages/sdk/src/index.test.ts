@@ -283,8 +283,8 @@ describe("ChainVigilClient", () => {
     const client = new ChainVigilClient({
       fetcher: mockFetch({
         service: "chainvigil-api",
-        brand: "ChainVigil AI",
-        chineseName: "链哨 AI",
+        brand: "ChainVigil",
+        chineseName: "ChainVigil",
         slogan: "买币前，先查 CA。",
         version: "v0",
         mode: "mock",

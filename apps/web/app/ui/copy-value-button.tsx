@@ -51,7 +51,7 @@ export function CopyValueButton({ value, label, className = "" }: CopyValueButto
     <button
       type="button"
       onClick={onCopy}
-      className={`rounded border border-[#464554] px-2 py-1 text-xs font-semibold text-[#c7c4d7] transition hover:border-[#8083ff] hover:text-white ${className}`}
+      className={`min-h-11 rounded border border-[#464554] px-2 py-1 text-xs font-semibold text-[#c7c4d7] transition hover:border-[#8083ff] hover:text-white ${className}`}
     >
       {text}
     </button>

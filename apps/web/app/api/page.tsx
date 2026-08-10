@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useLocale } from "../i18n/locale-context";
-import { SiteHeader } from "../ui/site-header";
+import { DeveloperSubnav } from "../ui/developer-subnav";
+import { WebsiteFooter } from "../ui/website-footer";
+import { WebsiteHeader } from "../ui/website-header";
 
 const endpoints = [
   {
@@ -178,57 +180,75 @@ const endpoints = [
 export default function ApiPage() {
   const { locale, t } = useLocale();
   const isZh = locale === "zh";
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim().replace(
+    /\/$/,
+    "",
+  );
 
   return (
-    <main className="min-h-screen bg-[#0a0b0f] pb-16 text-[#e4e1ed]">
-      <SiteHeader active="other" />
+    <main className="cv-website-page min-h-screen text-[#dce4e5]">
+      <WebsiteHeader active="developers" />
+      <DeveloperSubnav active="api" />
 
-      <div className="mx-auto max-w-5xl px-5 py-12 md:px-8">
+      <div className="mx-auto max-w-[1180px] px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
         <section>
-          <p className="text-sm font-semibold text-[#c0c1ff]">Developer API</p>
-          <h1 className="mt-3 text-3xl font-semibold text-[#f9fafb] md:text-5xl">
+          <p className="cv-font-mono text-xs font-semibold uppercase tracking-[0.14em] text-[#00d9f2]">
+            Developer API · Contract reference · Not a public SLA
+          </p>
+          <h1 className="mt-3 cv-font-display text-4xl font-semibold tracking-[-0.04em] text-[#dce4e5] sm:text-5xl lg:text-6xl">
             {isZh ? "API 文档入口" : t("apiDocs.title")}
           </h1>
-          <p className="mt-4 max-w-3xl text-lg leading-8 text-[#9ca3af]">
+          <p className="mt-5 max-w-3xl text-base leading-8 text-[#9dacad] sm:text-lg">
             {isZh
               ? "V0 API 先服务 Web、Bot 和 Admin 内部调用。公开商业 API 会在风险准确率、限流、审计和计费模型稳定后开放。"
               : "V0 APIs serve Web, Bot, and Admin first. Public commercial APIs open after accuracy, rate limits, audit, and billing stabilize."}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <a
-              href="http://localhost:4000/openapi.json"
-              className="inline-block rounded-lg border border-[#464554] bg-[#16181d] px-4 py-3 text-sm font-semibold text-[#f9fafb]"
-            >
-              {isZh ? "打开 OpenAPI JSON" : "Open OpenAPI JSON"}
-            </a>
+            {apiBaseUrl ? (
+              <a
+                href={`${apiBaseUrl}/openapi.json`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 items-center bg-[#00d9f2] px-4 cv-font-mono text-xs font-semibold uppercase text-[#002b31]"
+              >
+                {isZh ? "打开 OpenAPI JSON" : "Open OpenAPI JSON"}
+              </a>
+            ) : (
+              <span className="inline-flex min-h-11 items-center border border-[#e7b900]/35 bg-[#e7b900]/6 px-4 cv-font-mono text-[11px] uppercase text-[#f3d36b]">
+                {isZh ? "OpenAPI 地址未配置" : "OpenAPI origin not configured"}
+              </span>
+            )}
             <Link
               href="/risk-database"
-              className="inline-block rounded-lg border border-[#464554] px-4 py-3 text-sm font-semibold text-[#c0c1ff]"
+              className="inline-flex min-h-11 items-center border border-[#3b494c] px-4 cv-font-mono text-xs font-semibold uppercase text-[#c3f5ff]"
             >
               {t("riskDb.title")}
             </Link>
           </div>
         </section>
 
-        <section className="mt-10 space-y-4">
+        <section className="mt-10 grid gap-4 lg:grid-cols-2">
           {endpoints.map((endpoint) => (
             <article
               key={`${endpoint.method}-${endpoint.path}`}
-              className="rounded-xl border border-[#262932] bg-[#16181d] p-5"
+              className="cv-website-panel border border-[#3b494c]/70 bg-[#0d1516]/88 p-5"
             >
               <div className="flex flex-wrap items-center gap-3">
-                <span className="rounded bg-[#c0c1ff] px-3 py-1 text-xs font-semibold text-[#1000a9]">
+                <span className="bg-[#00d9f2] px-3 py-1 cv-font-mono text-xs font-semibold text-[#002b31]">
                   {endpoint.method}
                 </span>
-                <code className="break-all text-[#f9fafb]">{endpoint.path}</code>
+                <code className="break-all cv-font-mono text-sm text-[#dce4e5]">
+                  {endpoint.path}
+                </code>
               </div>
-              <p className="mt-3 leading-7 text-[#9ca3af]">
+              <p className="mt-3 leading-7 text-[#9dacad]">
                 {isZh ? endpoint.zh : endpoint.en}
               </p>
             </article>
           ))}
         </section>
       </div>
+      <WebsiteFooter />
     </main>
   );
 }

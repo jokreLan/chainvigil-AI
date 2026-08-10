@@ -270,8 +270,8 @@ export function applyLiveRiskData(
     confidenceScore: bundle.coverage.confidenceScore,
     shareText:
       locale === "en"
-        ? `ChainVigil AI live result: ${label}｜${summary} ${report.reportUrl}`
-        : `ChainVigil AI 真实检测：${label}｜${summary} ${report.reportUrl}`,
+        ? `ChainVigil live result: ${label}｜${summary} ${report.reportUrl}`
+        : `ChainVigil 真实检测：${label}｜${summary} ${report.reportUrl}`,
   };
 }
 

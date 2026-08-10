@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import type { GrowthChannel } from "@chainvigil/types";
 import { useT } from "../../i18n/locale-context";
-import { MobileNav } from "../../ui/mobile-nav";
-import { SiteHeader } from "../../ui/site-header";
+import { WorkspaceHeader } from "../../ui/workspace-header";
+import { WorkspaceMobileNav } from "../../ui/workspace-mobile-nav";
 import { useToast } from "../../ui/toast";
 
 export function GrowthClient({
@@ -39,8 +39,8 @@ export function GrowthClient({
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0b0f] pb-28 text-[#e4e1ed]">
-      <SiteHeader active="points" />
+    <main className="cv-workspace-page min-h-screen pb-28 text-[#e4e1ed]">
+      <WorkspaceHeader desktopActive="points" />
 
       <div className="mx-auto max-w-lg px-4 py-8 md:max-w-xl">
         <section>
@@ -59,7 +59,7 @@ export function GrowthClient({
             <button
               type="button"
               onClick={() => void copyLink()}
-              className="flex shrink-0 items-center rounded-xl bg-[#8083ff] px-4 text-xs font-bold text-[#0d0096]"
+              className="flex min-h-11 shrink-0 items-center rounded-xl bg-[#8083ff] px-4 text-xs font-bold text-[#0d0096]"
             >
               {copied ? t("common.copied") : t("growth.copyLink")}
             </button>
@@ -139,7 +139,7 @@ export function GrowthClient({
           )}
         </section>
       </div>
-      <MobileNav active="points" />
+      <WorkspaceMobileNav active="points" />
     </main>
   );
 }

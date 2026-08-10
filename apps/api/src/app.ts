@@ -309,8 +309,8 @@ function buildServiceMeta(): ServiceMeta {
   const mode = readEnv("CHAINVIGIL_RUNTIME_MODE", "mock") === "production" ? "production" : "mock";
   const meta: ServiceMeta = {
     service: "chainvigil-api",
-    brand: "ChainVigil AI",
-    chineseName: "链哨 AI",
+    brand: "ChainVigil",
+    chineseName: "ChainVigil",
     slogan: "买币前，先查 CA。",
     version: "v0",
     mode,

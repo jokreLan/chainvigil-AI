@@ -1023,8 +1023,8 @@ export function buildMockTokenRiskReport({
     reportUrl,
     shareText:
       lang === "en"
-        ? `ChainVigil AI result: ${label}｜${summary} ${reportUrl}`
-        : `ChainVigil AI 检测结果：${label}｜${summary} ${reportUrl}`,
+        ? `ChainVigil result: ${label}｜${summary} ${reportUrl}`
+        : `ChainVigil 检测结果：${label}｜${summary} ${reportUrl}`,
     mode: "mock",
     confidence: "UNASSESSED",
     confidenceScore: 0,

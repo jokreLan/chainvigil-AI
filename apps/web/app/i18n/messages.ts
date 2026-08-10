@@ -3,7 +3,7 @@ import type { Locale } from "./config";
 export type MessageKey = keyof typeof zh;
 
 const zh = {
-  "brand.name": "ChainVigil AI",
+  "brand.name": "ChainVigil",
   "brand.slogan": "买币前，先查 CA。",
   "brand.tagline": "中文买前安检 · 优先 SOL / BNB",
 
@@ -18,6 +18,16 @@ const zh = {
   "nav.database": "情报",
   "nav.pointsShort": "哨点",
   "nav.mainAria": "主导航",
+  "nav.scan": "安检",
+  "nav.reports": "报告",
+  "nav.monitor": "监控",
+  "nav.profile": "我的",
+
+  "provider.title": "Provider 覆盖状态",
+  "provider.available": "可用",
+  "provider.sample": "样例证据",
+  "provider.unconfigured": "未配置",
+  "provider.notApplicable": "不适用",
 
   "home.title1": "买币前，",
   "home.title2": "先查 CA。",
@@ -129,6 +139,10 @@ const zh = {
   "share.toastDenied": "浏览器未允许剪贴板，请手动复制",
   "share.vpHint": "分享可攒推广哨点。查看",
   "share.or": "或",
+  "share.native": "系统分享",
+  "share.cancelled": "已取消分享，未发布任何内容",
+  "share.unavailable": "当前浏览器不支持系统分享，请复制链接",
+  "share.privacyPreview": "隐私预览（完整地址默认隐藏）",
 
   "wallet.title": "钱包体检",
   "wallet.subtitle": "输入钱包地址，先做一次只读体检。覆盖高危授权、可疑资产与持仓风险。无需连接钱包。",
@@ -330,14 +344,22 @@ const zh = {
 
   "walletReport.title": "钱包体检报告",
   "walletReport.score": "钱包健康分",
-  "walletReport.generated": "生成时间：",
+  "walletReport.generated": "验证时间：",
   "walletReport.noSign": "请勿据此自动签名或撤销",
+  "walletReport.readOnlyStatus": "BNB Smart Chain · 只读地址分析",
+  "walletReport.sampleBody":
+    "当前页面展示 Mock/Readiness 结构，不代表实时钱包余额、授权数量或链上结论。",
   "walletReport.metricHigh": "示例高危授权",
   "walletReport.metricInfinite": "示例无限授权",
   "walletReport.metricSuspicious": "示例可疑 Token",
   "walletReport.metricSpam": "示例 Spam NFT",
   "walletReport.metricDust": "示例粉尘估值",
   "walletReport.approvals": "授权风险",
+  "walletReport.needsReview": "需要复核 · 样例信号",
+  "walletReport.groupSuspicious": "可疑 Token · SAMPLE",
+  "walletReport.groupApproval": "授权暴露 · UNKNOWN",
+  "walletReport.groupUnknown": "未知资产 · UNASSESSED",
+  "walletReport.groupCoverage": "数据覆盖 · DEGRADED",
 
   "fakeDb.title": "假 USDT / USDC / Meme 仿盘对照",
   "fakeDb.subtitle":
@@ -357,7 +379,7 @@ const zh = {
   "fakeDb.riskSignals": "风险信号",
   "fakeDb.howTitle": "如何核对合约地址",
   "fakeDb.how1": "从项目官网、官方社媒或可信行情页取得 CA。",
-  "fakeDb.how2": "粘贴到链哨 AI 安检入口，查看 V0 示例风险字段，并另行从官方与浏览器复核。",
+  "fakeDb.how2": "粘贴到 ChainVigil 安检入口，查看 V0 示例风险字段，并另行从官方与浏览器复核。",
   "fakeDb.how3": "不要因名称、头像或群聊截图相同就相信它是官方资产。",
   "fakeDb.threatDb": "威胁数据库",
 
@@ -474,15 +496,21 @@ const zh = {
     "低价值不代表低风险。未知资产可能携带钓鱼链接或恶意合约，任何处理都应由用户在确认成本、风险和交易内容后自行决定。",
 
   "approvals.title": "授权扫描",
-  "approvals.subtitle": "展示 spender、授权范围与风险理由。撤销为二次确认演示，V0 不广播交易。",
-  "approvals.health": "健康得分",
+  "approvals.subtitle": "展示 BNB Smart Chain 公开地址的 spender、授权范围与风险理由。V0 只读，不连接钱包、不签名。",
+  "approvals.readOnlyStatus": "BNB Smart Chain · READ-ONLY · SAMPLE",
+  "approvals.health": "样例风险摘要",
   "approvals.high": "高危授权",
   "approvals.infinite": "无限授权",
   "approvals.suspicious": "可疑资产",
   "approvals.reasons": "风险理由",
-  "approvals.revokeDemo": "撤销授权（演示确认）",
-  "approvals.footer": "演示数据使用 mock 地址。真实撤销必须由用户在钱包中自行签名确认。",
+  "approvals.revokeDemo": "查看安全处理说明",
+  "approvals.copySpender": "复制 spender",
+  "approvals.footer":
+    "演示数据使用 Mock 地址。ChainVigil 不代用户撤销授权；如需处理，请先核对目标域名、spender、额度、网络费和钱包交易内容。",
   "approvals.viewHealth": "查看只读体检",
+  "approvals.noVerified": "没有更多已验证授权；空结果不代表绝对安全。",
+  "approvals.safetySummary": "安全简报 · 隐私预览",
+  "approvals.privacyHidden": "完整钱包地址、余额和资产明细默认隐藏。",
 
   "cleaner.waitingTitle": "等待钱包地址只读检查",
   "cleaner.waitingBody": "V0 不连接钱包、不读取签名，也不会自动执行撤销。",
@@ -556,7 +584,7 @@ const zh = {
 } as const;
 
 const en: Record<MessageKey, string> = {
-  "brand.name": "ChainVigil AI",
+  "brand.name": "ChainVigil",
   "brand.slogan": "Before you buy, check the CA.",
   "brand.tagline": "Buy-before-scan · SOL / BNB first",
 
@@ -571,6 +599,16 @@ const en: Record<MessageKey, string> = {
   "nav.database": "Intel",
   "nav.pointsShort": "Points",
   "nav.mainAria": "Main navigation",
+  "nav.scan": "Scan",
+  "nav.reports": "Reports",
+  "nav.monitor": "Monitor",
+  "nav.profile": "Profile",
+
+  "provider.title": "Provider coverage",
+  "provider.available": "Available",
+  "provider.sample": "Sample evidence",
+  "provider.unconfigured": "Unconfigured",
+  "provider.notApplicable": "Not applicable",
 
   "home.title1": "Before you buy,",
   "home.title2": "check the CA.",
@@ -682,6 +720,10 @@ const en: Record<MessageKey, string> = {
   "share.toastDenied": "Clipboard blocked. Copy manually.",
   "share.vpHint": "Sharing can earn referral VP. See",
   "share.or": "or",
+  "share.native": "Share",
+  "share.cancelled": "Sharing cancelled. Nothing was published.",
+  "share.unavailable": "System sharing is unavailable. Copy the link instead.",
+  "share.privacyPreview": "Privacy preview (full address hidden by default)",
 
   "wallet.title": "Wallet health",
   "wallet.subtitle":
@@ -888,14 +930,22 @@ const en: Record<MessageKey, string> = {
 
   "walletReport.title": "Wallet health report",
   "walletReport.score": "Wallet health score",
-  "walletReport.generated": "Generated:",
+  "walletReport.generated": "Verified:",
   "walletReport.noSign": "Do not auto-sign or revoke based on this alone",
+  "walletReport.readOnlyStatus": "BNB Smart Chain · Read-only address analysis",
+  "walletReport.sampleBody":
+    "This page demonstrates the Mock/Readiness structure. It is not a real-time wallet balance, approval count, or on-chain conclusion.",
   "walletReport.metricHigh": "Sample high-risk approvals",
   "walletReport.metricInfinite": "Sample infinite approvals",
   "walletReport.metricSuspicious": "Sample suspicious tokens",
   "walletReport.metricSpam": "Sample spam NFTs",
   "walletReport.metricDust": "Sample dust value",
   "walletReport.approvals": "Approval risks",
+  "walletReport.needsReview": "Needs review · sample signals",
+  "walletReport.groupSuspicious": "Suspicious tokens · SAMPLE",
+  "walletReport.groupApproval": "Approval exposure · UNKNOWN",
+  "walletReport.groupUnknown": "Unknown assets · UNASSESSED",
+  "walletReport.groupCoverage": "Data coverage · DEGRADED",
 
   "fakeDb.title": "Fake USDT / USDC & meme impostor contracts",
   "fakeDb.subtitle":
@@ -1034,16 +1084,21 @@ const en: Record<MessageKey, string> = {
 
   "approvals.title": "Approval scan",
   "approvals.subtitle":
-    "Show spenders, allowances, and risk reasons. Revoke is a second-confirm demo — V0 never broadcasts.",
-  "approvals.health": "Health score",
+    "Show spenders, allowances, and risk reasons for a public BNB Smart Chain address. V0 is read-only and never connects or signs.",
+  "approvals.readOnlyStatus": "BNB Smart Chain · READ-ONLY · SAMPLE",
+  "approvals.health": "Sample risk summary",
   "approvals.high": "High-risk approvals",
   "approvals.infinite": "Infinite approvals",
   "approvals.suspicious": "Suspicious assets",
   "approvals.reasons": "Risk reasons",
-  "approvals.revokeDemo": "Revoke (demo confirm)",
+  "approvals.revokeDemo": "View safe handling guidance",
+  "approvals.copySpender": "Copy spender",
   "approvals.footer":
-    "Demo uses mock addresses. Real revokes must be signed by the user in their wallet.",
+    "This demo uses a mock address. ChainVigil never revokes on your behalf; verify the destination domain, spender, allowance, network fee, and wallet transaction before taking action.",
   "approvals.viewHealth": "View read-only health",
+  "approvals.noVerified": "No additional approvals verified; an empty result is not a safety guarantee.",
+  "approvals.safetySummary": "Safety summary · privacy preview",
+  "approvals.privacyHidden": "Full wallet address, balances, and asset details are hidden by default.",
 
   "cleaner.waitingTitle": "Waiting for a read-only wallet check",
   "cleaner.waitingBody": "V0 does not connect wallets, read signatures, or auto-revoke.",

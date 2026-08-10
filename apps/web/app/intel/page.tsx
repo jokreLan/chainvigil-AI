@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useLocale } from "../i18n/locale-context";
-import { MobileNav } from "../ui/mobile-nav";
-import { SiteHeader } from "../ui/site-header";
+import { IntelligenceSubnav } from "../ui/intelligence-subnav";
+import { WebsiteFooter } from "../ui/website-footer";
+import { WebsiteHeader } from "../ui/website-header";
 
 export default function IntelHubPage() {
   const { locale, t } = useLocale();
@@ -49,47 +50,60 @@ export default function IntelHubPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#0a0b0f] pb-28">
-      <SiteHeader active="intel" />
-      <div className="mx-auto max-w-lg px-4 py-8 md:max-w-2xl">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[#c0c1ff]">Intelligence hub</p>
-        <h1 className="mt-2 text-3xl font-bold text-[#f9fafb]">{t("intel.title")}</h1>
-        <p className="mt-3 text-sm leading-6 text-[#9ca3af]">{t("intel.subtitle")}</p>
+    <main className="cv-website-page min-h-screen text-[#dce4e5]">
+      <WebsiteHeader active="intel" />
+      <IntelligenceSubnav active="hub" />
+      <div className="mx-auto max-w-[1180px] px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
+        <p className="cv-font-mono text-xs font-semibold uppercase tracking-[0.14em] text-[#00d9f2]">
+          Intelligence hub · Read-only
+        </p>
+        <h1 className="mt-3 max-w-4xl cv-font-display text-4xl font-semibold tracking-[-0.04em] text-[#dce4e5] sm:text-5xl lg:text-6xl">
+          {t("intel.title")}
+        </h1>
+        <p className="mt-5 max-w-3xl text-base leading-7 text-[#9dacad] sm:text-lg">
+          {t("intel.subtitle")}
+        </p>
 
         <Link
           href="/check"
-          className="mt-6 flex min-h-12 items-center justify-center rounded-xl bg-[#8083ff] text-sm font-semibold text-[#0d0096]"
+          className="mt-7 inline-flex min-h-12 items-center justify-center bg-[#00d9f2] px-6 cv-font-mono text-xs font-semibold uppercase tracking-[0.08em] text-[#002b31] transition hover:bg-[#9cf0ff]"
         >
           {t("intel.goCheck")}
         </Link>
 
-        <section className="mt-8 space-y-3">
+        <section className="mt-10 grid gap-4 md:grid-cols-2">
           {hubs.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`block rounded-2xl border bg-[#16181d] p-5 transition hover:border-[#464554] ${item.tone}`}
+              className={`cv-website-panel group block border bg-[#0d1516]/88 p-6 transition hover:-translate-y-0.5 hover:border-[#00d9f2]/55 ${item.tone}`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h2 className="text-lg font-semibold text-[#f9fafb]">{item.title}</h2>
-                  <p className="mt-2 text-sm leading-6 text-[#c7c4d7]">{item.desc}</p>
+                  <h2 className="cv-font-display text-xl font-semibold text-[#dce4e5]">
+                    {item.title}
+                  </h2>
+                  <p className="mt-2 text-sm leading-6 text-[#9dacad]">
+                    {item.desc}
+                  </p>
                 </div>
-                <span className="shrink-0 rounded-full bg-[#292932] px-2 py-1 text-[10px] text-[#9ca3af]">
+                <span className="shrink-0 border border-[#3b494c] bg-[#071012] px-2 py-1 cv-font-mono text-[10px] uppercase text-[#849396]">
                   {item.badge}
                 </span>
               </div>
-              <p className="mt-3 text-xs font-semibold text-[#c0c1ff]">{t("intel.open")}</p>
+              <p className="mt-5 cv-font-mono text-xs font-semibold uppercase tracking-[0.08em] text-[#00d9f2]">
+                {t("intel.open")} →
+              </p>
             </Link>
           ))}
         </section>
 
-        <section className="mt-8 rounded-2xl border border-[#262932] bg-[#1b1b23] p-4 text-sm leading-6 text-[#9ca3af]">
-          <strong className="text-[#fde68a]">{t("intel.emptyHint")}</strong>
+        <section className="mt-8 border border-[#e7b900]/30 bg-[#e7b900]/6 p-5 text-sm leading-6 text-[#9dacad]">
+          <strong className="text-[#f3d36b]">{t("intel.emptyHint")}</strong>
           {t("intel.emptyBody")}
         </section>
       </div>
-      <MobileNav active="database" />
+      <WebsiteFooter />
     </main>
   );
 }

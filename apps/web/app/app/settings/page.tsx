@@ -2,8 +2,8 @@
 
 import { listMockUserPreferenceSettings } from "@chainvigil/risk-core";
 import { useLocale } from "../../i18n/locale-context";
-import { MobileNav } from "../../ui/mobile-nav";
-import { SiteHeader } from "../../ui/site-header";
+import { WorkspaceHeader } from "../../ui/workspace-header";
+import { WorkspaceMobileNav } from "../../ui/workspace-mobile-nav";
 import { LanguageSwitcher } from "../../ui/language-switcher";
 
 export default function SettingsPage() {
@@ -17,8 +17,8 @@ export default function SettingsPage() {
   } as const;
 
   return (
-    <main className="min-h-screen bg-[#0a0b0f] pb-24 text-[#e4e1ed] md:pb-10">
-      <SiteHeader active="other" />
+    <main className="cv-workspace-page min-h-screen pb-24 text-[#e4e1ed] md:pb-10">
+      <WorkspaceHeader />
       <div className="mx-auto max-w-4xl px-5 py-9 md:px-8">
         <section>
           <p className="text-sm font-semibold text-[#c0c1ff]">Preference preview</p>
@@ -26,7 +26,7 @@ export default function SettingsPage() {
           <p className="mt-4 max-w-2xl leading-7 text-[#9ca3af]">{t("settings.subtitle")}</p>
           <div className="mt-5 flex items-center gap-3">
             <span className="text-sm text-[#9ca3af]">{t("settings.headerHint")}</span>
-            <LanguageSwitcher />
+            <LanguageSwitcher compact variant="dapp" />
           </div>
         </section>
         <section className="mt-8 space-y-4">
@@ -54,7 +54,7 @@ export default function SettingsPage() {
           {t("settings.footer")}
         </section>
       </div>
-      <MobileNav active="home" />
+      <WorkspaceMobileNav />
     </main>
   );
 }

@@ -51,7 +51,7 @@ export default async function OpenGraphImage({ params }: OpenGraphImageProps) {
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 32 }}>
-          <div style={{ display: "flex", fontSize: 32, fontWeight: 700 }}>ChainVigil AI</div>
+          <div style={{ display: "flex", fontSize: 32, fontWeight: 700 }}>ChainVigil</div>
           <div style={{ display: "flex", color: "#a7f3d0", fontSize: 24 }}>
             {report.mode === "live" ? "LIVE DATA" : "DEMO · MOCK / NOT LIVE"}
           </div>

@@ -21,22 +21,214 @@
   --cv-medium: #f59e0b;
   --cv-low: #10b981;
   --cv-unknown: #6b7280;
+  --cv-dapp-bg: #05070a;
+  --cv-dapp-surface: #0d1516;
+  --cv-dapp-surface-low: #151d1e;
+  --cv-dapp-surface-container: #192122;
+  --cv-dapp-surface-high: #242b2d;
+  --cv-dapp-surface-highest: #2e3638;
+  --cv-dapp-border: #3b494c;
+  --cv-dapp-outline: #849396;
+  --cv-dapp-primary: #c3f5ff;
+  --cv-dapp-cyan: #00e5ff;
+  --cv-dapp-lime: #9de32e;
+  --cv-dapp-text: #dce4e5;
+  --cv-dapp-muted: #bac9cc;
+  --cv-website-bg: #061012;
+  --cv-website-surface: #0d1719;
+  --cv-website-border: #35474a;
+  --cv-website-primary: #c3f5ff;
   background: var(--cv-bg);
   color: var(--cv-text);
   font-family:
-    Inter, "PingFang SC", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    var(--font-inter),
+    var(--font-noto-sans-sc),
+    Inter,
+    "PingFang SC",
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
     sans-serif;
+}
+
+.cv-font-display {
+  font-family: var(--font-space-grotesk), var(--font-noto-sans-sc), sans-serif;
+}
+
+.cv-font-mono {
+  font-family:
+    var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.cv-dapp-page {
+  color: var(--cv-dapp-text);
+  background:
+    radial-gradient(
+      circle at 50% 24%,
+      rgb(0 229 255 / 0.07),
+      transparent 30rem
+    ),
+    linear-gradient(rgb(0 229 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(0 229 255 / 0.035) 1px, transparent 1px),
+    var(--cv-dapp-bg);
+  background-size:
+    auto,
+    24px 24px,
+    24px 24px,
+    auto;
+}
+
+.cv-website-page {
+  color: var(--cv-dapp-text);
+  background:
+    radial-gradient(
+      circle at 78% 10%,
+      rgb(0 229 255 / 0.055),
+      transparent 28rem
+    ),
+    linear-gradient(rgb(0 229 255 / 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(0 229 255 / 0.025) 1px, transparent 1px),
+    var(--cv-website-bg);
+  background-size:
+    auto,
+    32px 32px,
+    32px 32px,
+    auto;
+}
+
+.cv-website-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid rgb(53 71 74 / 0.45);
+  background: rgb(6 12 14 / 0.93);
+  backdrop-filter: blur(18px);
+}
+
+.cv-website-panel {
+  border: 1px solid rgb(53 71 74 / 0.85);
+  background: rgb(13 23 25 / 0.88);
+}
+
+.cv-website-scanline {
+  position: relative;
+  overflow: hidden;
+}
+
+.cv-website-scanline::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(195 245 255 / 0.9),
+    transparent
+  );
+  box-shadow: 0 0 16px rgb(0 229 255 / 0.55);
+}
+
+.cv-workspace-page {
+  color: var(--cv-dapp-text);
+  background:
+    linear-gradient(rgb(0 229 255 / 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(0 229 255 / 0.025) 1px, transparent 1px), #071012;
+  background-size: 24px 24px;
+}
+
+.cv-dapp-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid rgb(59 73 76 / 0.34);
+  background: rgb(5 7 10 / 0.88);
+  backdrop-filter: blur(18px);
+}
+
+.cv-dapp-panel {
+  border: 1px solid rgb(59 73 76 / 0.5);
+  border-radius: 0.5rem;
+  background: rgb(25 33 34 / 0.86);
+  box-shadow: 0 22px 70px rgb(0 0 0 / 0.24);
+}
+
+.cv-vigil-core {
+  position: relative;
+  display: grid;
+  width: min(36rem, 76vw);
+  aspect-ratio: 1;
+  place-items: center;
+}
+
+.cv-vigil-core-compact {
+  width: 9rem;
+}
+
+.cv-vigil-orbit,
+.cv-vigil-halo {
+  position: absolute;
+  border-radius: 9999px;
+}
+
+.cv-vigil-orbit {
+  border: 1px solid rgb(0 229 255 / 0.13);
+}
+
+.cv-vigil-orbit-outer {
+  inset: 0;
+  animation: cv-scan-spin 60s linear infinite;
+}
+
+.cv-vigil-orbit-inner {
+  inset: 16%;
+  border-style: dashed;
+  animation: cv-scan-spin 40s linear infinite reverse;
+}
+
+.cv-vigil-halo {
+  inset: 29%;
+  background: rgb(0 229 255 / 0.15);
+  filter: blur(42px);
+}
+
+.cv-vigil-image-shell {
+  position: relative;
+  width: 44%;
+  aspect-ratio: 1;
+  border: 1px solid rgb(195 245 255 / 0.55);
+  border-radius: 9999px;
+  padding: 0.3rem;
+  background: #081316;
+  box-shadow: 0 0 42px rgb(0 229 255 / 0.3);
+}
+
+.cv-vigil-pulse {
+  position: absolute;
+  right: 5%;
+  top: 7%;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: var(--cv-dapp-lime);
+  box-shadow: 0 0 14px rgb(157 227 46 / 0.75);
+  animation: cv-pulse-ring 2.4s ease-out infinite;
+}
+
+@media (max-width: 767px) {
+  .cv-vigil-core:not(.cv-vigil-core-compact) {
+    width: 11rem;
+  }
 }
 
 body {
   margin: 0;
-  min-width: 320px;
+  overflow-x: hidden;
   background: var(--cv-bg);
   -webkit-font-smoothing: antialiased;
-}
-
-a {
-  color: inherit;
 }
 
 button,
@@ -44,9 +236,43 @@ input {
   font: inherit;
 }
 
-:where(a, button, input):focus-visible {
+:where(a, button, input, summary):focus-visible {
   outline: 2px solid var(--cv-primary);
   outline-offset: 3px;
+}
+
+.cv-skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  min-height: 2.75rem;
+  transform: translateY(-160%);
+  border: 1px solid var(--cv-dapp-cyan);
+  background: #071012;
+  padding: 0.7rem 1rem;
+  color: var(--cv-dapp-primary);
+  font-weight: 700;
+  transition: transform 140ms ease;
+}
+
+.cv-skip-link:focus {
+  transform: translateY(0);
+}
+
+#main-content:focus {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 ::selection {
@@ -70,7 +296,11 @@ input {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 0%, rgba(192, 193, 255, 0.12) 0%, transparent 70%);
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(192, 193, 255, 0.12) 0%,
+    transparent 70%
+  );
   pointer-events: none;
 }
 
@@ -127,4 +357,22 @@ input {
 
 .cv-bottom-nav-safe {
   padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+}
+
+.cv-report-actions-safe {
+  bottom: calc(4.75rem + env(safe-area-inset-bottom));
+}
+
+.cv-toast-safe {
+  bottom: calc(5.5rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 768px) {
+  .cv-report-actions-safe {
+    bottom: 0;
+  }
+
+  .cv-toast-safe {
+    bottom: 1.5rem;
+  }
 }

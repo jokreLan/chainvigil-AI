@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useT } from "../i18n/locale-context";
 import type { MessageKey } from "../i18n/messages";
+import { DappIcon } from "./dapp-icon";
 
 const STEP_IDS = ["parse", "trade", "perms", "lp", "holders", "report"] as const;
 
@@ -37,17 +38,17 @@ export function ScanProgressOverlay({
       role="status"
       aria-live="polite"
       aria-busy={!failed}
-      className="fixed inset-0 z-40 flex flex-col bg-[#0a0b0f]/96 px-5 pb-28 pt-6 backdrop-blur-sm md:pb-10"
+      className="cv-dapp-page fixed inset-0 z-50 flex flex-col px-5 pb-28 pt-6 md:pb-10"
     >
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col">
         <header className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2 font-semibold text-[#f9fafb]">
-            <span className="inline-flex size-7 items-center justify-center rounded-md bg-[#8083ff]/20 text-[#c0c1ff]">
-              ◎
+          <div className="flex min-h-11 items-center gap-2 cv-font-display font-semibold text-[#dce4e5]">
+            <span className="inline-flex size-8 items-center justify-center rounded-md bg-[#00e5ff] text-[#00363d]">
+              <DappIcon name="shield" className="size-5" />
             </span>
             {t("brand.name")}
           </div>
-          <span className="text-xs text-[#9ca3af]">
+          <span className="cv-font-mono text-[10px] uppercase text-[#bac9cc]">
             {failed ? t("scan.failBadge") : t("scan.readonly")}
           </span>
         </header>
@@ -55,57 +56,57 @@ export function ScanProgressOverlay({
         <div className="relative mx-auto mt-10 flex size-40 items-center justify-center">
           {!failed ? (
             <>
-              <span className="cv-scan-ring absolute inset-0 rounded-full border border-[#8083ff]/35" />
-              <span className="cv-scan-ring absolute inset-3 rounded-full border border-[#c0c1ff]/25 [animation-delay:0.6s]" />
+              <span className="cv-scan-ring absolute inset-0 rounded-full border border-[#00e5ff]/35" />
+              <span className="cv-scan-ring absolute inset-3 rounded-full border border-[#c3f5ff]/25 [animation-delay:0.6s]" />
             </>
           ) : (
             <span className="absolute inset-0 rounded-full border border-[#ef4444]/40" />
           )}
           <div
-            className={`relative flex size-28 items-center justify-center rounded-full border bg-[#16181d] ${
-              failed ? "border-[#ef4444]/50" : "border-[#464554]"
+            className={`relative flex size-28 items-center justify-center rounded-full border bg-[#151d1e] ${
+              failed ? "border-[#ffb4ab]/50" : "border-[#3b494c]"
             }`}
           >
             {!failed ? (
               <div className="absolute inset-0 overflow-hidden rounded-full">
-                <span className="cv-scan-line absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#c0c1ff] to-transparent" />
+                <span className="cv-scan-line absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#00e5ff] to-transparent" />
               </div>
             ) : null}
             <div className="relative text-center">
               <p
-                className={`font-mono text-2xl font-semibold tracking-tight ${
-                  failed ? "text-[#fca5a5]" : "text-[#c0c1ff]"
+                className={`cv-font-mono text-2xl font-semibold tracking-tight ${
+                  failed ? "text-[#ffb4ab]" : "text-[#c3f5ff]"
                 }`}
               >
                 {failed ? "!" : symbolHint.slice(0, 4)}
               </p>
-              <p className="mt-1 text-xs font-semibold text-[#9ca3af]">
+              <p className="mt-1 cv-font-mono text-[10px] font-semibold uppercase text-[#849396]">
                 {failed ? t("scan.failed") : t("scan.scanning")}
               </p>
             </div>
           </div>
         </div>
 
-        <section className="mt-10 rounded-2xl border border-[#262932] bg-[#16181d] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.35)]">
+        <section className="cv-dapp-panel mt-10 p-5">
           {failed ? (
             <>
-              <h2 className="text-center text-lg font-semibold text-[#fca5a5]">{t("scan.failedTitle")}</h2>
-              <p className="mt-2 text-center text-sm leading-6 text-[#c7c4d7]">
+              <h2 className="text-center cv-font-display text-lg font-semibold text-[#ffb4ab]">{t("scan.failedTitle")}</h2>
+              <p className="mt-2 text-center text-sm leading-6 text-[#bac9cc]">
                 {errorMessage || t("check.errApi")}
               </p>
-              <p className="mt-3 text-center text-xs text-[#9ca3af]">{t("scan.failedHint")}</p>
+              <p className="mt-3 text-center text-xs text-[#849396]">{t("scan.failedHint")}</p>
               <div className="mt-6 grid gap-2">
                 <button
                   type="button"
                   onClick={onRetry}
-                  className="min-h-11 rounded-xl bg-[#8083ff] text-sm font-semibold text-[#0d0096]"
+                  className="min-h-11 rounded-lg bg-[#c3f5ff] text-sm font-semibold text-[#00363d]"
                 >
                   {t("scan.retry")}
                 </button>
                 <button
                   type="button"
                   onClick={onDismiss}
-                  className="min-h-11 rounded-xl border border-[#464554] text-sm font-semibold text-[#f9fafb]"
+                  className="min-h-11 rounded-lg border border-[#3b494c] bg-[#242b2d] text-sm font-semibold text-[#dce4e5]"
                 >
                   {t("scan.edit")}
                 </button>
@@ -113,8 +114,8 @@ export function ScanProgressOverlay({
             </>
           ) : (
             <>
-              <h2 className="text-center text-lg font-semibold text-[#f9fafb]">{t("scan.title")}</h2>
-              <p className="mt-2 text-center text-sm text-[#9ca3af]">{t("scan.subtitle")}</p>
+              <h2 className="text-center cv-font-display text-lg font-semibold text-[#dce4e5]">{t("scan.title")}</h2>
+              <p className="mt-2 text-center text-sm text-[#849396]">{t("scan.subtitle")}</p>
               <ul className="mt-6 space-y-2">
                 {STEP_IDS.map((id, index) => {
                   const done = index < activeIndex;
@@ -122,10 +123,10 @@ export function ScanProgressOverlay({
                   return (
                     <li
                       key={id}
-                      className={`flex items-center justify-between rounded-xl px-3 py-3 text-sm ${
+                      className={`flex items-center justify-between rounded-lg px-3 py-3 text-sm ${
                         running
-                          ? "border border-[#8083ff]/40 bg-[#8083ff]/15 text-[#c0c1ff]"
-                          : "border border-transparent bg-[#0d0d15] text-[#c7c4d7]"
+                          ? "border border-[#00e5ff]/40 bg-[#00e5ff]/8 text-[#c3f5ff]"
+                          : "border border-transparent bg-[#0d1516] text-[#bac9cc]"
                       }`}
                     >
                       <span className="flex items-center gap-2 font-medium">
@@ -135,10 +136,10 @@ export function ScanProgressOverlay({
                       <span
                         className={
                           done
-                            ? "text-xs font-semibold text-[#6ee7b7]"
+                            ? "text-xs font-semibold text-[#9de32e]"
                             : running
-                              ? "text-xs font-semibold text-[#c0c1ff]"
-                              : "text-xs text-[#6b7280]"
+                              ? "text-xs font-semibold text-[#00e5ff]"
+                              : "text-xs text-[#849396]"
                         }
                       >
                         {done ? t("scan.stepDone") : running ? t("scan.stepRun") : t("scan.stepWait")}
@@ -147,8 +148,8 @@ export function ScanProgressOverlay({
                   );
                 })}
               </ul>
-              <p className="mt-5 text-center text-xs text-[#9ca3af]">{t("scan.noWallet")}</p>
-              <p className="mt-2 text-center text-xs font-semibold text-[#eab308]">{t("scan.vpHint")}</p>
+              <p className="mt-5 text-center text-xs text-[#849396]">{t("scan.noWallet")}</p>
+              <p className="mt-2 text-center text-xs font-semibold text-[#ffc775]">{t("scan.vpHint")}</p>
             </>
           )}
         </section>
@@ -162,7 +163,7 @@ function StepMark({ done, running }: { done: boolean; running: boolean }) {
     return (
       <span
         aria-hidden
-        className="flex size-5 items-center justify-center rounded-full bg-[#10b981]/20 text-[10px] text-[#6ee7b7]"
+        className="flex size-5 items-center justify-center rounded-full bg-[#9de32e]/15 text-[10px] text-[#9de32e]"
       >
         ✓
       </span>
@@ -172,11 +173,11 @@ function StepMark({ done, running }: { done: boolean; running: boolean }) {
     return (
       <span
         aria-hidden
-        className="size-5 rounded-full border-2 border-[#c0c1ff]/30 border-t-[#c0c1ff] motion-safe:animate-spin"
+        className="size-5 rounded-full border-2 border-[#00e5ff]/25 border-t-[#00e5ff] motion-safe:animate-spin"
       />
     );
   }
-  return <span aria-hidden className="size-5 rounded-full border border-[#464554]" />;
+  return <span aria-hidden className="size-5 rounded-full border border-[#3b494c]" />;
 }
 
 export function useScanStepProgress(isActive: boolean, stepMs = 420) {

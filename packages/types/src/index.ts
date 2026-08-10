@@ -391,8 +391,8 @@ export interface AdminAuditLog {
 
 export interface ServiceMeta {
   service: string;
-  brand: "ChainVigil AI";
-  chineseName: "链哨 AI";
+  brand: "ChainVigil";
+  chineseName: "ChainVigil";
   slogan: "买币前，先查 CA。";
   version: "v0";
   mode: "mock" | "production";

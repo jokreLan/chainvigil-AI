@@ -30,26 +30,40 @@ describe("public discovery contracts", () => {
         "http://localhost:3000/zh/leaderboard/high-risk-tokens",
         "http://localhost:3000/en/fake-token-database",
         "http://localhost:3000/zh/methodology",
+        "http://localhost:3000/en/risk-disclosure",
       ]),
     );
     // Per-CA and per-wallet pages must never become sitemap SEO assets.
     expect(urls.every((url) => !url.includes("/token/"))).toBe(true);
-    expect(urls.every((url) => !url.includes("/wallet/0x") && !/\/wallet\/[^/]+\/health/.test(url))).toBe(
-      true,
-    );
+    expect(
+      urls.every(
+        (url) =>
+          !url.includes("/wallet/0x") && !/\/wallet\/[^/]+\/health/.test(url),
+      ),
+    ).toBe(true);
   });
 
   it("allows share-preview crawl of token paths while keeping workspaces private", () => {
     const rules = robots().rules;
     const rule = Array.isArray(rules) ? rules[0] : rules;
 
-    expect(rule?.allow).toEqual(expect.arrayContaining(["/solana", "/bnb", "/token/", "/check"]));
-    expect(rule?.disallow).toEqual(expect.arrayContaining(["/zh/app/", "/en/app/"]));
+    expect(rule?.allow).toEqual(
+      expect.arrayContaining(["/solana", "/bnb", "/token/", "/check"]),
+    );
+    expect(rule?.disallow).toEqual(
+      expect.arrayContaining(["/zh/app/", "/en/app/"]),
+    );
   });
 
   it("marks token and wallet report pages as noindex in metadata", () => {
-    const tokenPage = readFileSync(resolve(webRoot, "token/[chain]/[address]/page.tsx"), "utf8");
-    const walletPage = readFileSync(resolve(webRoot, "wallet/[address]/health/page.tsx"), "utf8");
+    const tokenPage = readFileSync(
+      resolve(webRoot, "token/[chain]/[address]/page.tsx"),
+      "utf8",
+    );
+    const walletPage = readFileSync(
+      resolve(webRoot, "wallet/[address]/health/page.tsx"),
+      "utf8",
+    );
 
     expect(tokenPage).toContain("index: false");
     expect(walletPage).toContain("index: false");

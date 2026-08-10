@@ -4,7 +4,13 @@ import { usePathname } from "next/navigation";
 import { useLocale } from "../i18n/locale-context";
 import type { Locale } from "../i18n/config";
 
-export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
+export function LanguageSwitcher({
+  compact = false,
+  variant = "default",
+}: {
+  compact?: boolean;
+  variant?: "default" | "dapp";
+}) {
   const { locale, setLocale, t } = useLocale();
   const pathname = usePathname();
 
@@ -22,7 +28,11 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
 
   return (
     <div
-      className={`inline-flex items-center rounded-full border border-[#34343d] bg-[#16181d] p-0.5 text-[11px] font-semibold ${
+      className={`inline-flex items-center border p-0.5 text-[11px] font-semibold ${
+        variant === "dapp"
+          ? "rounded-md border-[#3b494c]/70 bg-[#151d1e]"
+          : "rounded-full border-[#34343d] bg-[#16181d]"
+      } ${
         compact ? "" : "gap-0"
       }`}
       role="group"
@@ -31,8 +41,10 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
       <button
         type="button"
         onClick={() => switchTo("zh")}
-        className={`rounded-full px-2.5 py-1 transition ${
-          locale === "zh" ? "bg-[#8083ff] text-[#0d0096]" : "text-[#9ca3af] hover:text-[#f9fafb]"
+        className={`${variant === "dapp" ? "min-h-11 min-w-11 rounded" : "rounded-full"} px-2.5 py-1 transition ${
+          locale === "zh"
+            ? variant === "dapp" ? "bg-[#c3f5ff] text-[#00363d]" : "bg-[#8083ff] text-[#0d0096]"
+            : variant === "dapp" ? "text-[#bac9cc] hover:text-[#dce4e5]" : "text-[#9ca3af] hover:text-[#f9fafb]"
         }`}
       >
         {t("lang.zh")}
@@ -40,8 +52,10 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
       <button
         type="button"
         onClick={() => switchTo("en")}
-        className={`rounded-full px-2.5 py-1 transition ${
-          locale === "en" ? "bg-[#8083ff] text-[#0d0096]" : "text-[#9ca3af] hover:text-[#f9fafb]"
+        className={`${variant === "dapp" ? "min-h-11 min-w-11 rounded" : "rounded-full"} px-2.5 py-1 transition ${
+          locale === "en"
+            ? variant === "dapp" ? "bg-[#c3f5ff] text-[#00363d]" : "bg-[#8083ff] text-[#0d0096]"
+            : variant === "dapp" ? "text-[#bac9cc] hover:text-[#dce4e5]" : "text-[#9ca3af] hover:text-[#f9fafb]"
         }`}
       >
         {t("lang.en")}

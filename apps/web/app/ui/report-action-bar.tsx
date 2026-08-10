@@ -15,29 +15,29 @@ export function ReportActionBar({
   const t = useT();
 
   return (
-    <div className="fixed inset-x-0 bottom-16 z-30 border-t border-[#262932] bg-[#0a0b0f]/95 px-3 py-2 backdrop-blur md:bottom-0 md:px-6">
-      <div className="mx-auto flex max-w-3xl gap-2 overflow-x-auto pb-1">
+    <div className="fixed inset-x-0 z-30 border-t border-[#3b494c]/45 bg-[#0d1516]/96 px-3 py-2 backdrop-blur-xl cv-report-actions-safe md:hidden">
+      <div className="mx-auto grid max-w-3xl grid-cols-2 gap-2 md:flex">
         <Link
           href="/check"
-          className="min-h-11 shrink-0 rounded-xl bg-[#8083ff] px-4 text-sm font-semibold leading-[2.75rem] text-[#0d0096]"
+          className="flex min-h-11 items-center justify-center rounded-lg bg-[#c3f5ff] px-3 text-center cv-font-display text-sm font-semibold text-[#00363d]"
         >
           {t("report.recheck")}
         </Link>
         <Link
           href="/wallet-check"
-          className="min-h-11 shrink-0 rounded-xl border border-[#464554] px-4 text-sm font-semibold leading-[2.75rem] text-[#f9fafb]"
+          className="flex min-h-11 items-center justify-center rounded-lg border border-[#3b494c] bg-[#242b2d] px-3 text-center text-sm font-semibold text-[#dce4e5]"
         >
           {t("report.checkWallet")}
         </Link>
         <a
           href={`#share-report`}
-          className="min-h-11 shrink-0 rounded-xl border border-[#464554] px-4 text-sm font-semibold leading-[2.75rem] text-[#f9fafb]"
+          className="flex min-h-11 items-center justify-center rounded-lg border border-[#3b494c] bg-[#242b2d] px-3 text-center text-sm font-semibold text-[#dce4e5]"
         >
           {t("report.share")}
         </a>
         <Link
           href="/intel"
-          className="min-h-11 shrink-0 rounded-xl border border-[#eab308]/30 px-4 text-sm font-semibold leading-[2.75rem] text-[#eab308]"
+          className="flex min-h-11 items-center justify-center rounded-lg border border-[#ffc775]/35 bg-[#ffc775]/8 px-3 text-center text-sm font-semibold text-[#ffc775]"
         >
           {t("report.learn")}
         </Link>

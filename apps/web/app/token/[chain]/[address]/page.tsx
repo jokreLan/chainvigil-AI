@@ -11,10 +11,13 @@ import type { ChainId, RiskLevel, RiskReasonSeverity } from "@chainvigil/types";
 import { getServerT } from "../../../i18n/server";
 import { appendReferralParam, buildTrackedShareText } from "../../../lib/share";
 import { ShareReport } from "../../../ui/share-report";
-import { MobileNav } from "../../../ui/mobile-nav";
+import { ConsumerMobileNav } from "../../../ui/consumer-mobile-nav";
 import { CopyValueButton } from "../../../ui/copy-value-button";
-import { ReportModeBanner } from "../../../ui/report-mode-banner";
+import { DappHeader } from "../../../ui/dapp-header";
+import { DappIcon } from "../../../ui/dapp-icon";
+import { ProviderCoverage } from "../../../ui/provider-coverage";
 import { ReportActionBar } from "../../../ui/report-action-bar";
+import { VigilCore } from "../../../ui/vigil-core";
 import { getTokenRiskReport } from "../../../lib/reports";
 
 interface TokenReportPageProps {
@@ -132,86 +135,48 @@ export default async function TokenReportPage({ params, searchParams }: TokenRep
       ? `${report.tokenAddress.slice(0, 6)}...${report.tokenAddress.slice(-4)}`
       : report.tokenAddress;
   const fromTask = from === "task";
-  const dateLocale = locale === "zh" ? "zh-CN" : "en-US";
 
   return (
-    <main className="min-h-screen bg-[#0a0b0f] px-4 pb-40 md:px-8 md:pb-24">
+    <main className="cv-dapp-page min-h-screen pb-52 md:pb-10">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <nav className="mx-auto flex h-14 max-w-3xl items-center justify-between border-b border-[#262932] text-sm text-[#9ca3af]">
-        <Link href="/" className="flex items-center gap-2 font-semibold text-[#f9fafb]">
-          <span className="text-[#c0c1ff]">◎</span>
-          {t("brand.name")}
-        </Link>
-        <div className="flex items-center gap-3">
-          <Link href="/wallet-check">{t("report.checkWallet")}</Link>
-          <Link href="/check" className="font-semibold text-[#c0c1ff]">
-            {t("report.recheck")}
-          </Link>
-        </div>
-      </nav>
+      <DappHeader active="scan" mode={report.mode === "live" ? "live" : "readiness"} />
 
-      <section className="mx-auto mt-6 max-w-3xl">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#262932] bg-[#16181d] text-sm font-semibold text-[#c0c1ff]">
-              {report.tokenSymbol.slice(0, 2)}
-            </div>
-            <div>
-              <h1 className="text-2xl font-semibold text-[#f9fafb]">{report.tokenSymbol}</h1>
-              <div className="mt-1 flex flex-wrap items-center gap-2">
-                <span className="rounded bg-[#292932] px-2 py-0.5 text-[11px] uppercase text-[#c7c4d7]">
-                  {report.chain}
+      <section className="mx-auto max-w-[1120px] px-4 py-7 md:py-10">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className={`flex size-12 shrink-0 items-center justify-center rounded-lg border ${riskStyle.badge}`}>
+              <DappIcon name={report.riskLevel === "LOW" ? "check" : "alert"} className="size-6" />
+            </span>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="cv-font-display text-2xl font-semibold text-[#dce4e5]">{report.tokenSymbol}</h1>
+                <span className={`rounded border px-2 py-1 cv-font-mono text-[9px] font-semibold uppercase ${riskStyle.badge}`}>
+                  {report.riskLevel}
                 </span>
-                <p className="font-mono text-xs text-[#9ca3af]">{shortAddress}</p>
-                <CopyValueButton value={report.tokenAddress} label={t("report.copy")} />
+                <span className="rounded border border-[#00e5ff]/25 px-2 py-1 cv-font-mono text-[9px] uppercase text-[#c3f5ff]">
+                  {report.mode === "live" ? "VERIFIED RESPONSE" : "MOCK / READINESS"}
+                </span>
+              </div>
+              <div className="mt-2 flex min-w-0 items-center gap-2">
+                <span className="rounded bg-[#242b2d] px-2 py-1 cv-font-mono text-[9px] uppercase text-[#bac9cc]">{report.chain}</span>
+                <p className="truncate cv-font-mono text-xs text-[#849396]">{shortAddress}</p>
+                <CopyValueButton value={report.tokenAddress} label={t("report.copy")} className="shrink-0 border-[#3b494c] text-[#c3f5ff]" />
               </div>
             </div>
           </div>
-          <div className="hidden sm:block">
-            <ShareReport
-              reportUrl={trackedReportUrl}
-              shareText={trackedShareText}
-              subjectId={`${report.chain}:${report.tokenAddress}`}
-              referralCode={referralCode}
-            />
-          </div>
-        </div>
-        <div className="mt-4 sm:hidden">
-          <ShareReport
-            compact
-            reportUrl={trackedReportUrl}
-            shareText={trackedShareText}
-            subjectId={`${report.chain}:${report.tokenAddress}`}
-            referralCode={referralCode}
-          />
-        </div>
-
-        <div className="mt-5">
-          <ReportModeBanner
-            mode={report.mode}
-            confidence={report.confidence}
-            confidenceScore={report.confidenceScore}
-          />
-        </div>
-
-        <aside
-          role="note"
-          className="mt-3 rounded-xl border border-[#8083ff]/30 bg-[#8083ff]/10 px-3 py-3 text-sm leading-6 text-[#c0c1ff]"
-        >
-          <p className="font-semibold text-[#e1e0ff]">{t("report.freshnessTitle")}</p>
-          <p className="mt-1 text-[#c7c4d7]">{t("report.freshnessBody")}</p>
-          <Link href="/check" className="mt-2 inline-block font-semibold underline">
-            {t("report.freshnessCta")}
+          <Link href="/check" className="hidden min-h-11 items-center gap-2 cv-font-mono text-xs uppercase tracking-[0.08em] text-[#bac9cc] hover:text-[#c3f5ff] md:flex">
+            <DappIcon name="scan" className="size-4" />
+            {t("report.recheck")}
           </Link>
-        </aside>
+        </div>
 
         {fromTask ? (
           <p
             role="status"
-            className="mt-3 rounded-xl border border-[#eab308]/35 bg-[#eab308]/10 px-3 py-2 text-sm text-[#fde68a]"
+            className="mt-4 rounded-lg border border-[#9de32e]/25 bg-[#83c600]/10 px-3 py-2 text-sm text-[#b0f743]"
           >
             {t("report.taskDone")}{" "}
             <Link href="/app/points?done=check" className="font-semibold underline">
@@ -220,184 +185,93 @@ export default async function TokenReportPage({ params, searchParams }: TokenRep
           </p>
         ) : null}
 
-        {/* Conclusion hero — Stitch ai_4 */}
-        <div className={`mt-5 rounded-2xl border p-5 md:p-6 ${riskStyle.panel} ${riskStyle.glow}`}>
-          <div className="flex flex-col items-center text-center">
-            <div
-              className={`flex min-h-28 w-full max-w-[11rem] flex-col items-center justify-center rounded-2xl border px-4 py-6 ${riskStyle.badge}`}
-            >
-              <span className="text-3xl font-bold tracking-wide">{report.label}</span>
-              <span className="mt-2 text-[11px] font-semibold uppercase opacity-80">
-                {report.riskLevel === "BLOCK" ? "Danger" : report.riskLevel}
-              </span>
-            </div>
+        <div className="mt-6 grid gap-4 lg:grid-cols-[0.82fr_1.18fr] lg:gap-5">
+          <div className="space-y-4">
+            <section className={`cv-dapp-panel p-5 text-center md:p-6 ${riskStyle.panel}`}>
+              <VigilCore compact />
+              <p className={`-mt-4 cv-font-display text-3xl font-semibold ${riskStyle.summary}`}>{report.label}</p>
+              <p className="mt-2 cv-font-mono text-[10px] uppercase tracking-[0.08em] text-[#bac9cc]">Vigil Core · {report.mode === "live" ? "VERIFIED RESPONSE" : "SAMPLE / READINESS"}</p>
+              <p className="mt-4 text-sm leading-6 text-[#dce4e5]">{report.summary}</p>
+              <p className="mt-4 text-xs leading-5 text-[#849396]">{t("report.disclaimer")}</p>
+            </section>
+
+            <section className="cv-dapp-panel p-4">
+              <div className="flex items-center justify-between gap-3 border-b border-[#3b494c]/35 pb-3">
+                <h2 className="cv-font-display font-semibold text-[#dce4e5]">{t("report.conclusion")}</h2>
+                <DappIcon name="alert" className={`size-5 ${riskStyle.summary}`} />
+              </div>
+              <a href="#evidence" className={`mt-4 flex min-h-12 items-center justify-center rounded-lg border px-4 text-center cv-font-display font-semibold ${riskStyle.badge}`}>
+                {t("report.evidence")}
+              </a>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                <Link href="/check" className="flex min-h-11 items-center justify-center rounded-lg border border-[#3b494c] bg-[#242b2d] text-sm font-semibold text-[#dce4e5]">{t("report.recheck")}</Link>
+                <a href="#share-report" className="flex min-h-11 items-center justify-center rounded-lg border border-[#3b494c] bg-[#242b2d] text-sm font-semibold text-[#dce4e5]">{t("report.share")}</a>
+              </div>
+            </section>
           </div>
-          <div className="mt-5">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#c0c1ff]">
-              ChainVigil AI Analysis Conclusion
-            </p>
-            <p className={`mt-3 text-base leading-7 md:text-lg ${riskStyle.summary}`}>
-              {report.summary}
-            </p>
-            <div className="mt-5 grid gap-2 sm:grid-cols-3">
+
+          <section id="evidence" className="cv-dapp-panel scroll-mt-24 p-5 md:p-6">
+            <div>
+              <p className="cv-font-mono text-[10px] uppercase tracking-[0.08em] text-[#00e5ff]">EVIDENCE FIRST</p>
+              <h2 className="mt-2 cv-font-display text-xl font-semibold text-[#dce4e5]">{t("report.reasons")}</h2>
+            </div>
+            <div className="mt-5 space-y-3">
               {report.reasons.slice(0, 3).map((reason) => (
-                <div
-                  key={reason.title}
-                  className="rounded-xl border border-[#262932]/80 bg-[#0a0b0f]/35 p-3 text-left"
-                >
-                  <p className={`text-xs font-semibold ${reasonSeverityStyles[reason.severity]}`}>
-                    {reason.title}
-                  </p>
-                  <p className="mt-1.5 text-[11px] leading-5 text-[#c7c4d7]">{reason.explanation}</p>
-                </div>
+                <article key={reason.title} className="rounded-lg border border-[#3b494c]/40 bg-[#151d1e] p-4" style={{ borderLeftWidth: 4 }}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className={`cv-font-mono text-[9px] font-semibold uppercase ${reasonSeverityStyles[reason.severity]}`}>{reason.severity} · {report.mode === "live" ? "EVIDENCE" : "SAMPLE"}</p>
+                      <h3 className="mt-2 cv-font-display font-semibold text-[#dce4e5]">{reason.title}</h3>
+                    </div>
+                    <DappIcon name={reason.severity === "low" ? "check" : "alert"} className={`size-5 shrink-0 ${reasonSeverityStyles[reason.severity]}`} />
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-[#bac9cc]">{reason.explanation}</p>
+                </article>
               ))}
             </div>
-          </div>
-        </div>
 
-        {/* Trade simulation */}
-        <section className="mt-5 rounded-2xl border border-[#262932] bg-[#16181d] p-5">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <h2 className="text-lg font-semibold text-[#f9fafb]">{t("report.tradeSim")}</h2>
-              <p className="mt-1 text-xs text-[#9ca3af]">{t("report.tradeHint")}</p>
-            </div>
-            <span
-              className={
-                report.evidence.canSell === false
-                  ? "rounded-full bg-[#ef4444]/15 px-2.5 py-1 text-[11px] font-semibold text-[#fca5a5]"
-                  : "rounded-full bg-[#10b981]/15 px-2.5 py-1 text-[11px] font-semibold text-[#6ee7b7]"
-              }
-            >
-              {report.evidence.canSell === false ? t("report.riskExtreme") : t("report.continueVerify")}
-            </span>
-          </div>
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            <Evidence
-              label={t("report.buyTest")}
-              value={report.evidence.canBuy ? t("common.success") : t("common.fail")}
-              tone={report.evidence.canBuy ? "text-[#6ee7b7]" : "text-[#fca5a5]"}
-            />
-            <Evidence
-              label={t("report.sellTest")}
-              value={report.evidence.canSell ? t("common.success") : t("common.fail")}
-              tone={report.evidence.canSell ? "text-[#6ee7b7]" : "text-[#fca5a5]"}
-            />
-            <Evidence label={t("report.buyTax")} value={`${report.evidence.buyTaxPercent ?? 0}%`} />
-            <Evidence
-              label={t("report.sellTax")}
-              value={`${report.evidence.sellTaxPercent ?? 0}%`}
-              tone="text-[#fca5a5]"
-            />
-          </div>
-          {report.evidence.honeypotDetected ? (
-            <p className="mt-4 rounded-lg border border-[#ef4444]/25 bg-[#ef4444]/10 p-3 text-xs leading-5 text-[#fecaca]">
-              {t("report.honeypotHint")}
-            </p>
-          ) : null}
-        </section>
-
-        <div className="mt-5 grid gap-5 md:grid-cols-2">
-          <section className="rounded-2xl border border-[#262932] bg-[#16181d] p-5">
-            <h2 className="text-lg font-semibold text-[#f9fafb]">{t("report.permissions")}</h2>
-            <div className="mt-4 space-y-3">
-              <Evidence
-                label={t("report.ownerPerm")}
-                value={
-                  report.evidence.ownerCanModifyTax ? t("report.ownerOpen") : t("report.ownerClosed")
-                }
-              />
-              <Evidence
-                label={t("report.blacklistFn")}
-                value={report.evidence.blacklistFunction ? t("common.found") : t("common.notFound")}
-                tone={report.evidence.blacklistFunction ? "text-[#fca5a5]" : "text-[#6ee7b7]"}
-              />
-              <Evidence
-                label={t("report.mintAuth")}
-                value={report.evidence.mintable ? t("report.exists") : t("common.notFound")}
-              />
-              <Evidence
-                label={t("report.pauseAuth")}
-                value={report.evidence.pausable ? t("report.pausable") : t("common.notFound")}
-              />
-            </div>
-          </section>
-
-          <section className="rounded-2xl border border-[#262932] bg-[#16181d] p-5">
-            <div className="flex items-center justify-between gap-3">
-              <h2 className="text-lg font-semibold text-[#f9fafb]">{t("report.lp")}</h2>
-              <span className={report.evidence.lpLocked ? "text-[#6ee7b7]" : "text-[#fca5a5]"}>
-                {report.evidence.lpLocked ? t("common.locked") : t("common.unlocked")}
-              </span>
-            </div>
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <Metric label={t("report.lpValue")} value={`$${report.evidence.lpValueUsd ?? "N/A"}`} />
-              <Metric label="Holder" value={String(report.evidence.holderCount ?? "N/A")} />
-              <Metric label="Top 10" value={`${report.evidence.top10HolderPercent ?? "N/A"}%`} />
-              <Metric label={t("report.riskScore")} value={String(report.score ?? "N/A")} />
+            <div className="mt-5 border-t border-[#3b494c]/35 pt-5">
+              <ProviderCoverage mode={report.mode} chain={report.chain} variant="strip" />
             </div>
           </section>
         </div>
 
-        <section className="mt-5">
-          <h2 className="text-xl font-semibold text-[#f9fafb]">{t("report.reasons")}</h2>
-          <div className="mt-3 space-y-3">
-            {report.reasons.map((reason) => (
-              <article key={reason.title} className="rounded-xl border border-[#262932] bg-[#16181d] p-4">
-                <p className={`text-[11px] font-semibold uppercase ${reasonSeverityStyles[reason.severity]}`}>
-                  {reason.severity}
-                </p>
-                <h3 className="mt-1.5 text-base font-semibold text-[#f9fafb]">{reason.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-[#c7c4d7]">{reason.explanation}</p>
-              </article>
-            ))}
+        <details className="cv-dapp-panel mt-5 p-5">
+          <summary className="cursor-pointer cv-font-display font-semibold text-[#c3f5ff]">{t("report.evidence")} · {t("report.permissions")} · {t("report.tradeSim")}</summary>
+          <div className="mt-5 grid gap-5 md:grid-cols-2">
+            <section>
+              <h3 className="cv-font-display font-semibold text-[#dce4e5]">{t("report.tradeSim")}</h3>
+              <div className="mt-3 space-y-3">
+                <Evidence label={t("report.buyTest")} value={report.mode === "live" ? (report.evidence.canBuy ? t("common.success") : t("common.fail")) : t("common.sample")} />
+                <Evidence label={t("report.sellTest")} value={report.mode === "live" ? (report.evidence.canSell ? t("common.success") : t("common.fail")) : t("common.sample")} />
+                <Evidence label={t("report.buyTax")} value={report.mode === "live" ? `${report.evidence.buyTaxPercent ?? 0}%` : t("common.pendingLookup")} />
+                <Evidence label={t("report.sellTax")} value={report.mode === "live" ? `${report.evidence.sellTaxPercent ?? 0}%` : t("common.pendingLookup")} />
+              </div>
+            </section>
+            <section>
+              <h3 className="cv-font-display font-semibold text-[#dce4e5]">{t("report.permissions")}</h3>
+              <div className="mt-3 space-y-3">
+                <Evidence label={t("report.ownerPerm")} value={report.evidence.ownerCanModifyTax ? t("report.ownerOpen") : t("report.ownerClosed")} />
+                <Evidence label={t("report.blacklistFn")} value={report.evidence.blacklistFunction ? t("common.found") : t("common.notFound")} />
+                <Evidence label={t("report.mintAuth")} value={report.evidence.mintable ? t("report.exists") : t("common.notFound")} />
+                <Evidence label={t("report.pauseAuth")} value={report.evidence.pausable ? t("report.pausable") : t("common.notFound")} />
+              </div>
+            </section>
           </div>
-        </section>
+          <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
+            <Metric label={t("report.lpValue")} value={report.mode === "live" ? `$${report.evidence.lpValueUsd ?? "N/A"}` : t("common.pendingLookup")} />
+            <Metric label="Holder" value={report.mode === "live" ? String(report.evidence.holderCount ?? "N/A") : t("common.pendingLookup")} />
+            <Metric label="Top 10" value={report.mode === "live" ? `${report.evidence.top10HolderPercent ?? "N/A"}%` : t("common.pendingLookup")} />
+            <Metric label={t("report.riskScore")} value={report.mode === "live" ? String(report.score ?? "N/A") : t("common.sample")} />
+          </div>
+        </details>
 
-        <section className="mt-5 rounded-2xl border border-[#262932] bg-[#16181d]">
-          <h2 className="border-b border-[#262932] p-4 text-lg font-semibold text-[#f9fafb]">
-            {t("report.evidence")}
-          </h2>
-          <div className="p-4">
-            <p className="font-mono text-sm text-[#c0c1ff]">
-              honeypotDetected={String(Boolean(report.evidence.honeypotDetected))}
-            </p>
-            <p className="mt-2 font-mono text-xs text-[#9ca3af]">
-              sourceVerified={String(Boolean(report.evidence.sourceVerified))} · blacklist=
-              {String(Boolean(report.evidence.blacklistFunction))}
-            </p>
-            <p className="mt-3 text-sm leading-6 text-[#c7c4d7]">
-              {report.mode === "live" ? t("report.evidenceLive") : t("report.evidenceMock")}
-            </p>
+        <aside id="share-report" className="cv-dapp-panel mt-5 scroll-mt-28 p-5">
+          <h2 className="cv-font-display font-semibold text-[#dce4e5]">{t("report.shareTitle")}</h2>
+          <p className="mt-2 text-xs leading-5 text-[#849396]">{t("report.shareHint")}</p>
+          <div className="mt-4 max-w-xl">
+            <ShareReport reportUrl={trackedReportUrl} shareText={trackedShareText} subjectId={`${report.chain}:${report.tokenAddress}`} referralCode={referralCode} />
           </div>
-        </section>
-
-        <Link
-          href="/app/points"
-          className="mt-5 flex items-center justify-between gap-3 rounded-2xl border border-[#eab308]/35 bg-[#16181d] p-4"
-        >
-          <div>
-            <p className="text-xs font-semibold text-[#eab308]">{t("report.vpCta")}</p>
-            <p className="mt-1 text-sm text-[#c7c4d7]">{t("report.vpCtaDesc")}</p>
-          </div>
-          <span className="shrink-0 rounded-lg bg-[#eab308]/15 px-3 py-2 text-xs font-semibold text-[#eab308]">
-            {t("report.viewVp")}
-          </span>
-        </Link>
-
-        <aside id="share-report" className="mt-5 scroll-mt-28 rounded-2xl border border-[#262932] bg-[#16181d] p-4">
-          <h2 className="text-base font-semibold text-[#f9fafb]">{t("report.shareTitle")}</h2>
-          <p className="mt-2 text-xs leading-5 text-[#9ca3af]">{t("report.shareHint")}</p>
-          <div className="mt-3 break-all rounded-lg border border-[#34343d] bg-[#0d0d15] p-3 text-xs text-[#c7c4d7]">
-            {trackedShareText}
-          </div>
-          <p className="mt-3 text-[11px] text-[#9ca3af]">
-            {t("report.generatedAt")}
-            {new Date(report.checkedAt).toLocaleString(dateLocale)} · mode={report.mode}
-          </p>
-          <p className="mt-3 border-t border-[#262932] pt-3 text-[11px] leading-5 text-[#9ca3af]">
-            {t("report.disclaimer")}
-          </p>
         </aside>
       </section>
       <ReportActionBar
@@ -405,7 +279,7 @@ export default async function TokenReportPage({ params, searchParams }: TokenRep
         chain={report.chain}
         address={report.tokenAddress}
       />
-      <MobileNav active="database" />
+      <ConsumerMobileNav active="reports" />
     </main>
   );
 }
@@ -420,8 +294,8 @@ function Evidence({
   tone?: string;
 }) {
   return (
-    <div className="flex items-center justify-between border-b border-[#262932] pb-2.5 text-sm last:border-0">
-      <span className="text-[#9ca3af]">{label}</span>
+    <div className="flex items-center justify-between border-b border-[#3b494c]/35 pb-2.5 text-sm last:border-0">
+      <span className="text-[#849396]">{label}</span>
       <span className={`font-semibold ${tone}`}>{value}</span>
     </div>
   );
@@ -429,9 +303,9 @@ function Evidence({
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-[#262932] bg-[#0d0d15] p-3">
-      <p className="text-[11px] text-[#9ca3af]">{label}</p>
-      <p className="mt-1.5 text-lg font-semibold text-[#f9fafb]">{value}</p>
+    <div className="rounded-lg border border-[#3b494c]/35 bg-[#0d1516] p-3">
+      <p className="cv-font-mono text-[9px] uppercase text-[#849396]">{label}</p>
+      <p className="mt-1.5 cv-font-display text-base font-semibold text-[#dce4e5]">{value}</p>
     </div>
   );
 }

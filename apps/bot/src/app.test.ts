@@ -48,7 +48,7 @@ describe("bot app", () => {
     });
 
     expect(response.statusCode).toBe(200);
-    expect(response.json().reply).toContain("ChainVigil AI｜链哨 AI");
+    expect(response.json().reply).toContain("ChainVigil");
     expect(response.json().reply).toContain("买币前，先查 CA。");
     expect(response.json().reply).toContain("/check <CA>");
 
@@ -74,7 +74,7 @@ describe("bot app", () => {
     expect(response.statusCode).toBe(200);
     expect(body.method).toBe("sendMessage");
     expect(body.chat_id).toBe(1);
-    expect(body.text).toContain("ChainVigil AI｜链哨 AI 检测结果：高危");
+    expect(body.text).toContain("ChainVigil 检测结果：高危");
     expect(body.text).toContain("模式：MOCK · 置信：UNASSESSED");
     expect(body.text).toContain("/token/bsc/0x1111111111111111111111111111111111111110");
 

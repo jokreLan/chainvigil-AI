@@ -34,10 +34,14 @@ export function CheckForm({
   compact,
   showWalletLink = false,
   fromTask = false,
+  variant = "default",
+  hideSupportingText = false,
 }: {
   compact: boolean;
   showWalletLink?: boolean;
   fromTask?: boolean;
+  variant?: "default" | "dapp" | "website";
+  hideSupportingText?: boolean;
 }) {
   const { locale, t } = useLocale();
   const router = useRouter();
@@ -144,6 +148,8 @@ export function CheckForm({
   }
 
   const showOverlay = isChecking || scanFailed;
+  const isDapp = variant === "dapp";
+  const isWebsite = variant === "website";
 
   return (
     <>
@@ -177,8 +183,12 @@ export function CheckForm({
               onChange={(event) => setInput(event.target.value)}
               disabled={isChecking}
               placeholder={t("check.placeholder")}
-              className={`min-h-14 w-full rounded-xl border px-4 pr-14 font-mono text-sm outline-none transition focus:ring-2 focus:ring-[#8083ff]/25 ${
-                compact
+              className={`min-h-14 w-full border px-4 pr-14 cv-font-mono text-sm outline-none transition ${
+                isWebsite
+                  ? "border-[#3b494c] bg-[#081012] text-[#dce4e5] placeholder:text-[#849396] focus:border-[#c3f5ff] focus:ring-2 focus:ring-[#00e5ff]/10"
+                  : isDapp
+                  ? "rounded-lg border-[#3b494c]/70 bg-[#242b2d] text-[#dce4e5] placeholder:text-[#849396] focus:border-[#00e5ff] focus:ring-2 focus:ring-[#00e5ff]/15"
+                  : compact
                   ? "border-transparent bg-[#f9fafb] text-[#16181d] placeholder:text-[#9ca3af] shadow-[0_8px_24px_rgba(0,0,0,0.25)]"
                   : "border-[#464554] bg-[#0d0d15] text-[#f9fafb] placeholder:text-[#6b7280] focus:border-[#8083ff]"
               }`}
@@ -191,7 +201,13 @@ export function CheckForm({
                   setError("");
                   inputRef.current?.focus();
                 }}
-                className="absolute inset-y-0 right-2 my-auto min-h-9 rounded px-2 text-xs font-semibold text-[#9ca3af] transition hover:bg-[#292932]/20 hover:text-[#16181d]"
+                className={`absolute inset-y-0 right-2 my-auto min-h-9 rounded px-2 text-xs font-semibold transition ${
+                  isWebsite
+                    ? "text-[#bac9cc] hover:bg-[#151d1e] hover:text-[#dce4e5]"
+                    : isDapp
+                    ? "text-[#bac9cc] hover:bg-[#151d1e] hover:text-[#dce4e5]"
+                    : "text-[#9ca3af] hover:bg-[#292932]/20 hover:text-[#16181d]"
+                }`}
               >
                 {t("check.clear")}
               </button>
@@ -200,11 +216,15 @@ export function CheckForm({
           <button
             type="submit"
             disabled={isChecking}
-            className={`min-h-14 w-full rounded-xl px-6 font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto ${
-              compact
+            className={`min-h-14 w-full px-6 font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
+              isWebsite
+                ? "bg-[#c3f5ff] cv-font-mono text-xs uppercase tracking-[0.06em] text-[#00363d] shadow-[0_0_18px_rgba(0,229,255,0.12)] hover:bg-[#9cf0ff]"
+                : isDapp
+                ? "rounded-lg bg-[#c3f5ff] cv-font-display text-[#00363d] hover:bg-[#9cf0ff]"
+                : compact
                 ? "bg-gradient-to-r from-[#8083ff] to-[#6366f1] text-[#0d0096] shadow-[0_12px_28px_rgba(128,131,255,0.28)] hover:from-[#c0c1ff] hover:to-[#8083ff]"
                 : "bg-[#8083ff] text-[#0d0096] hover:bg-[#c0c1ff]"
-            }`}
+            } ${isDapp || compact ? "" : "sm:w-auto"}`}
           >
             {isChecking ? t("check.checking") : t("check.submit")}
           </button>
@@ -214,28 +234,38 @@ export function CheckForm({
             {error}
           </p>
         ) : null}
-        <p id="token-address-hint" className="text-xs leading-5 text-[#9ca3af]">
-          {t("check.hint")}
-          <span className="font-mono text-[#c7c4d7]">0x1111…1111</span>
-          {locale === "en" ? " (BNB) or " : "（BNB）或 "}
-          <span className="font-mono text-[#c7c4d7]">So1111…1112</span>
-          {locale === "en" ? " (SOL)" : "（SOL）"}
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-[#9ca3af] sm:justify-start">
-          <span className="inline-flex items-center gap-1 text-[#6ee7b7]">
-            <span aria-hidden>✓</span> {t("home.free")}
-          </span>
-          <span>{t("home.noWallet")}</span>
-          <span>{t("home.chains")}</span>
-          <span className="text-[#c0c1ff]">
-            {t("check.detect")}
-            {parseSupportedInput(input.trim()) ?? "SOL / BNB"}
-          </span>
-        </div>
+        {!hideSupportingText ? (
+          <>
+            <p id="token-address-hint" className="text-xs leading-5 text-[#9ca3af]">
+              {t("check.hint")}
+              <span className="font-mono text-[#c7c4d7]">0x1111…1111</span>
+              {locale === "en" ? " (BNB) or " : "（BNB）或 "}
+              <span className="font-mono text-[#c7c4d7]">So1111…1112</span>
+              {locale === "en" ? " (SOL)" : "（SOL）"}
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-[#9ca3af] sm:justify-start">
+              <span className="inline-flex items-center gap-1 text-[#6ee7b7]">
+                <span aria-hidden>✓</span> {t("home.free")}
+              </span>
+              <span>{t("home.noWallet")}</span>
+              <span>{t("home.chains")}</span>
+              <span className="text-[#c0c1ff]">
+                {t("check.detect")}
+                {parseSupportedInput(input.trim()) ?? "SOL / BNB"}
+              </span>
+            </div>
+          </>
+        ) : null}
         {showWalletLink ? (
           <a
             href="/wallet-check"
-            className="flex min-h-12 items-center justify-center rounded-xl border border-[#464554] text-sm font-semibold text-[#f9fafb] transition hover:border-[#8083ff]/50"
+            className={`flex min-h-12 items-center justify-center border text-sm font-semibold transition ${
+              isWebsite
+                ? "border-[#3b494c] bg-[#0d1516] text-[#c3f5ff] hover:border-[#c3f5ff]"
+                : isDapp
+                ? "rounded-lg border-[#c3f5ff]/25 bg-[#242b2d] text-[#c3f5ff] hover:border-[#00e5ff]/60"
+                : "rounded-xl border-[#464554] text-[#f9fafb] hover:border-[#8083ff]/50"
+            }`}
           >
             {t("home.checkWallet")}
           </a>

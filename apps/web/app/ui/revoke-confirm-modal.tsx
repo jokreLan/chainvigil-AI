@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useT } from "../i18n/locale-context";
 import { useToast } from "./toast";
+import { useDialogFocus } from "./use-dialog-focus";
 
 export interface RevokeConfirmPayload {
   assetSymbol: string;
@@ -25,20 +26,15 @@ export function RevokeConfirmModal({
   const t = useT();
   const { pushToast } = useToast();
   const [understood, setUnderstood] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useDialogFocus(open, dialogRef, onClose);
 
   useEffect(() => {
     if (!open) {
       setUnderstood(false);
-      return;
     }
-
-    function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") onClose();
-    }
-
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open || !payload) return null;
 
@@ -54,6 +50,9 @@ export function RevokeConfirmModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="revoke-title"
+      aria-describedby="revoke-description"
+      ref={dialogRef}
+      tabIndex={-1}
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-4 sm:items-center"
       onClick={() => finish(false)}
     >
@@ -65,10 +64,18 @@ export function RevokeConfirmModal({
           <p className="mb-2 inline-flex rounded bg-[#eab308]/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#fde68a]">
             {t("revoke.demoBadge")}
           </p>
-          <h2 id="revoke-title" className="text-lg font-semibold text-[#f9fafb]">
+          <h2
+            id="revoke-title"
+            className="text-lg font-semibold text-[#f9fafb]"
+          >
             {t("revoke.title")}
           </h2>
-          <p className="mt-1 text-sm leading-6 text-[#9ca3af]">{t("revoke.body")}</p>
+          <p
+            id="revoke-description"
+            className="mt-1 text-sm leading-6 text-[#9ca3af]"
+          >
+            {t("revoke.body")}
+          </p>
         </div>
 
         {/* Safety green box — primary trust surface before any future signing */}
@@ -168,8 +175,12 @@ export function RevokeConfirmModal({
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-[#9ca3af]">{label}</p>
-      <p className="mt-1 break-all text-sm font-medium text-[#f9fafb]">{value}</p>
+      <p className="text-[11px] font-semibold uppercase tracking-wide text-[#9ca3af]">
+        {label}
+      </p>
+      <p className="mt-1 break-all text-sm font-medium text-[#f9fafb]">
+        {value}
+      </p>
     </div>
   );
 }

@@ -39,7 +39,7 @@ describe("i18n dictionaries", () => {
 
   it("falls back when key missing for a locale object", () => {
     const key = "brand.name" as MessageKey;
-    expect(translate("zh", key)).toBe("ChainVigil AI");
-    expect(translate("en", key)).toBe("ChainVigil AI");
+    expect(translate("zh", key)).toBe("ChainVigil");
+    expect(translate("en", key)).toBe("ChainVigil");
   });
 });

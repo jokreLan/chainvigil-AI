@@ -8,7 +8,7 @@ function normalizeLocale(locale?: string | null): TelegramLocale {
 
 const commandsByLocale: Record<TelegramLocale, TelegramCommand[]> = {
   zh: [
-    { command: "/start", description: "查看 ChainVigil AI 欢迎语和 CA 安检入口。" },
+    { command: "/start", description: "查看 ChainVigil 欢迎语和 CA 安检入口。" },
     { command: "/help", description: "查看群内可用命令。" },
     {
       command: "/check <CA>",
@@ -64,7 +64,7 @@ export function listTelegramCommands(locale?: string | null) {
 export function buildTelegramStartReply(locale?: string | null) {
   if (normalizeLocale(locale) === "en") {
     return [
-      "ChainVigil AI",
+      "ChainVigil",
       "Before you buy, check the CA.",
       "",
       "Buy-before scan entry · SOL / BNB first",
@@ -79,7 +79,7 @@ export function buildTelegramStartReply(locale?: string | null) {
   }
 
   return [
-    "ChainVigil AI｜链哨 AI",
+    "ChainVigil",
     "买币前，先查 CA。",
     "",
     "中文买前安检入口 · 优先 SOL / BNB",
@@ -97,7 +97,7 @@ export function buildTelegramHelpReply(locale?: string | null) {
   const lang = normalizeLocale(locale);
   if (lang === "en") {
     return [
-      "ChainVigil AI",
+      "ChainVigil",
       "",
       "Commands:",
       ...listTelegramCommands("en")
@@ -109,7 +109,7 @@ export function buildTelegramHelpReply(locale?: string | null) {
   }
 
   return [
-    "ChainVigil AI｜链哨 AI",
+    "ChainVigil",
     "",
     "可用命令：",
     ...listTelegramCommands("zh")
@@ -144,7 +144,7 @@ export function buildTelegramCheckUsageReply(locale?: string | null) {
   if (normalizeLocale(locale) === "en") {
     return "Send /check <CA> to run a ChainVigil scan. SOL and BNB first.";
   }
-  return "请发送 /check <CA> 调用链哨 AI 安检，优先支持 SOL 和 BNB。";
+  return "请发送 /check <CA> 调用 ChainVigil 安检，优先支持 SOL 和 BNB。";
 }
 
 export function listMockTelegramGroups(): TelegramGroupSettings[] {

@@ -1,7 +1,12 @@
 import { getCacheHealth } from "@chainvigil/cache";
 import { getSystemReadiness } from "@chainvigil/config";
-import { getAdapterHealth, listRegisteredLiveProviderClients } from "@chainvigil/data-adapters";
+import {
+  getAdapterHealth,
+  listRegisteredLiveProviderClients,
+} from "@chainvigil/data-adapters";
 import { getWorkerHealth } from "@chainvigil/worker";
+
+export const metadata = { title: "系统就绪" };
 
 const labelByMode = {
   mock: "V0 mock",
@@ -41,27 +46,33 @@ export default function SystemReadinessPage() {
   const codeDone = launchCodeChecklist.filter((item) => item.done).length;
 
   return (
-    <main className="min-h-screen px-5 py-8 md:px-8 md:py-10">
-      <p className="text-sm font-semibold text-[#c0c1ff]">SYSTEM READINESS · LAUNCH</p>
-      <h1 className="mt-2 text-3xl font-semibold text-white">系统就绪状态</h1>
-      <p className="mt-3 max-w-2xl text-[#c7c4d7]">
+    <main className="admin-page min-h-screen">
+      <p className="admin-kicker">SYSTEM READINESS · LAUNCH</p>
+      <h1 className="admin-title">系统就绪状态</h1>
+      <p className="admin-lead">
         只展示缺失配置名与依赖状态，不展示密钥。代码侧上线项与周末外部依赖项分开追踪。
       </p>
 
-      <section className="mt-8 grid gap-4 lg:grid-cols-3">
-        <article className="rounded-lg border border-[#8083ff]/40 bg-[#16181d] p-5">
+      <section className="admin-grid-single mt-8 grid gap-4 lg:grid-cols-3">
+        <article className="admin-panel admin-min-zero border-[#00d9f2]/40 p-5">
           <p className="text-xs font-semibold text-[#c0c1ff]">代码上线就绪</p>
           <p className="mt-3 text-3xl font-semibold text-white">
             {codeDone}/{launchCodeChecklist.length}
           </p>
           <p className="mt-2 text-sm text-[#8f8b9e]">无外部 key 可完成的契约</p>
         </article>
-        <article className="rounded-lg border border-[#262932] bg-[#16181d] p-5">
-          <p className="text-xs font-semibold text-[#eab308]">Live clients 已注册</p>
-          <p className="mt-3 text-3xl font-semibold text-white">{liveClients}</p>
-          <p className="mt-2 text-sm text-[#8f8b9e]">周末接 provider 后应 &gt; 0</p>
+        <article className="admin-panel admin-min-zero p-5">
+          <p className="text-xs font-semibold text-[#eab308]">
+            Live client 实现注册数
+          </p>
+          <p className="mt-3 text-3xl font-semibold text-white">
+            {liveClients}
+          </p>
+          <p className="mt-2 text-sm text-[#8f8b9e]">
+            代码注册数，非在线状态或可用率
+          </p>
         </article>
-        <article className="rounded-lg border border-[#262932] bg-[#16181d] p-5">
+        <article className="admin-panel admin-min-zero p-5">
           <p className="text-xs font-semibold text-[#fde68a]">生产安全预检</p>
           <p className="mt-3 text-3xl font-semibold text-white">
             {readiness.productionSecurity.ok ? "OK" : "待补"}
@@ -72,9 +83,9 @@ export default function SystemReadinessPage() {
         </article>
       </section>
 
-      <div className="mt-8 grid gap-4 lg:grid-cols-3">
+      <div className="admin-grid-single mt-8 grid gap-4 lg:grid-cols-3">
         {rows.map((row) => (
-          <section key={row.mode} className="rounded-lg border border-[#262932] bg-[#16181d] p-5">
+          <section key={row.mode} className="admin-panel admin-min-zero p-5">
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-xl font-semibold">{labelByMode[row.mode]}</h2>
               <span
@@ -88,12 +99,17 @@ export default function SystemReadinessPage() {
               </span>
             </div>
             <p className="mt-4 text-sm text-[#8f8b9e]">
-              {row.missing.length === 0 ? "配置已满足当前模式。" : `缺少 ${row.missing.length} 项配置。`}
+              {row.missing.length === 0
+                ? "配置已满足当前模式。"
+                : `缺少 ${row.missing.length} 项配置。`}
             </p>
             {row.missing.length > 0 ? (
               <ul className="mt-4 space-y-2 text-sm text-[#c7c4d7]">
                 {row.missing.map((name) => (
-                  <li key={name} className="rounded border border-[#363944] px-3 py-2">
+                  <li
+                    key={name}
+                    className="admin-break-chip rounded border border-[#363944] px-3 py-2"
+                  >
                     {name}
                   </li>
                 ))}
@@ -103,25 +119,35 @@ export default function SystemReadinessPage() {
         ))}
       </div>
 
-      <section className="mt-8 rounded-lg border border-[#262932] bg-[#16181d] p-5">
+      <section className="admin-panel mt-8 p-5">
         <h2 className="text-xl font-semibold text-white">上线清单 · 代码侧</h2>
-        <p className="mt-2 text-sm text-[#8f8b9e]">对应 docs/ops/launch_checklist.md A–C 段。</p>
+        <p className="mt-2 text-sm text-[#8f8b9e]">
+          对应 docs/ops/launch_checklist.md A–C 段。
+        </p>
         <ul className="mt-5 grid gap-2 md:grid-cols-2">
           {launchCodeChecklist.map((item) => (
             <li
               key={item.id}
-              className="flex items-center justify-between gap-3 rounded border border-[#363944] px-3 py-2 text-sm"
+              className="admin-min-zero flex items-center justify-between gap-3 rounded border border-[#363944] px-3 py-2 text-sm"
             >
-              <span className="text-[#c7c4d7]">{item.label}</span>
-              <span className="text-emerald-300">{item.done ? "done" : "todo"}</span>
+              <span className="admin-break-chip text-[#c7c4d7]">
+                {item.label}
+              </span>
+              <span className="text-emerald-300">
+                {item.done ? "done" : "todo"}
+              </span>
             </li>
           ))}
         </ul>
       </section>
 
-      <section className="mt-8 rounded-lg border border-[#eab308]/25 bg-[#16181d] p-5">
-        <h2 className="text-xl font-semibold text-white">上线清单 · 周末外部依赖</h2>
-        <p className="mt-2 text-sm text-[#8f8b9e]">密钥与 RPC 由负责人统一接入，本页不展示任何密钥值。</p>
+      <section className="admin-panel mt-8 border-[#eab308]/25 p-5">
+        <h2 className="text-xl font-semibold text-white">
+          上线清单 · 周末外部依赖
+        </h2>
+        <p className="mt-2 text-sm text-[#8f8b9e]">
+          密钥与 RPC 由负责人统一接入，本页不展示任何密钥值。
+        </p>
         <ol className="mt-5 list-decimal space-y-2 pl-5 text-sm text-[#c7c4d7]">
           {launchWeekendChecklist.map((item) => (
             <li key={item}>{item}</li>
@@ -129,7 +155,7 @@ export default function SystemReadinessPage() {
         </ol>
       </section>
 
-      <section className="mt-8 rounded-lg border border-[#262932] bg-[#16181d] p-5">
+      <section className="admin-panel mt-8 p-5">
         <h2 className="text-xl font-semibold text-white">依赖摘要</h2>
         <dl className="mt-5 grid gap-3 text-sm md:grid-cols-3">
           <div className="rounded border border-[#363944] p-3">
@@ -144,7 +170,9 @@ export default function SystemReadinessPage() {
           </div>
           <div className="rounded border border-[#363944] p-3">
             <dt className="text-[#8f8b9e]">Live-ready（env 已配）</dt>
-            <dd className="mt-1 font-semibold">{adapters.filter((adapter) => adapter.ready).length}</dd>
+            <dd className="mt-1 font-semibold">
+              {adapters.filter((adapter) => adapter.ready).length}
+            </dd>
           </div>
           <div className="rounded border border-[#363944] p-3">
             <dt className="text-[#8f8b9e]">Worker jobs</dt>
@@ -155,28 +183,38 @@ export default function SystemReadinessPage() {
         </dl>
       </section>
 
-      <section className="mt-8 rounded-lg border border-[#262932] bg-[#16181d] p-5">
-        <h2 className="text-xl font-semibold text-white">Worker 任务 contract</h2>
+      <section className="admin-panel mt-8 p-5">
+        <h2 className="text-xl font-semibold text-white">
+          Worker 任务 contract
+        </h2>
         <p className="mt-3 text-sm text-[#8f8b9e]">
-          V0 只声明后台任务，不启用真实队列消费；后续接 Redis-backed queue 时复用 job 名称。
+          V0 只声明后台任务，不启用真实队列消费；后续接 Redis-backed queue
+          时复用 job 名称。
         </p>
         <div className="mt-5 grid gap-3 lg:grid-cols-3">
           {worker.jobs.map((job) => (
-            <article key={job.name} className="rounded border border-[#363944] p-4">
+            <article
+              key={job.name}
+              className="rounded border border-[#363944] p-4"
+            >
               <div className="flex items-start justify-between gap-3">
                 <h3 className="font-semibold text-white">{job.name}</h3>
                 <span className="rounded border border-amber-400/40 bg-amber-400/10 px-2 py-1 text-xs text-amber-200">
                   {job.enabled ? "enabled" : "mock"}
                 </span>
               </div>
-              <p className="mt-3 text-sm leading-6 text-[#8f8b9e]">{job.description}</p>
-              <p className="mt-3 text-sm text-[#8f8b9e]">Cadence {job.cadenceSeconds}s</p>
+              <p className="mt-3 text-sm leading-6 text-[#8f8b9e]">
+                {job.description}
+              </p>
+              <p className="mt-3 text-sm text-[#8f8b9e]">
+                Cadence {job.cadenceSeconds}s
+              </p>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="mt-8 rounded-lg border border-[#262932] bg-[#16181d] p-5">
+      <section className="admin-panel mt-8 p-5">
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-xl font-semibold text-white">生产安全预检</h2>
           <span
@@ -189,12 +227,19 @@ export default function SystemReadinessPage() {
             {readiness.productionSecurity.ok ? "ready" : "needs review"}
           </span>
         </div>
-        <p className="mt-3 text-sm text-[#8f8b9e]">只展示需要复核的配置名称，不展示真实密钥值。</p>
+        <p className="mt-3 text-sm text-[#8f8b9e]">
+          只展示需要复核的配置名称，不展示真实密钥值。
+        </p>
         {readiness.productionSecurity.warnings.length > 0 ? (
           <ul className="mt-4 grid gap-3 text-sm md:grid-cols-2">
             {readiness.productionSecurity.warnings.map((warning) => (
-              <li key={warning.name} className="rounded border border-[#363944] p-3">
-                <p className="font-semibold text-white">{warning.name}</p>
+              <li
+                key={warning.name}
+                className="admin-min-zero rounded border border-[#363944] p-3"
+              >
+                <p className="admin-break-chip font-semibold text-white">
+                  {warning.name}
+                </p>
                 <p className="mt-1 text-[#8f8b9e]">{warning.reason}</p>
               </li>
             ))}

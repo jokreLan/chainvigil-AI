@@ -30,7 +30,7 @@ describe("api app", () => {
     expect(response.json()).toMatchObject({
       openapi: "3.1.0",
       info: {
-        title: "ChainVigil AI API",
+        title: "ChainVigil API",
       },
     });
 
@@ -236,8 +236,8 @@ describe("api app", () => {
     expect(response.statusCode).toBe(200);
     expect(body).toMatchObject({
       service: "chainvigil-api",
-      brand: "ChainVigil AI",
-      chineseName: "链哨 AI",
+      brand: "ChainVigil",
+      chineseName: "ChainVigil",
       slogan: "买币前，先查 CA。",
       version: "v0",
       mode: "mock",

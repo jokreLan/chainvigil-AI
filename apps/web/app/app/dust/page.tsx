@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { listMockAssetCleanupPolicies } from "@chainvigil/risk-core";
 import { useLocale } from "../../i18n/locale-context";
-import { MobileNav } from "../../ui/mobile-nav";
-import { SiteHeader } from "../../ui/site-header";
+import { WorkspaceHeader } from "../../ui/workspace-header";
+import { WorkspaceMobileNav } from "../../ui/workspace-mobile-nav";
 
 export default function DustPage() {
   const { locale, t } = useLocale();
@@ -12,14 +12,14 @@ export default function DustPage() {
   if (!policy) return null;
 
   return (
-    <main className="min-h-screen bg-[#0a0b0f] pb-24 text-[#e4e1ed] md:pb-10">
-      <SiteHeader active="other" />
+    <main className="cv-workspace-page min-h-screen pb-24 text-[#e4e1ed] md:pb-10">
+      <WorkspaceHeader />
       <div className="mx-auto max-w-6xl px-5 py-9 md:px-8">
         <section>
           <p className="text-sm font-semibold text-[#c0c1ff]">Read-only policy</p>
           <h1 className="mt-3 text-3xl font-semibold text-[#f9fafb] md:text-5xl">{t("dust.title")}</h1>
           <p className="mt-4 max-w-2xl leading-7 text-[#9ca3af]">{t("dust.subtitle")}</p>
-          <Link href="/app/asset-barber" className="mt-4 inline-block text-sm font-semibold text-[#c0c1ff]">
+          <Link href="/app/asset-barber" className="mt-4 inline-flex min-h-11 items-center text-sm font-semibold text-[#c0c1ff]">
             {t("wallet.assetBarber")}
           </Link>
         </section>
@@ -71,7 +71,7 @@ export default function DustPage() {
           <p className="mt-3 leading-7 text-[#9ca3af]">{t("dust.whyBody")}</p>
         </section>
       </div>
-      <MobileNav active="wallet" />
+      <WorkspaceMobileNav />
     </main>
   );
 }

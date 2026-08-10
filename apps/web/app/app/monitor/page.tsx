@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { listMockRiskMonitorRules } from "@chainvigil/risk-core";
 import { useLocale } from "../../i18n/locale-context";
-import { MobileNav } from "../../ui/mobile-nav";
-import { SiteHeader } from "../../ui/site-header";
+import { WorkspaceHeader } from "../../ui/workspace-header";
+import { WorkspaceMobileNav } from "../../ui/workspace-mobile-nav";
 
 const severityColor = {
   BLOCK: "#ef4444",
@@ -17,7 +17,6 @@ const severityColor = {
 export default function MonitorPage() {
   const { locale, t } = useLocale();
   const monitors = listMockRiskMonitorRules(locale);
-  const dateLocale = locale === "zh" ? "zh-CN" : "en-US";
   const statusLabel = {
     watching: t("monitor.statusWatching"),
     needs_review: t("monitor.statusReview"),
@@ -25,11 +24,11 @@ export default function MonitorPage() {
   } as const;
 
   return (
-    <main className="min-h-screen bg-[#0a0b0f] pb-24 text-[#e4e1ed] md:pb-10">
-      <SiteHeader active="other" />
+    <main className="cv-workspace-page min-h-screen pb-24 text-[#e4e1ed] md:pb-10">
+      <WorkspaceHeader desktopActive="monitor" />
       <div className="mx-auto max-w-6xl px-5 py-9 md:px-8">
         <section>
-          <p className="text-sm font-semibold text-[#c0c1ff]">Risk awareness</p>
+          <p className="cv-font-mono text-xs font-semibold tracking-[0.1em] text-[#00e5ff]">MOCK RULE LIBRARY · READ-ONLY · NOT LIVE ALERTS</p>
           <h1 className="mt-3 text-3xl font-semibold text-[#f9fafb] md:text-5xl">{t("monitor.title")}</h1>
           <p className="mt-4 max-w-2xl leading-7 text-[#9ca3af]">{t("monitor.subtitle")}</p>
           <p className="mt-2 text-sm text-[#c7c4d7]">{t("monitor.headerHint")}</p>
@@ -92,10 +91,7 @@ export default function MonitorPage() {
                 ))}
               </div>
               <p className="mt-4 text-xs text-[#9ca3af]">
-                {t("common.lastSignal")}
-                {monitor.lastSignalAt
-                  ? new Date(monitor.lastSignalAt).toLocaleString(dateLocale)
-                  : t("common.noLiveData")}
+                {locale === "zh" ? "样例状态，不代表实时监控事件" : "Sample state — not a live monitoring event"}
               </p>
             </article>
           ))}
@@ -103,11 +99,11 @@ export default function MonitorPage() {
         <section className="mt-8 rounded-xl border border-[#262932] bg-[#1b1b23] p-5 text-sm leading-7 text-[#9ca3af]">
           {t("monitor.footer")}
         </section>
-        <Link href="/check" className="mt-6 inline-block text-sm font-semibold text-[#c0c1ff]">
+        <Link href="/check" className="mt-6 inline-flex min-h-11 items-center text-sm font-semibold text-[#c0c1ff]">
           {t("points.goCheck")}
         </Link>
       </div>
-      <MobileNav active="wallet" />
+      <WorkspaceMobileNav />
     </main>
   );
 }

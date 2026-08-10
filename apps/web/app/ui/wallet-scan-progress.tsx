@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useT } from "../i18n/locale-context";
 import type { MessageKey } from "../i18n/messages";
+import { DappIcon } from "./dapp-icon";
 
 const WALLET_STEP_IDS = ["parse", "chain", "spenders", "assets", "score"] as const;
 
@@ -13,25 +14,6 @@ const WALLET_STEP_KEYS: Record<(typeof WALLET_STEP_IDS)[number], MessageKey> = {
   assets: "walletScan.step.assets",
   score: "walletScan.step.score",
 };
-
-/** Progressive mock counts while spender step is active (instrumentation feel). */
-function useSpenderCount(active: boolean, runningSpenders: boolean) {
-  const [count, setCount] = useState(3);
-
-  useEffect(() => {
-    if (!active || !runningSpenders) {
-      setCount(3);
-      return;
-    }
-    setCount(5);
-    const id = window.setInterval(() => {
-      setCount((prev) => Math.min(prev + 1 + Math.floor(Math.random() * 2), 17));
-    }, 280);
-    return () => window.clearInterval(id);
-  }, [active, runningSpenders]);
-
-  return count;
-}
 
 export function WalletScanProgressOverlay({
   activeIndex,
@@ -49,98 +31,79 @@ export function WalletScanProgressOverlay({
   onDismiss?: () => void;
 }) {
   const t = useT();
-  const progressPct = Math.min(
-    100,
-    Math.round(
-      ((failed ? WALLET_STEP_IDS.length : activeIndex + 0.45) / WALLET_STEP_IDS.length) * 100,
-    ),
-  );
-  const runningSpenders = !failed && WALLET_STEP_IDS[activeIndex] === "spenders";
-  const spenderCount = useSpenderCount(!failed, runningSpenders);
-  const ringStyle = useMemo(
-    () =>
-      ({
-        background: `conic-gradient(#8083ff ${progressPct * 3.6}deg, #262932 0deg)`,
-      }) as const,
-    [progressPct],
-  );
-
   return (
     <div
       role="status"
       aria-live="polite"
       aria-busy={!failed}
-      className="fixed inset-0 z-40 flex flex-col bg-[#0a0b0f]/96 px-5 pb-28 pt-6 backdrop-blur-sm md:pb-10"
+      className="cv-dapp-page fixed inset-0 z-50 flex flex-col px-5 pb-28 pt-6 md:pb-10"
     >
       <div className="mx-auto flex w-full max-w-md flex-1 flex-col">
         <header className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2 font-semibold text-[#f9fafb]">
-            <span className="inline-flex size-7 items-center justify-center rounded-md bg-[#8083ff]/20 text-[#c0c1ff]">
-              ◎
+          <div className="flex min-h-11 items-center gap-2 cv-font-display font-semibold text-[#dce4e5]">
+            <span className="inline-flex size-8 items-center justify-center rounded-md bg-[#00e5ff] text-[#00363d]">
+              <DappIcon name="wallet" className="size-5" />
             </span>
             {t("brand.name")}
           </div>
-          <span className="text-xs text-[#9ca3af]">
+          <span className="cv-font-mono text-[10px] uppercase text-[#bac9cc]">
             {failed ? t("scan.failBadge") : t("walletScan.readonly")}
           </span>
         </header>
 
         <div className="relative mx-auto mt-10 flex size-44 items-center justify-center">
           {!failed ? (
-            <span className="cv-scan-ring absolute inset-0 rounded-full border border-[#8083ff]/30" />
+            <span className="cv-scan-ring absolute inset-0 rounded-full border border-[#00e5ff]/30" />
           ) : null}
           <div
-            className={`relative flex size-36 items-center justify-center rounded-full p-[3px] ${
-              failed ? "bg-[#ef4444]/40" : ""
+            className={`relative flex size-36 items-center justify-center rounded-full border ${
+              failed ? "border-[#ffb4ab]/50" : "border-[#00e5ff]/45"
             }`}
-            style={failed ? undefined : ringStyle}
           >
-            <div className="flex size-full flex-col items-center justify-center rounded-full border border-[#34343d] bg-[#16181d]">
+            <div className="flex size-[calc(100%_-_12px)] flex-col items-center justify-center rounded-full border border-[#3b494c] bg-[#151d1e]">
               <p
-                className={`font-mono text-3xl font-semibold tabular-nums tracking-tight ${
-                  failed ? "text-[#fca5a5]" : "text-[#c0c1ff]"
+                className={`cv-font-mono text-2xl font-semibold tracking-tight ${
+                  failed ? "text-[#ffb4ab]" : "text-[#c3f5ff]"
                 }`}
               >
-                {failed ? "!" : `${progressPct}`}
+                {failed ? "!" : "…"}
               </p>
-              <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-[#9ca3af]">
+              <p className="mt-1 cv-font-mono text-[10px] font-semibold uppercase tracking-wide text-[#849396]">
                 {failed ? t("scan.failed") : t("walletScan.scanning")}
               </p>
-              {!failed ? (
-                <p className="mt-0.5 text-[10px] text-[#6b7280]">{t("walletScan.scoreHint")}</p>
-              ) : null}
+              {!failed ? <p className="mt-1 text-[10px] text-[#849396]">{t("walletScan.scoreHint")}</p> : null}
             </div>
           </div>
         </div>
 
-        <p className="mt-4 text-center font-mono text-xs text-[#6b7280]">
+        <p className="mt-4 text-center cv-font-mono text-xs text-[#849396]">
           {addressHint.length > 18
             ? `${addressHint.slice(0, 8)}…${addressHint.slice(-6)}`
             : addressHint}
         </p>
 
-        <section className="mt-8 rounded-2xl border border-[#262932] bg-[#16181d] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.35)]">
+        <section className="cv-dapp-panel mt-8 p-5">
           {failed ? (
             <>
-              <h2 className="text-center text-lg font-semibold text-[#fca5a5]">
+              <h2 className="text-center cv-font-display text-lg font-semibold text-[#ffb4ab]">
                 {t("walletScan.failedTitle")}
               </h2>
-              <p className="mt-2 text-center text-sm leading-6 text-[#c7c4d7]">
+              <p className="mt-2 text-center text-sm leading-6 text-[#bac9cc]">
                 {errorMessage || t("check.errApi")}
               </p>
-              <p className="mt-3 text-center text-xs text-[#9ca3af]">{t("walletScan.failedHint")}</p>
+              <p className="mt-3 text-center text-xs text-[#849396]">{t("walletScan.failedHint")}</p>
               <div className="mt-6 grid gap-2">
                 <button
                   type="button"
                   onClick={onRetry}
-                  className="min-h-11 rounded-xl bg-[#8083ff] text-sm font-semibold text-[#0d0096]"
+                  className="min-h-11 rounded-lg bg-[#c3f5ff] text-sm font-semibold text-[#00363d]"
                 >
                   {t("walletScan.retry")}
                 </button>
                 <button
                   type="button"
                   onClick={onDismiss}
-                  className="min-h-11 rounded-xl border border-[#464554] text-sm font-semibold text-[#f9fafb]"
+                  className="min-h-11 rounded-lg border border-[#3b494c] bg-[#242b2d] text-sm font-semibold text-[#dce4e5]"
                 >
                   {t("walletScan.edit")}
                 </button>
@@ -148,23 +111,20 @@ export function WalletScanProgressOverlay({
             </>
           ) : (
             <>
-              <h2 className="text-center text-lg font-semibold text-[#f9fafb]">{t("walletScan.title")}</h2>
-              <p className="mt-2 text-center text-sm text-[#9ca3af]">{t("walletScan.subtitle")}</p>
+              <h2 className="text-center cv-font-display text-lg font-semibold text-[#dce4e5]">{t("walletScan.title")}</h2>
+              <p className="mt-2 text-center text-sm text-[#849396]">{t("walletScan.subtitle")}</p>
               <ul className="mt-6 space-y-2">
                 {WALLET_STEP_IDS.map((id, index) => {
                   const done = index < activeIndex;
                   const running = index === activeIndex;
-                  const label =
-                    id === "spenders" && running
-                      ? `${t(WALLET_STEP_KEYS[id])} (${spenderCount})`
-                      : t(WALLET_STEP_KEYS[id]);
+                  const label = t(WALLET_STEP_KEYS[id]);
                   return (
                     <li
                       key={id}
-                      className={`flex items-center justify-between rounded-xl px-3 py-3 text-sm ${
+                      className={`flex items-center justify-between rounded-lg px-3 py-3 text-sm ${
                         running
-                          ? "border border-[#8083ff]/40 bg-[#8083ff]/15 text-[#c0c1ff]"
-                          : "border border-transparent bg-[#0d0d15] text-[#c7c4d7]"
+                          ? "border border-[#00e5ff]/40 bg-[#00e5ff]/8 text-[#c3f5ff]"
+                          : "border border-transparent bg-[#0d1516] text-[#bac9cc]"
                       }`}
                     >
                       <span className="flex items-center gap-2 font-medium">
@@ -174,10 +134,10 @@ export function WalletScanProgressOverlay({
                       <span
                         className={
                           done
-                            ? "text-xs font-semibold text-[#6ee7b7]"
+                            ? "text-xs font-semibold text-[#9de32e]"
                             : running
-                              ? "text-xs font-semibold text-[#c0c1ff]"
-                              : "text-xs text-[#6b7280]"
+                              ? "text-xs font-semibold text-[#00e5ff]"
+                              : "text-xs text-[#849396]"
                         }
                       >
                         {done ? t("scan.stepDone") : running ? t("scan.stepRun") : t("scan.stepWait")}
@@ -186,7 +146,7 @@ export function WalletScanProgressOverlay({
                   );
                 })}
               </ul>
-              <p className="mt-5 text-center text-xs text-[#9ca3af]">{t("walletScan.noWallet")}</p>
+              <p className="mt-5 text-center text-xs text-[#849396]">{t("walletScan.noWallet")}</p>
             </>
           )}
         </section>
@@ -200,7 +160,7 @@ function StepMark({ done, running }: { done: boolean; running: boolean }) {
     return (
       <span
         aria-hidden
-        className="flex size-5 items-center justify-center rounded-full bg-[#10b981]/20 text-[10px] text-[#6ee7b7]"
+        className="flex size-5 items-center justify-center rounded-full bg-[#9de32e]/15 text-[10px] text-[#9de32e]"
       >
         ✓
       </span>
@@ -210,11 +170,11 @@ function StepMark({ done, running }: { done: boolean; running: boolean }) {
     return (
       <span
         aria-hidden
-        className="size-5 rounded-full border-2 border-[#c0c1ff]/30 border-t-[#c0c1ff] motion-safe:animate-spin"
+        className="size-5 rounded-full border-2 border-[#00e5ff]/25 border-t-[#00e5ff] motion-safe:animate-spin"
       />
     );
   }
-  return <span aria-hidden className="size-5 rounded-full border border-[#464554]" />;
+  return <span aria-hidden className="size-5 rounded-full border border-[#3b494c]" />;
 }
 
 export function useWalletScanStepProgress(isActive: boolean, stepMs = 380) {

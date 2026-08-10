@@ -51,7 +51,7 @@ describe("telegram contract", () => {
 
     expect(listTelegramCommands()[0]).toEqual({
       command: "/start",
-      description: "查看 ChainVigil AI 欢迎语和 CA 安检入口。",
+      description: "查看 ChainVigil 欢迎语和 CA 安检入口。",
     });
   });
 

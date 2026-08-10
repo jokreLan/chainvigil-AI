@@ -1,10 +1,10 @@
 export const openApiDocument = {
   openapi: "3.1.0",
   info: {
-    title: "ChainVigil AI API",
+    title: "ChainVigil API",
     version: "0.1.0",
     description:
-      "ChainVigil AI API contract. Token checks execute configured live providers and explicitly mark any mock/degraded fallback.",
+      "ChainVigil API contract. Token checks execute configured live providers and explicitly mark any mock/degraded fallback.",
   },
   servers: [
     {

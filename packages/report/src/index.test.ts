@@ -15,7 +15,8 @@ const report = buildMockTokenRiskReport({
 
 describe("report templates", () => {
   it("builds SEO metadata with brand and safety wording", () => {
-    expect(buildSeoTitle(report)).toContain("ChainVigil AI");
+    expect(buildSeoTitle(report)).toContain("ChainVigil");
+    expect(buildSeoTitle(report)).not.toContain("ChainVigil AI");
     expect(buildSeoDescription(report)).toContain("买币前，先查 CA");
     expect(buildSeoDescription(report)).toContain("不构成投资建议");
   });
@@ -23,7 +24,8 @@ describe("report templates", () => {
   it("builds Telegram replies from the shared report template", () => {
     const reply = buildTelegramCheckReply(report);
 
-    expect(reply).toContain("ChainVigil AI｜链哨 AI");
+    expect(reply).toContain("ChainVigil");
+    expect(reply).not.toContain("ChainVigil AI");
     expect(reply).toContain("完整报告");
     expect(reply).toContain(report.reportUrl);
     expect(reply).toContain("模式：");
@@ -49,7 +51,8 @@ describe("report templates", () => {
     const jsonLd = buildTokenReportJsonLd(report);
 
     expect(jsonLd["@type"]).toBe("Report");
-    expect(jsonLd.name).toContain("ChainVigil AI");
+    expect(jsonLd.name).toContain("ChainVigil");
+    expect(jsonLd.name).not.toContain("ChainVigil AI");
     expect(JSON.stringify(jsonLd)).toContain("买币前，先查 CA");
     expect(JSON.stringify(jsonLd)).toContain(report.tokenAddress);
     expect(JSON.stringify(jsonLd)).not.toContain("ownerCanModifyTax");

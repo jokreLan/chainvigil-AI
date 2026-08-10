@@ -27,11 +27,14 @@ const staticRoutes = [
   "/methodology",
   "/privacy",
   "/terms",
+  "/risk-disclosure",
   "/contact",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = (process.env.NEXT_PUBLIC_APP_BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  const baseUrl = (
+    process.env.NEXT_PUBLIC_APP_BASE_URL ?? "http://localhost:3000"
+  ).replace(/\/$/, "");
   const now = new Date();
 
   const localizedEntry = (route: string) => {

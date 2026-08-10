@@ -35,7 +35,7 @@ const toneKeys: Record<
 export function ReportModeBanner({
   mode,
   confidence,
-  confidenceScore,
+  confidenceScore: _confidenceScore,
   compact = false,
 }: {
   mode: ReportExecutionMode;
@@ -54,10 +54,7 @@ export function ReportModeBanner({
           {t(keys.badge)}
         </span>
         <span className="font-semibold">{t(keys.title)}</span>
-        <span className="opacity-80">
-          confidence={confidence}
-          {typeof confidenceScore === "number" ? ` · score=${confidenceScore}` : ""}
-        </span>
+        <span className="opacity-80">confidence={confidence}</span>
       </div>
       <p className="mt-2 opacity-95">{t(keys.body)}</p>
     </div>

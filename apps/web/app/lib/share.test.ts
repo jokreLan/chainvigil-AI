@@ -14,10 +14,10 @@ describe("share helpers", () => {
   it("replaces the original report URL in share text", () => {
     expect(
       buildTrackedShareText(
-        "ChainVigil AI http://localhost:3000/token/base/0x123",
+        "ChainVigil http://localhost:3000/token/base/0x123",
         "http://localhost:3000/token/base/0x123",
         "http://localhost:3000/token/base/0x123?ref=share",
       ),
-    ).toBe("ChainVigil AI http://localhost:3000/token/base/0x123?ref=share");
+    ).toBe("ChainVigil http://localhost:3000/token/base/0x123?ref=share");
   });
 });

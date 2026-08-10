@@ -10,10 +10,10 @@ export function buildSeoTitle(report: TokenRiskReport, locale?: string | null): 
   const lang = normalizeLocale(locale);
   if (lang === "en") {
     const modeTag = report.mode === "live" ? "" : "Sample · ";
-    return `${modeTag}${report.tokenSymbol} risk report｜${report.label}｜ChainVigil AI`;
+    return `${modeTag}${report.tokenSymbol} risk report｜${report.label}｜ChainVigil`;
   }
   const modeTag = report.mode === "live" ? "" : "示例·";
-  return `${modeTag}${report.tokenSymbol} 风险报告｜${report.label}｜ChainVigil AI`;
+  return `${modeTag}${report.tokenSymbol} 风险报告｜${report.label}｜ChainVigil`;
 }
 
 export function buildSeoDescription(report: TokenRiskReport, locale?: string | null): string {
@@ -91,13 +91,13 @@ export function buildSharePrefix(report: TokenRiskReport, locale?: string | null
   const lang = normalizeLocale(locale);
   if (lang === "en") {
     return report.mode === "live"
-      ? "ChainVigil AI buy-before scan: "
-      : "ChainVigil AI sample report (not live): ";
+      ? "ChainVigil buy-before scan: "
+      : "ChainVigil sample report (not live): ";
   }
   if (report.mode === "live") {
-    return "链哨 AI 买前安检：";
+    return "ChainVigil 买前安检：";
   }
-  return "链哨 AI 示例报告（非实时链上检测）：";
+  return "ChainVigil 示例报告（非实时链上检测）：";
 }
 
 export function buildTokenReportJsonLd(
@@ -117,7 +117,7 @@ export function buildTokenReportJsonLd(
     inLanguage: lang === "zh" ? "zh-CN" : "en",
     publisher: {
       "@type": "Organization",
-      name: lang === "en" ? "ChainVigil AI" : "ChainVigil AI｜链哨 AI",
+      name: "ChainVigil",
       url: "https://chainvigil.ai",
       slogan: lang === "en" ? "Before you buy, check the CA." : "买币前，先查 CA。",
     },
@@ -158,7 +158,7 @@ export function buildTelegramCheckReply(report: TokenRiskReport, locale?: string
 
   if (lang === "en") {
     return [
-      `ChainVigil AI result: ${report.label}`,
+      `ChainVigil result: ${report.label}`,
       `Mode: ${mode.badge} · confidence: ${report.confidence}`,
       "",
       report.summary,
@@ -176,7 +176,7 @@ export function buildTelegramCheckReply(report: TokenRiskReport, locale?: string
   }
 
   return [
-    `ChainVigil AI｜链哨 AI 检测结果：${report.label}`,
+    `ChainVigil 检测结果：${report.label}`,
     `模式：${mode.badge} · 置信：${report.confidence}`,
     "",
     report.summary,

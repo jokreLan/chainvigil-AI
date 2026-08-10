@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { getMockPointLedgerSummary, getPointProgram, listPointRules } from "@chainvigil/points";
 import { getServerT } from "../../i18n/server";
-import { MobileNav } from "../../ui/mobile-nav";
-import { SiteHeader } from "../../ui/site-header";
+import { WorkspaceHeader } from "../../ui/workspace-header";
+import { WorkspaceMobileNav } from "../../ui/workspace-mobile-nav";
 
 
 
@@ -40,8 +40,8 @@ export default async function PointsPage({
   ];
 
   return (
-    <main className="min-h-screen bg-[#0a0b0f] pb-28 text-[#e4e1ed]">
-      <SiteHeader active="points" />
+    <main className="cv-workspace-page min-h-screen pb-28 text-[#e4e1ed]">
+      <WorkspaceHeader desktopActive="points" />
 
       <div className="mx-auto max-w-lg px-4 pb-8 md:max-w-xl">
         {done === "check" ? (
@@ -166,7 +166,7 @@ export default async function PointsPage({
                   </div>
                   <Link
                     href={href}
-                    className="rounded-lg bg-[#8083ff] px-3 py-2 text-[11px] font-bold text-[#0d0096]"
+                    className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg bg-[#8083ff] px-3 py-2 text-[11px] font-bold text-[#0d0096]"
                   >
                     {cta}
                   </Link>
@@ -211,7 +211,7 @@ export default async function PointsPage({
           <p className="mt-3 text-xs text-[#9ca3af]">{t("points.tierHint")}</p>
         </section>
       </div>
-      <MobileNav active="points" />
+      <WorkspaceMobileNav active="points" />
     </main>
   );
 }

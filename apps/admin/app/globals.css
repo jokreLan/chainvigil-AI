@@ -1,55 +1,408 @@
 @import "tailwindcss";
 
 :root {
-  background: #0a0b0f;
-  color: #e4e1ed;
+  color-scheme: dark;
+  background: #071012;
+  color: #dce4e5;
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
     sans-serif;
+  --admin-bg: #071012;
+  --admin-surface: #0d1516;
+  --admin-surface-high: #151d1e;
+  --admin-border: #334649;
+  --admin-cyan: #00d9f2;
+  --admin-cyan-soft: #c3f5ff;
+  --admin-muted: #849396;
+  --admin-warning: #f3d36b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--admin-bg);
 }
 
 body {
   margin: 0;
-  background: #0a0b0f;
+  background:
+    linear-gradient(rgb(0 217 242 / 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(0 217 242 / 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 80% 0%, rgb(0 217 242 / 0.08), transparent 30rem),
+    var(--admin-bg);
+  background-size:
+    48px 48px,
+    48px 48px,
+    auto,
+    auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:where(a, button, input, summary):focus-visible {
+  outline: 2px solid var(--admin-cyan-soft);
+  outline-offset: 3px;
+}
+
+.admin-skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  min-height: 2.75rem;
+  transform: translateY(-160%);
+  border: 1px solid var(--admin-cyan);
+  background: var(--admin-bg);
+  padding: 0.7rem 1rem;
+  color: var(--admin-cyan-soft);
+  font-weight: 700;
+  transition: transform 140ms ease;
+}
+
+.admin-skip-link:focus {
+  transform: translateY(0);
+}
+
+#main-content:focus {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.admin-shell {
+  min-height: 100vh;
 }
 
 .admin-header {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 40;
   display: flex;
-  min-height: 4rem;
+  min-height: 4.5rem;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  border-bottom: 1px solid #262932;
-  background: rgb(10 11 15 / 95%);
-  padding: 0 1.5rem;
-  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgb(51 70 73 / 0.75);
+  background: rgb(7 16 18 / 0.94);
+  padding: 0 1.25rem;
+  backdrop-filter: blur(16px);
 }
 
 .admin-brand {
-  color: #f9fafb;
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-brand-mark {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: 1px solid rgb(0 217 242 / 0.45);
+  background: rgb(0 217 242 / 0.08);
+  color: var(--admin-cyan-soft);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0;
 }
 
-.admin-nav {
+.admin-brand > span:last-child {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.admin-brand strong {
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.admin-brand small,
+.admin-header-state,
+.admin-sidebar-foot,
+.admin-nav-group h2 {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+}
+
+.admin-brand small {
+  color: var(--admin-muted);
+}
+
+.admin-header-state {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  color: #c7c4d7;
-  font-size: 0.875rem;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--admin-muted);
 }
 
-.admin-nav a:hover { color: #c0c1ff; }
+.admin-header-state > span {
+  border: 1px solid rgb(51 70 73 / 0.8);
+  padding: 0.45rem 0.65rem;
+}
 
-@media (max-width: 640px) {
-  .admin-header {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 0.75rem 1rem;
+.admin-header-state > span:first-child {
+  border-color: rgb(0 217 242 / 0.35);
+  color: var(--admin-cyan-soft);
+}
+
+.admin-shell-body {
+  display: grid;
+  min-height: calc(100vh - 4.5rem);
+  grid-template-columns: 15.5rem minmax(0, 1fr);
+}
+
+.admin-sidebar {
+  position: sticky;
+  top: 4.5rem;
+  display: flex;
+  height: calc(100vh - 4.5rem);
+  flex-direction: column;
+  border-right: 1px solid rgb(51 70 73 / 0.65);
+  background: rgb(10 20 22 / 0.88);
+  padding: 1.25rem 1rem;
+}
+
+.admin-sidebar-status {
+  border: 1px solid rgb(0 217 242 / 0.25);
+  background: rgb(0 217 242 / 0.05);
+  padding: 0.9rem;
+}
+
+.admin-sidebar-status span,
+.admin-sidebar-status strong {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+}
+
+.admin-sidebar-status span {
+  color: var(--admin-muted);
+}
+
+.admin-sidebar-status strong {
+  margin-top: 0.35rem;
+  color: var(--admin-warning);
+}
+
+.admin-sidebar-status p {
+  margin: 0.65rem 0 0;
+  color: #9dacad;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.admin-sidebar-nav {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.admin-nav-group h2 {
+  margin: 0 0 0.45rem;
+  color: #617477;
+  font-weight: 600;
+}
+
+.admin-nav-group > div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.admin-nav-group a {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.65rem;
+  border-left: 2px solid transparent;
+  padding: 0 0.75rem;
+  color: #9dacad;
+  font-size: 0.84rem;
+  transition: 160ms ease;
+}
+
+.admin-nav-group a span {
+  color: #4c5f62;
+  font-size: 0.55rem;
+}
+
+.admin-nav-group a:hover {
+  background: rgb(0 217 242 / 0.04);
+  color: #dce4e5;
+}
+
+.admin-nav-group a[aria-current="page"] {
+  border-left-color: var(--admin-cyan);
+  background: rgb(0 217 242 / 0.08);
+  color: var(--admin-cyan-soft);
+}
+
+.admin-nav-group a[aria-current="page"] span {
+  color: var(--admin-cyan);
+}
+
+.admin-sidebar-foot {
+  margin: auto 0 0;
+  border-top: 1px solid rgb(51 70 73 / 0.55);
+  padding-top: 1rem;
+  color: #617477;
+}
+
+.admin-content {
+  min-width: 0;
+}
+
+.admin-page {
+  width: min(100%, 92rem);
+  margin-inline: auto;
+  padding: 2.5rem clamp(1rem, 3vw, 2.75rem) 4rem;
+}
+
+.admin-kicker {
+  color: var(--admin-cyan);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.admin-title {
+  margin-top: 0.65rem;
+  color: #dce4e5;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+.admin-lead {
+  max-width: 52rem;
+  margin-top: 1rem;
+  color: #9dacad;
+  line-height: 1.75;
+}
+
+.admin-panel {
+  border: 1px solid rgb(51 70 73 / 0.72);
+  border-radius: 0;
+  background: rgb(13 21 22 / 0.88);
+  box-shadow: inset 0 1px rgb(255 255 255 / 0.025);
+}
+
+.admin-action {
+  display: inline-flex;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  align-items: center;
+}
+
+.admin-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.admin-grid-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.admin-min-zero {
+  min-width: 0;
+}
+
+.admin-break-chip {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.admin-mobile-menu {
+  display: none;
+  position: relative;
+}
+
+.admin-mobile-menu summary {
+  display: flex;
+  min-width: 3.5rem;
+  min-height: 2.75rem;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(0 217 242 / 0.35);
+  color: var(--admin-cyan-soft);
+}
+
+.admin-mobile-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-mobile-menu-panel {
+  position: absolute;
+  top: 3.15rem;
+  right: 0;
+  width: min(20rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+  border: 1px solid var(--admin-border);
+  background: #0a1416;
+  padding: 0 1rem 1.25rem;
+  box-shadow: 0 1rem 3rem rgb(0 0 0 / 0.5);
+}
+
+@media (max-width: 900px) {
+  .admin-shell-body {
+    display: block;
   }
 
-  .admin-nav { gap: 0.75rem; }
+  .admin-sidebar {
+    display: none;
+  }
+
+  .admin-mobile-menu {
+    display: block;
+  }
+
+  .admin-header-state > span:last-of-type {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .admin-header {
+    min-height: 4rem;
+    padding-inline: 0.75rem;
+  }
+
+  .admin-brand small,
+  .admin-header-state > span {
+    display: none;
+  }
+
+  .admin-page {
+    padding-top: 2rem;
+  }
 }

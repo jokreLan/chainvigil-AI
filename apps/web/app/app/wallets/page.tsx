@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { listMockWalletWatchlist } from "@chainvigil/risk-core";
 import { useLocale } from "../../i18n/locale-context";
-import { MobileNav } from "../../ui/mobile-nav";
-import { SiteHeader } from "../../ui/site-header";
+import { WorkspaceHeader } from "../../ui/workspace-header";
+import { WorkspaceMobileNav } from "../../ui/workspace-mobile-nav";
 
 export default function WalletsPage() {
   const { locale, t } = useLocale();
@@ -16,11 +16,11 @@ export default function WalletsPage() {
   } as const;
 
   return (
-    <main className="min-h-screen bg-[#0a0b0f] pb-24 text-[#e4e1ed] md:pb-10">
-      <SiteHeader active="wallet" />
+    <main className="cv-workspace-page min-h-screen pb-24 text-[#e4e1ed] md:pb-10">
+      <WorkspaceHeader desktopActive="wallets" />
       <div className="mx-auto max-w-6xl px-5 py-9 md:px-8">
         <section>
-          <p className="text-sm font-semibold text-[#c0c1ff]">Read-only watchlist</p>
+          <p className="cv-font-mono text-xs font-semibold uppercase tracking-[0.1em] text-[#00e5ff]">Mock watchlist · Read-only</p>
           <h1 className="mt-3 text-3xl font-semibold text-[#f9fafb] md:text-5xl">{t("wallets.title")}</h1>
           <p className="mt-4 max-w-2xl leading-7 text-[#9ca3af]">{t("wallets.subtitle")}</p>
           <Link
@@ -71,7 +71,7 @@ export default function WalletsPage() {
                 </span>
                 <Link
                   href={wallet.reportUrl}
-                  className="rounded-lg border border-[#464554] bg-[#1f1f27] px-4 py-2 text-sm font-semibold text-[#f9fafb]"
+                  className="inline-flex min-h-11 items-center rounded-lg border border-[#464554] bg-[#1f1f27] px-4 py-2 text-sm font-semibold text-[#f9fafb]"
                 >
                   {t("wallets.viewHealth")}
                 </Link>
@@ -80,7 +80,7 @@ export default function WalletsPage() {
           ))}
         </section>
       </div>
-      <MobileNav active="wallet" />
+      <WorkspaceMobileNav active="wallets" />
     </main>
   );
 }

@@ -9,10 +9,15 @@ import {
   type GeoArticleSlug,
   type SignalSeverity,
 } from "../../lib/geo-articles";
-import { buildBreadcrumbJsonLd, getSiteUrl, localizedPath } from "../../lib/seo";
+import {
+  buildBreadcrumbJsonLd,
+  getSiteUrl,
+  localizedPath,
+} from "../../lib/seo";
+import { IntelligenceSubnav } from "../../ui/intelligence-subnav";
 import { JsonLd } from "../../ui/json-ld";
-import { MobileNav } from "../../ui/mobile-nav";
-import { SiteHeader } from "../../ui/site-header";
+import { WebsiteFooter } from "../../ui/website-footer";
+import { WebsiteHeader } from "../../ui/website-header";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -37,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const site = getSiteUrl();
   const url = `${site}${localizedPath(locale, `/learn/${slug}`)}`;
   return {
-    title: `${article.title}｜ChainVigil AI`,
+    title: `${article.title}｜ChainVigil`,
     description: article.description,
     alternates: {
       canonical: url,
@@ -51,7 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: article.description,
       url,
       type: "article",
-      siteName: "ChainVigil AI",
+      siteName: "ChainVigil",
     },
     twitter: {
       card: "summary_large_image",
@@ -73,7 +78,7 @@ export default async function GeoArticlePage({ params }: Props) {
   const isZh = locale === "zh";
   const jsonLd = buildGeoArticleJsonLd(article, url, locale);
   const crumbs = buildBreadcrumbJsonLd([
-    { name: "ChainVigil AI", path: "/" },
+    { name: "ChainVigil", path: "/" },
     { name: isZh ? "风险百科" : "Learn", path: "/learn" },
     { name: article.title, path: `/learn/${slug}` },
   ]);
@@ -84,30 +89,39 @@ export default async function GeoArticlePage({ params }: Props) {
       : { BLOCK: "Block", CAUTION: "Caution", INFO: "Info" };
 
   return (
-    <main className="min-h-screen bg-[#0a0b0f] pb-28 text-[#e4e1ed]">
+    <main className="cv-website-page min-h-screen text-[#dce4e5]">
       <JsonLd data={jsonLd} />
       <JsonLd data={crumbs} />
-      <SiteHeader active="intel" />
+      <WebsiteHeader active="learn" />
+      <IntelligenceSubnav active="learn" />
 
-      <article className="mx-auto max-w-2xl px-4 py-8 md:px-6">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[#c0c1ff]">
-          GEO · Risk education
+      <article className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
+        <p className="cv-font-mono text-xs font-semibold uppercase tracking-[0.14em] text-[#00d9f2]">
+          GEO · Risk education · Reviewed reference
         </p>
-        <h1 className="mt-2 text-3xl font-bold text-[#f9fafb] md:text-4xl">{article.title}</h1>
-        <p className="mt-4 text-base leading-7 text-[#c7c4d7]">{article.description}</p>
+        <h1 className="mt-3 cv-font-display text-4xl font-semibold tracking-[-0.04em] text-[#dce4e5] sm:text-5xl">
+          {article.title}
+        </h1>
+        <p className="mt-5 text-base leading-7 text-[#9dacad] sm:text-lg">
+          {article.description}
+        </p>
         <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#9ca3af]">
-          <span>{isZh ? "审阅" : "Reviewed by"}: {article.reviewedBy}</span>
+          <span>
+            {isZh ? "审阅" : "Reviewed by"}: {article.reviewedBy}
+          </span>
           <time dateTime={article.updatedAt}>
             {isZh ? "更新" : "Updated"}: {article.updatedAt}
           </time>
         </div>
 
         {/* Assertion-first block for AI extractors */}
-        <section className="mt-8 rounded-2xl border border-[#8083ff]/40 bg-[#8083ff]/10 p-5">
-          <h2 className="text-xs font-bold uppercase tracking-wide text-[#c0c1ff]">
+        <section className="mt-8 border border-[#00d9f2]/40 bg-[#00d9f2]/8 p-5 sm:p-6">
+          <h2 className="cv-font-mono text-xs font-bold uppercase tracking-[0.1em] text-[#c3f5ff]">
             {isZh ? "一句话定义（可引用）" : "One-line definition (citable)"}
           </h2>
-          <p className="mt-3 text-lg font-semibold leading-8 text-[#f9fafb]">{article.assertion}</p>
+          <p className="mt-3 text-lg font-semibold leading-8 text-[#f9fafb]">
+            {article.assertion}
+          </p>
           <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-6 text-[#c7c4d7]">
             {article.relatedSignals.slice(0, 3).map((signal) => (
               <li key={signal}>
@@ -119,19 +133,26 @@ export default async function GeoArticlePage({ params }: Props) {
           </ol>
         </section>
 
-        <section className="mt-4 rounded-2xl border border-[#262932] bg-[#16181d] p-5">
-          <h2 className="text-lg font-semibold text-[#f9fafb]">{isZh ? "定义" : "Definition"}</h2>
+        <section className="cv-website-panel mt-4 border border-[#3b494c]/70 bg-[#0d1516]/88 p-5 sm:p-6">
+          <h2 className="text-lg font-semibold text-[#f9fafb]">
+            {isZh ? "定义" : "Definition"}
+          </h2>
           <p className="mt-3 leading-7 text-[#c7c4d7]">{article.definition}</p>
         </section>
 
-        <section className="mt-4 rounded-2xl border border-[#262932] bg-[#16181d] p-5">
+        <section className="cv-website-panel mt-4 border border-[#3b494c]/70 bg-[#0d1516]/88 p-5 sm:p-6">
           <h2 className="text-lg font-semibold text-[#f9fafb]">
             {isZh ? "参考来源" : "Sources"}
           </h2>
           <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-[#c0c1ff]">
             {article.sources?.map((source) => (
               <li key={source.url}>
-                <a href={source.url} rel="noreferrer" target="_blank" className="underline">
+                <a
+                  href={source.url}
+                  rel="noreferrer"
+                  target="_blank"
+                  className="underline"
+                >
                   {source.name}
                 </a>
               </li>
@@ -139,34 +160,46 @@ export default async function GeoArticlePage({ params }: Props) {
           </ul>
         </section>
 
-        <section className="mt-4 rounded-2xl border border-[#f59e0b]/30 bg-[#16181d] p-5">
-          <h2 className="text-lg font-semibold text-[#fde68a]">{isZh ? "为什么危险" : "Why it matters"}</h2>
+        <section className="cv-website-panel mt-4 border border-[#f59e0b]/30 bg-[#0d1516]/88 p-5 sm:p-6">
+          <h2 className="text-lg font-semibold text-[#fde68a]">
+            {isZh ? "为什么危险" : "Why it matters"}
+          </h2>
           <p className="mt-3 leading-7 text-[#c7c4d7]">{article.risk}</p>
         </section>
 
         {/* GEO-friendly comparison table */}
-        <section className="mt-4 overflow-hidden rounded-2xl border border-[#262932] bg-[#16181d]">
+        <section className="cv-website-panel mt-4 overflow-hidden border border-[#3b494c]/70 bg-[#0d1516]/88">
           <div className="border-b border-[#262932] px-5 py-4">
             <h2 className="text-lg font-semibold text-[#f9fafb]">
               {isZh ? "风险信号对照表" : "Risk signal table"}
             </h2>
             <p className="mt-1 text-xs text-[#9ca3af]">
-              {isZh ? "便于搜索与 AI 引用的结构化对照" : "Structured rows for search & AI citation"}
+              {isZh
+                ? "便于搜索与 AI 引用的结构化对照"
+                : "Structured rows for search & AI citation"}
             </p>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[28rem] text-left text-sm">
               <thead className="bg-[#0d0d15] text-[11px] uppercase tracking-wide text-[#9ca3af]">
                 <tr>
-                  <th className="px-4 py-3 font-semibold">{isZh ? "风险信号" : "Signal"}</th>
-                  <th className="px-4 py-3 font-semibold">{isZh ? "严重程度" : "Severity"}</th>
-                  <th className="px-4 py-3 font-semibold">{isZh ? "人话解释" : "Plain meaning"}</th>
+                  <th className="px-4 py-3 font-semibold">
+                    {isZh ? "风险信号" : "Signal"}
+                  </th>
+                  <th className="px-4 py-3 font-semibold">
+                    {isZh ? "严重程度" : "Severity"}
+                  </th>
+                  <th className="px-4 py-3 font-semibold">
+                    {isZh ? "人话解释" : "Plain meaning"}
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#262932]">
                 {article.signalTable.map((row) => (
                   <tr key={`${row.signal}-${row.plain}`} className="align-top">
-                    <td className="px-4 py-3 font-mono text-[12px] text-[#c0c1ff]">{row.signal}</td>
+                    <td className="px-4 py-3 font-mono text-[12px] text-[#c0c1ff]">
+                      {row.signal}
+                    </td>
                     <td className="px-4 py-3">
                       <span
                         className={`inline-flex rounded-full border px-2 py-0.5 text-[11px] font-semibold ${severityStyles[row.severity]}`}
@@ -174,7 +207,9 @@ export default async function GeoArticlePage({ params }: Props) {
                         {severityLabel[row.severity]}
                       </span>
                     </td>
-                    <td className="px-4 py-3 leading-6 text-[#c7c4d7]">{row.plain}</td>
+                    <td className="px-4 py-3 leading-6 text-[#c7c4d7]">
+                      {row.plain}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -182,8 +217,10 @@ export default async function GeoArticlePage({ params }: Props) {
           </div>
         </section>
 
-        <section className="mt-4 rounded-2xl border border-[#262932] bg-[#16181d] p-5">
-          <h2 className="text-lg font-semibold text-[#f9fafb]">{isZh ? "怎么查" : "How to check"}</h2>
+        <section className="cv-website-panel mt-4 border border-[#3b494c]/70 bg-[#0d1516]/88 p-5 sm:p-6">
+          <h2 className="text-lg font-semibold text-[#f9fafb]">
+            {isZh ? "怎么查" : "How to check"}
+          </h2>
           <ol className="mt-4 list-decimal space-y-3 pl-5 text-[#c7c4d7]">
             {article.howToDetect.map((step) => (
               <li key={step} className="leading-7">
@@ -193,7 +230,7 @@ export default async function GeoArticlePage({ params }: Props) {
           </ol>
         </section>
 
-        <section className="mt-4 rounded-2xl border border-[#262932] bg-[#16181d] p-5">
+        <section className="cv-website-panel mt-4 border border-[#3b494c]/70 bg-[#0d1516]/88 p-5 sm:p-6">
           <h2 className="text-lg font-semibold text-[#f9fafb]">FAQ</h2>
           <div className="mt-4 divide-y divide-[#262932]">
             {article.faq.map(([q, a]) => (
@@ -208,21 +245,21 @@ export default async function GeoArticlePage({ params }: Props) {
         <div className="mt-8 grid gap-3 sm:grid-cols-2">
           <Link
             href={article.ctaHref}
-            className="flex min-h-12 items-center justify-center rounded-xl bg-[#8083ff] text-sm font-semibold text-[#0d0096]"
+            className="flex min-h-12 items-center justify-center bg-[#00d9f2] px-4 cv-font-mono text-xs font-semibold uppercase text-[#002b31]"
           >
             {article.ctaLabel}
           </Link>
           {article.secondaryCta ? (
             <Link
               href={article.secondaryCta.href}
-              className="flex min-h-12 items-center justify-center rounded-xl border border-[#464554] text-sm font-semibold text-[#f9fafb]"
+              className="flex min-h-12 items-center justify-center border border-[#3b494c] px-4 cv-font-mono text-xs font-semibold uppercase text-[#dce4e5]"
             >
               {article.secondaryCta.label}
             </Link>
           ) : (
             <Link
               href="/learn"
-              className="flex min-h-12 items-center justify-center rounded-xl border border-[#464554] text-sm font-semibold text-[#f9fafb]"
+              className="flex min-h-12 items-center justify-center border border-[#3b494c] px-4 cv-font-mono text-xs font-semibold uppercase text-[#dce4e5]"
             >
               {isZh ? "返回百科" : "Back to encyclopedia"}
             </Link>
@@ -235,7 +272,7 @@ export default async function GeoArticlePage({ params }: Props) {
             : "Disclaimer: risk education only. Not investment advice. On-chain state changes — verify independently."}
         </p>
       </article>
-      <MobileNav active="database" />
+      <WebsiteFooter />
     </main>
   );
 }

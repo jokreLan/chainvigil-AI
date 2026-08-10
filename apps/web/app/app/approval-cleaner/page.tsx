@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { listMockAssetCleanupPolicies } from "@chainvigil/risk-core";
 import { useLocale } from "../../i18n/locale-context";
-import { MobileNav } from "../../ui/mobile-nav";
-import { SiteHeader } from "../../ui/site-header";
+import { WorkspaceHeader } from "../../ui/workspace-header";
+import { WorkspaceMobileNav } from "../../ui/workspace-mobile-nav";
 
 export default function ApprovalCleanerPage() {
   const { locale, t } = useLocale();
@@ -16,8 +16,8 @@ export default function ApprovalCleanerPage() {
   if (!policy) return null;
 
   return (
-    <main className="min-h-screen bg-[#0a0b0f] pb-24 text-[#e4e1ed] md:pb-10">
-      <SiteHeader active="wallet" />
+    <main className="cv-workspace-page min-h-screen pb-24 text-[#e4e1ed] md:pb-10">
+      <WorkspaceHeader desktopActive="wallets" />
 
       <div className="mx-auto max-w-7xl px-5 py-9 md:px-8">
         <section className="rounded-xl border border-[#262932] bg-[#16181d] p-6">
@@ -95,7 +95,7 @@ export default function ApprovalCleanerPage() {
           <p className="mt-3 max-w-3xl leading-7 text-[#9ca3af]">{t("cleaner.whyBody")}</p>
         </section>
       </div>
-      <MobileNav active="wallet" />
+      <WorkspaceMobileNav />
     </main>
   );
 }
