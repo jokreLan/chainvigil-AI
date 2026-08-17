@@ -6,6 +6,8 @@ ChainVigil AI 是一个 Web3 交易安全工具。V0 聚焦免费 CA 安检、To
 
 第一版主优先链：Solana（SOL）和 BNB Smart Chain（BNB/BSC）。其它 EVM 链保留 mock contract 兼容，不作为第一版主交付重心。
 
+> **开源状态：实验性项目。** ChainVigil 按 Apache License 2.0 开源，当前不提供商业 SLA。部分流程和数据仍为明确标记的 Mock、Sample、Readiness 或 Degraded 状态；风险结果仅用于辅助判断，不构成投资建议，也不保证发现全部漏洞、诈骗或链上风险。本项目没有 Token、空投或收益承诺。
+
 ## V0 范围
 
 已纳入：
@@ -93,22 +95,14 @@ pnpm smoke:v0
 
 上线前安全边界和生产预检见 `SECURITY.md`、`docs/ops/launch_checklist.md`。
 
-## 战略与推进（OPC）
+## 项目状态与边界
 
-一人公司总控与下阶段任务：
-
-- 总控：`docs/strategy/MASTER_CONTROL.md`
-- 90 天 GTM：`docs/go-to-market/gtm_90_days.md`
-- VP 第二曲线：`docs/product/vp_second_engine_v1.md`
-- 运维手册：`docs/ops/runbook_v1.md`
-- 上线清单：`docs/ops/launch_checklist.md`
-- 任务板：`TASKS.md`（**周末只做 S0 收尾；S1+ 冻结**）
-- 决策与红线：`DECISIONS.md`（含周末闸门）
-
-**当前窗口：** 密钥 / live 或书面 mock 上线 / TG / 域名 / 生产 smoke。  
-**先不做：** Redis 热路径、异步队列、Dust 粉碎、VP 加权与治理投票。
-
-**定位一句话：** 买币前，在群里用中文把 CA 查清楚。
+- 当前定位为开源实验项目和参考实现，不承诺 Roadmap、在线服务或响应时效。
+- 默认运行模式为 mock；只有真实 Provider 请求成功后才产生对应 live 证据和置信度。
+- 不自动交易、不替用户签名、不托管资产，也不提供一键撤销、自动 swap 或跨链 bridge。
+- 不发行平台 Token，不承诺空投、兑换、投资回报或治理权益。
+- 生产部署者必须自行配置数据源、数据库、缓存、访问控制、监控和合规措施。
+- 已知安全问题请按照 `SECURITY.md` 私下报告；一般贡献请参考 `CONTRIBUTING.md`。
 
 ## V0 mock 流程
 
@@ -271,3 +265,11 @@ docker compose --profile app up --build
 - `apps/worker/Dockerfile`
 
 V0 Docker 镜像优先保证可读、可构建、可运行，暂未做生产级镜像裁剪。
+
+## 参与贡献
+
+欢迎提交 Issue 和 Pull Request。开始前请阅读 `CONTRIBUTING.md` 和 `CODE_OF_CONDUCT.md`。安全漏洞请勿公开披露，请按照 `SECURITY.md` 提交。
+
+## 许可证
+
+项目代码和文档按照 Apache License 2.0 发布，详见 `LICENSE`。ChainVigil 名称、标识和产品品牌不因本许可证自动获得商标授权。
