@@ -119,4 +119,4 @@ if (errors.length) {
 }
 
 console.log("OK: static launch contracts present.");
-console.log("Next (weekend): load real credentials, verify provider fixtures, then run production readiness + smoke.");
+console.log("Optional live deployment: load real credentials, verify provider fixtures, then run production readiness + smoke.");
